@@ -149,7 +149,7 @@ const SignupScreen = () => {
               {/* Apple Button */}
               <TouchableOpacity style={styles.socialButtonWhite}>
                 <Image
-                  source={require("../assets/images/Apple.png")}
+                  source={require("../../assets/images/Apple.png")}
                   style={styles.socialIcon}
                 />
                 <Text style={styles.socialButtonTextDark}>
