@@ -85,7 +85,7 @@ const SignupScreen = () => {
             <View style={styles.headerSection}>
               <View style={styles.logoContainer}>
                 <Image
-                  source={require("../assets/images/elephant1.png")}
+                  source={require("../../assets/images/elephant1.png")}
                   style={styles.mainLogo}
                 />
               </View>
@@ -138,7 +138,7 @@ const SignupScreen = () => {
               {/* Google Button */}
               <TouchableOpacity style={styles.socialButtonWhite}>
                 <Image
-                  source={require("../assets/images/Google.png")}
+                  source={require("../../assets/images/Google.png")}
                   style={styles.socialIcon}
                 />
                 <Text style={styles.socialButtonTextDark}>
