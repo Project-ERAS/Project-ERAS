@@ -1,15 +1,15 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
-    Image,
-    ImageBackground,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Image,
+  ImageBackground,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -54,7 +54,7 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
       >
         {/* Hero Section */}
         <ImageBackground
-          source={require("../assets/images/MenuImage.png")}
+          source={require("@/assets/images/MenuImage.png")}
           style={styles.heroSection}
           resizeMode="cover"
         >
@@ -85,7 +85,7 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
           {/* Search Bar */}
           <View style={styles.searchContainer}>
             <Image
-              source={require("../assets/images/search1.png")}
+              source={require("@/assets/images/search1.png")}
               style={styles.searchIconImage}
             />
             <TextInput
@@ -103,7 +103,7 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
             onPress={() => handleNavigation("LiveAlert")}
           >
             <Image
-              source={require("../assets/images/alert.png")}
+              source={require("@/assets/images/alert.png")}
               style={styles.navIconImage}
             />
             <Text style={styles.navText}>Live Alert</Text>
@@ -114,7 +114,7 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
             onPress={() => handleNavigation("History")}
           >
             <Image
-              source={require("../assets/images/history.png")}
+              source={require("@/assets/images/history.png")}
               style={styles.navIconImage}
             />
             <Text style={styles.navText}>History</Text>
@@ -125,7 +125,7 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
             onPress={() => handleNavigation("LiveCameraFeed")}
           >
             <Image
-              source={require("../assets/images/camera.png")}
+              source={require("@/assets/images/camera.png")}
               style={styles.navIconImage}
             />
             <Text style={styles.navText}>Live camera feed</Text>
@@ -136,7 +136,7 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
             onPress={() => handleNavigation("UserUpdates")}
           >
             <Image
-              source={require("../assets/images/mobile.png")}
+              source={require("@/assets/images/mobile.png")}
               style={styles.navIconImage}
             />
             <Text style={styles.navText}>User updates</Text>
@@ -149,7 +149,7 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
         <TouchableOpacity style={styles.navButton}>
           <View style={styles.navIconCircle}>
             <Image
-              source={require("../assets/images/info.png")}
+              source={require("@/assets/images/info.png")}
               style={styles.bottomNavIconImage}
             />
           </View>
@@ -158,7 +158,7 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
         <TouchableOpacity style={styles.navButton}>
           <View style={styles.navIconCircle}>
             <Image
-              source={require("../assets/images/home.png")}
+              source={require("@/assets/images/home.png")}
               style={styles.bottomNavIconImage}
             />
           </View>
@@ -168,7 +168,7 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
         <TouchableOpacity style={styles.navButton}>
           <View style={styles.navIconCircle}>
             <Image
-              source={require("../assets/images/profile.png")}
+              source={require("@/assets/images/profile.png")}
               style={styles.bottomNavIconImage}
             />
           </View>
