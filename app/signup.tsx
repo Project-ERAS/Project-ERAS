@@ -1,5 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
+    Image,
     KeyboardAvoidingView,
     Platform,
     Pressable,
@@ -8,38 +9,42 @@ import {
     TextInput,
     View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
 type FormState = {
-  fullName: string;
   email: string;
   password: string;
-  confirmPassword: string;
+  username: string;
 };
 
 export default function SignupScreen() {
   const [form, setForm] = useState<FormState>({
-    fullName: '',
     email: '',
     password: '',
-    confirmPassword: '',
+    username: '',
   });
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const textColor = useThemeColor({}, 'text');
-  const backgroundColor = useThemeColor({}, 'background');
-  const tintColor = useThemeColor({}, 'tint');
-  const borderColor = useThemeColor({}, 'icon');
+  const screenBackground = useThemeColor({}, 'signupBackground');
+  const inputBackground = useThemeColor({}, 'signupInputBackground');
+  const socialButtonBackground = useThemeColor({}, 'signupSocialButtonBackground');
+  const primaryButton = useThemeColor({}, 'signupPrimaryButton');
+  const buttonText = useThemeColor({}, 'signupButtonText');
+  const shadowColor = useThemeColor({}, 'signupShadow');
+  const mutedText = useThemeColor({}, 'signupMutedText');
+  const inputText = useThemeColor({}, 'signupInputText');
+  const linkColor = useThemeColor({}, 'signupLink');
+  const dividerColor = useThemeColor({}, 'signupDivider');
+  const borderColor = useThemeColor({}, 'signupBorder');
 
   const canSubmit = useMemo(() => {
     return (
-      form.fullName.trim().length > 0 &&
       form.email.trim().length > 0 &&
       form.password.length > 0 &&
-      form.confirmPassword.length > 0
+      form.username.trim().length > 0
     );
   }, [form]);
 
@@ -50,122 +55,146 @@ export default function SignupScreen() {
   function onSubmit() {
     setSubmitError(null);
 
-    if (form.password !== form.confirmPassword) {
-      setSubmitError('Passwords do not match.');
-      return;
-    }
-
     // Frontend-only: wire this up to your auth backend later.
     console.log('Signup submit:', {
-      fullName: form.fullName,
       email: form.email,
+      username: form.username,
     });
   }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.flex}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
-    >
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
+    <SafeAreaView style={[styles.flex, { backgroundColor: screenBackground }]}>
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        <ThemedView style={[styles.container, { backgroundColor }]}>
-          <View style={styles.header}>
-            <ThemedText type="title">Create account</ThemedText>
-            <ThemedText>
-              Sign up to get started.
-            </ThemedText>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.headerSection}>
+            <Image
+              source={require('@/assets/icons/icon.png')}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+            <ThemedText style={[styles.headerTitle, { color: mutedText }]}>Sign up for E.R.A.S</ThemedText>
           </View>
 
-          <View style={styles.form}>
-            <View style={styles.field}>
-              <ThemedText type="defaultSemiBold">Full name</ThemedText>
-              <TextInput
-                value={form.fullName}
-                onChangeText={(v) => updateField('fullName', v)}
-                autoCapitalize="words"
-                placeholder="Jane Doe"
-                placeholderTextColor={borderColor}
-                style={[
-                  styles.input,
-                  {
-                    color: textColor,
-                    borderColor,
-                    backgroundColor,
-                  },
-                ]}
+          <View style={styles.socialSection}>
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => console.log('Google signup')}
+              style={({ pressed }) => [
+                styles.socialButton,
+                {
+                  backgroundColor: socialButtonBackground,
+                  borderColor,
+                  shadowColor,
+                  opacity: pressed ? 0.9 : 1,
+                },
+              ]}
+            >
+              <Image
+                source={require('@/assets/images/Google.png')}
+                style={styles.socialIcon}
+                resizeMode="contain"
               />
+              <ThemedText style={[styles.socialText, { color: mutedText }]}>Sign up with Google</ThemedText>
+            </Pressable>
+
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => console.log('Apple signup')}
+              style={({ pressed }) => [
+                styles.socialButton,
+                {
+                  backgroundColor: socialButtonBackground,
+                  borderColor,
+                  shadowColor,
+                  opacity: pressed ? 0.9 : 1,
+                },
+              ]}
+            >
+              <Image
+                source={require('@/assets/images/Apple.png')}
+                style={styles.socialIcon}
+                resizeMode="contain"
+              />
+              <ThemedText style={[styles.socialText, { color: mutedText }]}>Sign up with Apple</ThemedText>
+            </Pressable>
+          </View>
+
+            <View style={styles.dividerRow}>
+              <View style={[styles.divider, { backgroundColor: dividerColor }]} />
+              <ThemedText style={[styles.dividerText, { color: mutedText }]}>or</ThemedText>
+              <View style={[styles.divider, { backgroundColor: dividerColor }]} />
             </View>
 
             <View style={styles.field}>
-              <ThemedText type="defaultSemiBold">Email</ThemedText>
+              <ThemedText style={[styles.label, { color: mutedText }]}>Email*</ThemedText>
               <TextInput
                 value={form.email}
                 onChangeText={(v) => updateField('email', v)}
                 autoCapitalize="none"
                 keyboardType="email-address"
-                placeholder="name@example.com"
-                placeholderTextColor={borderColor}
+                placeholder=""
+                placeholderTextColor={mutedText}
                 style={[
                   styles.input,
                   {
-                    color: textColor,
-                    borderColor,
-                    backgroundColor,
+                    backgroundColor: inputBackground,
+                    color: inputText,
                   },
                 ]}
               />
             </View>
 
             <View style={styles.field}>
-              <ThemedText type="defaultSemiBold">Password</ThemedText>
+              <ThemedText style={[styles.label, { color: mutedText }]}>Password*</ThemedText>
               <TextInput
                 value={form.password}
                 onChangeText={(v) => updateField('password', v)}
                 autoCapitalize="none"
                 secureTextEntry
-                placeholder="••••••••"
-                placeholderTextColor={borderColor}
+                placeholder=""
+                placeholderTextColor={mutedText}
                 style={[
                   styles.input,
                   {
-                    color: textColor,
-                    borderColor,
-                    backgroundColor,
+                    backgroundColor: inputBackground,
+                    color: inputText,
                   },
                 ]}
               />
             </View>
 
             <View style={styles.field}>
-              <ThemedText type="defaultSemiBold">Confirm password</ThemedText>
+              <ThemedText style={[styles.label, { color: mutedText }]}>Username*</ThemedText>
               <TextInput
-                value={form.confirmPassword}
-                onChangeText={(v) => updateField('confirmPassword', v)}
+                value={form.username}
+                onChangeText={(v) => updateField('username', v)}
                 autoCapitalize="none"
-                secureTextEntry
-                placeholder="••••••••"
-                placeholderTextColor={borderColor}
+                placeholder=""
+                placeholderTextColor={mutedText}
                 style={[
                   styles.input,
                   {
-                    color: textColor,
-                    borderColor,
-                    backgroundColor,
+                    backgroundColor: inputBackground,
+                    color: inputText,
                   },
                 ]}
               />
             </View>
 
             {submitError ? (
-              <ThemedText style={{ color: tintColor }}>{submitError}</ThemedText>
+              <ThemedText style={{ color: linkColor }}>{submitError}</ThemedText>
             ) : null}
 
-            <ThemedText style={styles.terms}>
-              By creating an account, you agree to the terms of service.
+            <ThemedText style={[styles.terms, { color: mutedText }]}>
+              By creating an account, you agree to the terms of service. For more information about E.R.A.S
+              information, see the project info page. We’ll occasionally send you updates through email.
             </ThemedText>
 
             <Pressable
@@ -173,21 +202,29 @@ export default function SignupScreen() {
               onPress={onSubmit}
               disabled={!canSubmit}
               style={({ pressed }) => [
-                styles.button,
+                styles.primaryButton,
                 {
-                  backgroundColor: tintColor,
-                  opacity: !canSubmit ? 0.5 : pressed ? 0.85 : 1,
+                  backgroundColor: primaryButton,
+                  shadowColor,
+                  opacity: !canSubmit ? 0.55 : pressed ? 0.9 : 1,
                 },
               ]}
             >
-              <ThemedText style={[styles.buttonText, { color: backgroundColor }]}>
-                Sign up
+              <ThemedText style={[styles.primaryButtonText, { color: buttonText }]}>
+                Create Account {'>'}
               </ThemedText>
             </Pressable>
-          </View>
-        </ThemedView>
-      </ScrollView>
-    </KeyboardAvoidingView>
+
+            <View style={styles.signInRow}>
+              <ThemedText style={{ color: mutedText }}>Already have an account? </ThemedText>
+              <Pressable onPress={() => console.log('Sign in')}
+              >
+                <ThemedText style={[styles.signInLink, { color: linkColor }]}>Sign in</ThemedText>
+              </Pressable>
+            </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
@@ -195,40 +232,107 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   scrollContent: {
     flexGrow: 1,
-    padding: 20,
     justifyContent: 'center',
+    paddingHorizontal: 30,
+    paddingVertical: 24,
   },
-  container: {
-    padding: 20,
-    gap: 18,
+  headerSection: {
+    alignItems: 'center',
+    marginBottom: 20,
   },
-  header: {
-    gap: 6,
+  logo: {
+    width: 260,
+    height: 200,
+    marginBottom: -10,
   },
-  form: {
+  headerTitle: {
+    fontSize: 22,
+    fontWeight: '500',
+  },
+  socialSection: {
     gap: 12,
-  },
-  field: {
-    gap: 6,
-  },
-  input: {
-    borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    fontSize: 16,
-  },
-  terms: {
-    marginTop: 4,
-  },
-  button: {
-    marginTop: 8,
-    borderRadius: 12,
-    paddingVertical: 14,
+    marginTop: 18,
     alignItems: 'center',
   },
-  buttonText: {
+  socialButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 25,
+    width: '100%',
+    maxWidth: 320,
+    paddingVertical: 14,
+    paddingHorizontal: 14,
+    borderWidth: 1,
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 2,
+  },
+  socialIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 10,
+  },
+  socialText: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  dividerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 20,
+  },
+  divider: {
+    flex: 1,
+    height: 1,
+  },
+  dividerText: {
+    marginHorizontal: 16,
+  },
+  field: {
+    marginBottom: 18,
+  },
+  label: {
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  input: {
+    borderRadius: 25,
+    width: '100%',
+    maxWidth: 520,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 15,
+  },
+  terms: {
+    fontSize: 11,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  primaryButton: {
+    borderRadius: 30,
+    width: '100%',
+    maxWidth: 360,
+    paddingVertical: 16,
+    alignItems: 'center',
+    shadowOpacity: 0.18,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 3,
+    alignSelf: 'center',
+  },
+  primaryButtonText: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: '600',
+  },
+  signInRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 12,
+  },
+  signInLink: {
+    fontWeight: '600',
   },
 });

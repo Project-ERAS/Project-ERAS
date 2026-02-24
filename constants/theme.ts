@@ -16,6 +16,20 @@ export const Colors = {
     icon: '#687076',
     tabIconDefault: '#687076',
     tabIconSelected: tintColorLight,
+
+    // Signup screen (Figma)
+    signupBackground: '#c8dbb3',
+    signupCardBackground: '#f4f4f4',
+    signupInputBackground: '#e5e5e5',
+    signupSocialButtonBackground: '#ffffff',
+    signupPrimaryButton: '#3f7047',
+    signupMutedText: '#4a4a4a',
+    signupInputText: '#11181C',
+    signupLink: '#5aaccc',
+    signupDivider: '#00000026',
+    signupBorder: '#00000014',
+    signupButtonText: '#ffffff',
+    signupShadow: '#000000',
   },
   dark: {
     text: '#ECEDEE',
@@ -24,6 +38,20 @@ export const Colors = {
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
+
+    // Signup screen (Figma) - keep the same palette as the mock
+    signupBackground: '#c8dbb3',
+    signupCardBackground: '#f4f4f4',
+    signupInputBackground: '#e5e5e5',
+    signupSocialButtonBackground: '#ffffff',
+    signupPrimaryButton: '#3f7047',
+    signupMutedText: '#4a4a4a',
+    signupInputText: '#11181C',
+    signupLink: '#5aaccc',
+    signupDivider: '#00000026',
+    signupBorder: '#00000014',
+    signupButtonText: '#ffffff',
+    signupShadow: '#000000',
   },
 };
 
