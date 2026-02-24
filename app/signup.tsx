@@ -1,14 +1,14 @@
 import { useMemo, useState } from 'react';
 import {
-    Image,
-    ImageBackground,
-    KeyboardAvoidingView,
-    Platform,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    TextInput,
-    View,
+  Image,
+  ImageBackground,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -29,6 +29,8 @@ export default function SignupScreen() {
   });
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [focusedField, setFocusedField] = useState<keyof FormState | null>(null);
+
+  const webOutlineNone = Platform.OS === 'web' ? ({ outlineStyle: 'none' } as any) : null;
 
   const inputBackground = useThemeColor({}, 'signupInputBackground');
   const socialButtonBackground = useThemeColor({}, 'signupSocialButtonBackground');
@@ -163,6 +165,7 @@ export default function SignupScreen() {
                 selectionColor={primaryButton}
                 style={[
                   styles.input,
+                  webOutlineNone,
                   {
                     backgroundColor: inputBackground,
                     color: inputText,
@@ -186,6 +189,7 @@ export default function SignupScreen() {
                 selectionColor={primaryButton}
                 style={[
                   styles.input,
+                  webOutlineNone,
                   {
                     backgroundColor: inputBackground,
                     color: inputText,
@@ -208,6 +212,7 @@ export default function SignupScreen() {
                 selectionColor={primaryButton}
                 style={[
                   styles.input,
+                  webOutlineNone,
                   {
                     backgroundColor: inputBackground,
                     color: inputText,
@@ -348,9 +353,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 15,
-
-    // React Native Web: remove default blue focus outline
-    outlineStyle: 'none',
   },
   terms: {
     fontSize: 11,
