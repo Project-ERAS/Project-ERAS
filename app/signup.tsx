@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import {
   Image,
@@ -251,7 +252,7 @@ export default function SignupScreen() {
 
             <View style={styles.signInRow}>
               <ThemedText style={{ color: mutedText }}>Already have an account? </ThemedText>
-              <Pressable onPress={() => console.log('Sign in')}>
+              <Pressable onPress={() => router.push('/signin' as any)}>
                 <ThemedText style={[styles.signInLink, { color: linkColor }]}>Sign in</ThemedText>
               </Pressable>
             </View>
