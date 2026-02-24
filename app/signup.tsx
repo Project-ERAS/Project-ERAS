@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import {
     Image,
+    ImageBackground,
     KeyboardAvoidingView,
     Platform,
     Pressable,
@@ -27,8 +28,8 @@ export default function SignupScreen() {
     username: '',
   });
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [focusedField, setFocusedField] = useState<keyof FormState | null>(null);
 
-  const screenBackground = useThemeColor({}, 'signupBackground');
   const inputBackground = useThemeColor({}, 'signupInputBackground');
   const socialButtonBackground = useThemeColor({}, 'signupSocialButtonBackground');
   const primaryButton = useThemeColor({}, 'signupPrimaryButton');
@@ -39,6 +40,11 @@ export default function SignupScreen() {
   const linkColor = useThemeColor({}, 'signupLink');
   const dividerColor = useThemeColor({}, 'signupDivider');
   const borderColor = useThemeColor({}, 'signupBorder');
+  const backdropColor = useThemeColor({}, 'signupBackdrop');
+
+  function inputBorderFor(field: keyof FormState) {
+    return focusedField === field ? primaryButton : borderColor;
+  }
 
   const canSubmit = useMemo(() => {
     return (
@@ -63,68 +69,79 @@ export default function SignupScreen() {
   }
 
   return (
-    <SafeAreaView style={[styles.flex, { backgroundColor: screenBackground }]}>
-      <KeyboardAvoidingView
-        style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
+    <ImageBackground
+      source={require('@/assets/icons/background.jpg')}
+      resizeMode="cover"
+      blurRadius={Platform.OS === 'web' ? 0 : 0}
+      imageStyle={styles.backgroundImage}
+      style={styles.flex}
+    >
+      <View pointerEvents="none" style={[StyleSheet.absoluteFillObject, { backgroundColor: backdropColor }]} />
+      <SafeAreaView style={styles.flex}>
+        <KeyboardAvoidingView
+          style={styles.flex}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
-          <View style={styles.headerSection}>
-            <Image
-              source={require('@/assets/icons/icon.png')}
-              style={styles.logo}
-              resizeMode="contain"
-            />
-            <ThemedText style={[styles.headerTitle, { color: mutedText }]}>Sign up for E.R.A.S</ThemedText>
-          </View>
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.content}>
+              <View style={styles.headerSection}>
+                <Image
+                  source={require('@/assets/icons/icon.png')}
+                  style={styles.logo}
+                  resizeMode="contain"
+                />
+                <ThemedText style={[styles.headerTitle, { color: mutedText }]}>
+                  Sign up for E.R.A.S
+                </ThemedText>
+              </View>
 
-          <View style={styles.socialSection}>
-            <Pressable
-              accessibilityRole="button"
-              onPress={() => console.log('Google signup')}
-              style={({ pressed }) => [
-                styles.socialButton,
-                {
-                  backgroundColor: socialButtonBackground,
-                  borderColor,
-                  shadowColor,
-                  opacity: pressed ? 0.9 : 1,
-                },
-              ]}
-            >
-              <Image
-                source={require('@/assets/images/Google.png')}
-                style={styles.socialIcon}
-                resizeMode="contain"
-              />
-              <ThemedText style={[styles.socialText, { color: mutedText }]}>Sign up with Google</ThemedText>
-            </Pressable>
+            <View style={styles.socialSection}>
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => console.log('Google signup')}
+                style={({ pressed }) => [
+                  styles.socialButton,
+                  {
+                    backgroundColor: socialButtonBackground,
+                    borderColor,
+                    shadowColor,
+                    opacity: pressed ? 0.9 : 1,
+                  },
+                ]}
+              >
+                <Image
+                  source={require('@/assets/images/Google.png')}
+                  style={styles.socialIcon}
+                  resizeMode="contain"
+                />
+                <ThemedText style={[styles.socialText, { color: mutedText }]}>Sign up with Google</ThemedText>
+              </Pressable>
 
-            <Pressable
-              accessibilityRole="button"
-              onPress={() => console.log('Apple signup')}
-              style={({ pressed }) => [
-                styles.socialButton,
-                {
-                  backgroundColor: socialButtonBackground,
-                  borderColor,
-                  shadowColor,
-                  opacity: pressed ? 0.9 : 1,
-                },
-              ]}
-            >
-              <Image
-                source={require('@/assets/images/Apple.png')}
-                style={styles.socialIcon}
-                resizeMode="contain"
-              />
-              <ThemedText style={[styles.socialText, { color: mutedText }]}>Sign up with Apple</ThemedText>
-            </Pressable>
-          </View>
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => console.log('Apple signup')}
+                style={({ pressed }) => [
+                  styles.socialButton,
+                  {
+                    backgroundColor: socialButtonBackground,
+                    borderColor,
+                    shadowColor,
+                    opacity: pressed ? 0.9 : 1,
+                  },
+                ]}
+              >
+                <Image
+                  source={require('@/assets/images/Apple.png')}
+                  style={styles.socialIcon}
+                  resizeMode="contain"
+                />
+                <ThemedText style={[styles.socialText, { color: mutedText }]}>Sign up with Apple</ThemedText>
+              </Pressable>
+            </View>
 
             <View style={styles.dividerRow}>
               <View style={[styles.divider, { backgroundColor: dividerColor }]} />
@@ -137,15 +154,19 @@ export default function SignupScreen() {
               <TextInput
                 value={form.email}
                 onChangeText={(v) => updateField('email', v)}
+                onFocus={() => setFocusedField('email')}
+                onBlur={() => setFocusedField((prev) => (prev === 'email' ? null : prev))}
                 autoCapitalize="none"
                 keyboardType="email-address"
                 placeholder=""
                 placeholderTextColor={mutedText}
+                selectionColor={primaryButton}
                 style={[
                   styles.input,
                   {
                     backgroundColor: inputBackground,
                     color: inputText,
+                    borderColor: inputBorderFor('email'),
                   },
                 ]}
               />
@@ -156,15 +177,19 @@ export default function SignupScreen() {
               <TextInput
                 value={form.password}
                 onChangeText={(v) => updateField('password', v)}
+                onFocus={() => setFocusedField('password')}
+                onBlur={() => setFocusedField((prev) => (prev === 'password' ? null : prev))}
                 autoCapitalize="none"
                 secureTextEntry
                 placeholder=""
                 placeholderTextColor={mutedText}
+                selectionColor={primaryButton}
                 style={[
                   styles.input,
                   {
                     backgroundColor: inputBackground,
                     color: inputText,
+                    borderColor: inputBorderFor('password'),
                   },
                 ]}
               />
@@ -175,14 +200,18 @@ export default function SignupScreen() {
               <TextInput
                 value={form.username}
                 onChangeText={(v) => updateField('username', v)}
+                onFocus={() => setFocusedField('username')}
+                onBlur={() => setFocusedField((prev) => (prev === 'username' ? null : prev))}
                 autoCapitalize="none"
                 placeholder=""
                 placeholderTextColor={mutedText}
+                selectionColor={primaryButton}
                 style={[
                   styles.input,
                   {
                     backgroundColor: inputBackground,
                     color: inputText,
+                    borderColor: inputBorderFor('username'),
                   },
                 ]}
               />
@@ -217,24 +246,34 @@ export default function SignupScreen() {
 
             <View style={styles.signInRow}>
               <ThemedText style={{ color: mutedText }}>Already have an account? </ThemedText>
-              <Pressable onPress={() => console.log('Sign in')}
-              >
+              <Pressable onPress={() => console.log('Sign in')}>
                 <ThemedText style={[styles.signInLink, { color: linkColor }]}>Sign in</ThemedText>
               </Pressable>
             </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
+  backgroundImage: {
+    opacity: 0.75,
+  },
   scrollContent: {
     flexGrow: 1,
     justifyContent: 'center',
     paddingHorizontal: 30,
     paddingVertical: 24,
+    alignItems: 'center',
+  },
+  content: {
+    width: '100%',
+    maxWidth: 720,
+    alignSelf: 'center',
   },
   headerSection: {
     alignItems: 'center',
@@ -283,6 +322,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 20,
+    width: '100%',
   },
   divider: {
     flex: 1,
@@ -293,18 +333,24 @@ const styles = StyleSheet.create({
   },
   field: {
     marginBottom: 18,
+    width: '100%',
+    maxWidth: 600,
+    alignSelf: 'center',
   },
   label: {
     fontSize: 14,
     marginBottom: 8,
   },
   input: {
+    borderWidth: 1,
     borderRadius: 25,
     width: '100%',
-    maxWidth: 520,
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 15,
+
+    // React Native Web: remove default blue focus outline
+    outlineStyle: 'none',
   },
   terms: {
     fontSize: 11,

@@ -19,11 +19,12 @@ export const Colors = {
 
     // Signup screen (Figma)
     signupBackground: '#c8dbb3',
+    signupBackdrop: '#c8dbb399',
     signupCardBackground: '#f4f4f4',
     signupInputBackground: '#e5e5e5',
     signupSocialButtonBackground: '#ffffff',
     signupPrimaryButton: '#3f7047',
-    signupMutedText: '#4a4a4a',
+    signupMutedText: '#1f1f1f',
     signupInputText: '#11181C',
     signupLink: '#5aaccc',
     signupDivider: '#00000026',
@@ -41,11 +42,12 @@ export const Colors = {
 
     // Signup screen (Figma) - keep the same palette as the mock
     signupBackground: '#c8dbb3',
+    signupBackdrop: '#c8dbb399',
     signupCardBackground: '#f4f4f4',
     signupInputBackground: '#e5e5e5',
     signupSocialButtonBackground: '#ffffff',
     signupPrimaryButton: '#3f7047',
-    signupMutedText: '#4a4a4a',
+    signupMutedText: '#1f1f1f',
     signupInputText: '#11181C',
     signupLink: '#5aaccc',
     signupDivider: '#00000026',
