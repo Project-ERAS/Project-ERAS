@@ -1,24 +1,37 @@
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import {
-    Image,
-    ImageBackground,
-    KeyboardAvoidingView,
-    Platform,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    TextInput,
-    View,
+  Image,
+  ImageBackground,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { useThemeColor } from '@/hooks/use-theme-color';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+import { auth, db } from './firebase';
 
 type FormState = {
   identifier: string;
   password: string;
+};
+
+const SAMPLE_ACCOUNT = {
+  email: 'test@example.com',
+  password: 'testing123',
+  username: 'testuser',
 };
 
 export default function SigninScreen() {
@@ -28,6 +41,7 @@ export default function SigninScreen() {
   });
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [focusedField, setFocusedField] = useState<keyof FormState | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const webOutlineNone = Platform.OS === 'web' ? ({ outlineStyle: 'none' } as any) : null;
 
@@ -55,13 +69,55 @@ export default function SigninScreen() {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  function onSubmit() {
+  async function onSubmit() {
     setSubmitError(null);
+    if (!canSubmit) return;
+    setLoading(true);
 
-    // Frontend-only: wire this up to your auth backend later.
-    console.log('Signin submit:', {
-      identifier: form.identifier,
-    });
+    try {
+      // identifier can be email or username; we currently support email
+      await signInWithEmailAndPassword(auth, form.identifier.trim(), form.password);
+      router.replace('/homepage');
+    } catch (err: any) {
+      setSubmitError(err?.message || 'Failed to sign in');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // create sample account in Firebase if it doesn't already exist
+  async function ensureSampleUser() {
+    try {
+      const userCred = await createUserWithEmailAndPassword(
+        auth,
+        SAMPLE_ACCOUNT.email,
+        SAMPLE_ACCOUNT.password
+      );
+      const user = userCred.user;
+      await updateProfile(user, { displayName: SAMPLE_ACCOUNT.username });
+      await setDoc(doc(db, 'users', user.uid), {
+        email: SAMPLE_ACCOUNT.email,
+        username: SAMPLE_ACCOUNT.username,
+        createdAt: new Date().toISOString(),
+      });
+    } catch (err: any) {
+      // ignore if user already exists
+      if (err.code !== 'auth/email-already-in-use') {
+        console.warn('Error creating sample user', err);
+      }
+    }
+  }
+
+  function fillSample() {
+    setForm({ identifier: SAMPLE_ACCOUNT.email, password: SAMPLE_ACCOUNT.password });
+  }
+
+  async function handleUseSample() {
+    setSubmitError(null);
+    setLoading(true);
+    await ensureSampleUser();
+    fillSample();
+    setLoading(false);
   }
 
   return (
@@ -200,23 +256,31 @@ export default function SigninScreen() {
               <Pressable
                 accessibilityRole="button"
                 onPress={onSubmit}
-                disabled={!canSubmit}
+                disabled={!canSubmit || loading}
                 style={({ pressed }) => [
                   styles.primaryButton,
                   {
                     backgroundColor: primaryButton,
                     shadowColor,
-                    opacity: !canSubmit ? 0.55 : pressed ? 0.9 : 1,
+                    opacity: !canSubmit || loading ? 0.55 : pressed ? 0.9 : 1,
                   },
                 ]}
               >
-                <ThemedText style={[styles.primaryButtonText, { color: buttonText }]}>Sign in</ThemedText>
+                <ThemedText style={[styles.primaryButtonText, { color: buttonText }]}>
+                  {loading ? 'Signing in...' : 'Sign in'}
+                </ThemedText>
               </Pressable>
 
               <View style={styles.bottomRow}>
                 <ThemedText style={{ color: mutedText }}>New to E.R.A.S? </ThemedText>
                 <Pressable onPress={() => router.push('/signup')}>
                   <ThemedText style={[styles.createLink, { color: linkColor }]}>Create an account</ThemedText>
+                </Pressable>
+              </View>
+
+              <View style={styles.sampleRow}>
+                <Pressable onPress={handleUseSample} disabled={loading}>
+                  <ThemedText style={[styles.sampleLink, { color: linkColor }]}>Use sample account</ThemedText>
                 </Pressable>
               </View>
             </View>
@@ -352,5 +416,14 @@ const styles = StyleSheet.create({
   },
   createLink: {
     fontWeight: '600',
+  },
+  sampleRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 8,
+  },
+  sampleLink: {
+    fontWeight: '600',
+    textDecorationLine: 'underline',
   },
 });

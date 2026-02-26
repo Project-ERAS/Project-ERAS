@@ -1,20 +1,23 @@
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import {
-  Image,
-  ImageBackground,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  View,
+    Image,
+    ImageBackground,
+    KeyboardAvoidingView,
+    Platform,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    TextInput,
+    View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { useThemeColor } from '@/hooks/use-theme-color';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+import { auth, db } from './firebase';
 
 type FormState = {
   email: string;
@@ -30,6 +33,7 @@ export default function SignupScreen() {
   });
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [focusedField, setFocusedField] = useState<keyof FormState | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const webOutlineNone = Platform.OS === 'web' ? ({ outlineStyle: 'none' } as any) : null;
 
@@ -61,14 +65,30 @@ export default function SignupScreen() {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  function onSubmit() {
+  async function onSubmit() {
     setSubmitError(null);
+    if (!canSubmit) return;
+    setLoading(true);
 
-    // Frontend-only: wire this up to your auth backend later.
-    console.log('Signup submit:', {
-      email: form.email,
-      username: form.username,
-    });
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        form.email.trim(),
+        form.password
+      );
+      const user = userCredential.user;
+      await updateProfile(user, { displayName: form.username });
+      await setDoc(doc(db, 'users', user.uid), {
+        email: form.email.trim(),
+        username: form.username,
+        createdAt: new Date().toISOString(),
+      });
+      router.replace('/homepage');
+    } catch (err: any) {
+      setSubmitError(err?.message || 'Failed to create account');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -235,18 +255,18 @@ export default function SignupScreen() {
             <Pressable
               accessibilityRole="button"
               onPress={onSubmit}
-              disabled={!canSubmit}
+              disabled={!canSubmit || loading}
               style={({ pressed }) => [
                 styles.primaryButton,
                 {
                   backgroundColor: primaryButton,
                   shadowColor,
-                  opacity: !canSubmit ? 0.55 : pressed ? 0.9 : 1,
+                  opacity: !canSubmit || loading ? 0.55 : pressed ? 0.9 : 1,
                 },
               ]}
             >
-              <ThemedText style={[styles.primaryButtonText, { color: buttonText }]}>
-                Create Account {'>'}
+              <ThemedText style={[styles.primaryButtonText, { color: buttonText }]}> 
+                {loading ? 'Creating...' : "Create Account {'>'}"}
               </ThemedText>
             </Pressable>
 
@@ -256,7 +276,7 @@ export default function SignupScreen() {
                 <ThemedText style={[styles.signInLink, { color: linkColor }]}>Sign in</ThemedText>
               </Pressable>
             </View>
-            </View>
+          </View>
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
