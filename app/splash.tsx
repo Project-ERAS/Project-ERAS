@@ -11,7 +11,7 @@ export default function SplashScreen() {
     <View style={styles.container}>
       <LottieView
         ref={animationRef}
-        source={require('../assets/logo-animation.json')}
+        source={require('../assets/animations/logo animation.json')}
         style={styles.animation}
         autoPlay
         loop={false}
@@ -34,8 +34,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   animation: {
-    width: 300,
-    height: 300,
+    width: 400,
+    height: 400,
   },
   linkButton: {
     position: 'absolute',
