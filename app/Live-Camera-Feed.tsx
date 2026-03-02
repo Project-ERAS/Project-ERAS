@@ -3,15 +3,15 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
-    KeyboardAvoidingView,
-    Platform,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 let MapView: any;
@@ -20,7 +20,8 @@ let Marker: any;
 // Only import MapView on native platforms (iOS/Android)
 if (Platform.OS !== 'web') {
   try {
-    const mapsModule = require('react-native-maps');
+    const req = eval('require');
+    const mapsModule = req('react-native-maps');
     MapView = mapsModule.default;
     Marker = mapsModule.Marker;
   } catch (e) {
