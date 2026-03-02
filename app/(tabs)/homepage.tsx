@@ -1,3 +1,4 @@
+import LiveCameraFeedScreen from "@/app/Live-Camera-Feed";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useState } from "react";
 import {
@@ -22,11 +23,6 @@ const LiveAlert = () => (
 const History = () => (
   <View style={styles.screen}>
     <Text>History Screen</Text>
-  </View>
-);
-const LiveCameraFeed = () => (
-  <View style={styles.screen}>
-    <Text>Live Camera Feed</Text>
   </View>
 );
 const UserUpdates = () => (
@@ -189,7 +185,7 @@ export default function App() {
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="LiveAlert" component={LiveAlert} />
       <Stack.Screen name="History" component={History} />
-      <Stack.Screen name="LiveCameraFeed" component={LiveCameraFeed} />
+      <Stack.Screen name="LiveCameraFeed" component={LiveCameraFeedScreen} />
       <Stack.Screen name="UserUpdates" component={UserUpdates} />
     </Stack.Navigator>
   );
