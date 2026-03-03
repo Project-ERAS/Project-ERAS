@@ -1,4 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
   Image,
@@ -29,15 +30,11 @@ const LiveCameraFeed = () => (
     <Text>Live Camera Feed</Text>
   </View>
 );
-const UserUpdates = () => (
-  <View style={styles.screen}>
-    <Text>User Updates Screen</Text>
-  </View>
-);
 
 // --- Main Home Screen Component ---
 const HomeScreen = ({ navigation }: { navigation: any }) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
 
   const handleNavigation = (screen: string) => {
     navigation.navigate(screen);
@@ -133,7 +130,7 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
 
           <TouchableOpacity
             style={styles.navCard}
-            onPress={() => handleNavigation("UserUpdates")}
+            onPress={() => router.push("/User-Updates")}
           >
             <Image
               source={require("@/assets/images/mobile.png")}
@@ -190,7 +187,6 @@ export default function App() {
       <Stack.Screen name="LiveAlert" component={LiveAlert} />
       <Stack.Screen name="History" component={History} />
       <Stack.Screen name="LiveCameraFeed" component={LiveCameraFeed} />
-      <Stack.Screen name="UserUpdates" component={UserUpdates} />
     </Stack.Navigator>
   );
 }
