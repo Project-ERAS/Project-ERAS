@@ -1,11 +1,19 @@
-import React, { useRef } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
-import LottieView from 'lottie-react-native';
 import { useRouter } from 'expo-router';
+import LottieView from 'lottie-react-native';
+import { useEffect, useRef } from 'react';
+import { StyleSheet, View } from 'react-native';
 
 export default function SplashScreen() {
   const animationRef = useRef<LottieView>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      router.push('/signin');
+    }, 7000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -16,12 +24,6 @@ export default function SplashScreen() {
         autoPlay
         loop={false}
       />
-      <TouchableOpacity 
-        style={styles.linkButton}
-        onPress={() => router.push('/signin')}
-      >
-        <Text style={styles.linkText}>go to</Text>
-      </TouchableOpacity>
     </View>
   );
 }
@@ -36,16 +38,5 @@ const styles = StyleSheet.create({
   animation: {
     width: 400,
     height: 400,
-  },
-  linkButton: {
-    position: 'absolute',
-    bottom: 40,
-    right: 30,
-    padding: 10,
-  },
-  linkText: {
-    color: '#007AFF',
-    fontSize: 16,
-    textDecorationLine: 'underline',
   },
 });
