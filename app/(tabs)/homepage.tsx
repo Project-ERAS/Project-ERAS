@@ -1,4 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
   Image,
@@ -38,6 +39,7 @@ const UserUpdates = () => (
 // --- Main Home Screen Component ---
 const HomeScreen = ({ navigation }: { navigation: any }) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
 
   const handleNavigation = (screen: string) => {
     navigation.navigate(screen);
@@ -155,7 +157,10 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.navButton}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => navigation.navigate("Home")}
+        >
           <View style={styles.navIconCircle}>
             <Image
               source={require("@/assets/images/home.png")}
@@ -165,7 +170,10 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
           <View style={styles.activeIndicator} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.navButton}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => router.push("/User-Profile")}
+        >
           <View style={styles.navIconCircle}>
             <Image
               source={require("@/assets/images/profile.png")}
