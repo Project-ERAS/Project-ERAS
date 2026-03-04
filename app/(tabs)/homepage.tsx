@@ -1,8 +1,7 @@
-import LiveCameraFeedScreen from "@/app/Live-Camera-Feed";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
+  Image,
   ImageBackground,
   ScrollView,
   StatusBar,
@@ -14,31 +13,10 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-// --- Dummy screens for navigation testing ---
-const LiveAlert = () => (
-  <View style={styles.screen}>
-    <Text>Live Alert Screen</Text>
-  </View>
-);
-const History = () => (
-  <View style={styles.screen}>
-    <Text>History Screen</Text>
-  </View>
-);
-const LiveCameraFeed = () => (
-  <View style={styles.screen}>
-    <Text>Live Camera Feed</Text>
-  </View>
-);
-
 // --- Main Home Screen Component ---
 export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
-
-  const handleNavigation = (screen: string) => {
-    navigation.navigate(screen);
-  };
 
   return (
     <View style={styles.container}>
@@ -92,7 +70,10 @@ export default function HomeScreen() {
           </View>
 
           {/* Navigation Cards */}
-          <TouchableOpacity style={styles.navCard}>
+          <TouchableOpacity
+            style={styles.navCard}
+            onPress={() => router.push("/live-alert")}
+          >
             <Text style={styles.navIcon}>⚠️</Text>
             <Text style={styles.navText}>Live Alert</Text>
           </TouchableOpacity>
@@ -102,7 +83,10 @@ export default function HomeScreen() {
             <Text style={styles.navText}>History</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.navCard}>
+          <TouchableOpacity
+            style={styles.navCard}
+            onPress={() => router.push("/Live-Camera-Feed")}
+          >
             <Text style={styles.navIcon}>📹</Text>
             <Text style={styles.navText}>Live camera feed</Text>
           </TouchableOpacity>
@@ -130,7 +114,7 @@ export default function HomeScreen() {
 
         <TouchableOpacity
           style={styles.navButton}
-          onPress={() => navigation.navigate("Home")}
+          onPress={() => router.push("/(tabs)/homepage")}
         >
           <View style={styles.navIconCircle}>
             <Text style={styles.bottomNavIcon}>🏠</Text>
@@ -148,22 +132,6 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
     </View>
-  );
-};
-
-const Stack = createNativeStackNavigator();
-
-export default function App() {
-  return (
-    <Stack.Navigator
-      screenOptions={{ headerShown: false }}
-      initialRouteName="Home"
-    >
-      <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="LiveAlert" component={LiveAlert} />
-      <Stack.Screen name="History" component={History} />
-      <Stack.Screen name="LiveCameraFeed" component={LiveCameraFeed} />
-    </Stack.Navigator>
   );
 }
 
@@ -251,6 +219,12 @@ const styles = StyleSheet.create({
   navIcon: {
     fontSize: 28,
     marginRight: 20,
+  },
+  navIconImage: {
+    width: 28,
+    height: 28,
+    marginRight: 20,
+    resizeMode: "contain",
   },
   navText: {
     fontSize: 18,
