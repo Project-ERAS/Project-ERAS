@@ -1,7 +1,5 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useState } from "react";
 import {
-  Image,
   ImageBackground,
   ScrollView,
   StatusBar,
@@ -13,35 +11,9 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-// --- Dummy screens for navigation testing ---
-const LiveAlert = () => (
-  <View style={styles.screen}>
-    <Text>Live Alert Screen</Text>
-  </View>
-);
-const History = () => (
-  <View style={styles.screen}>
-    <Text>History Screen</Text>
-  </View>
-);
-const LiveCameraFeed = () => (
-  <View style={styles.screen}>
-    <Text>Live Camera Feed</Text>
-  </View>
-);
-const UserUpdates = () => (
-  <View style={styles.screen}>
-    <Text>User Updates Screen</Text>
-  </View>
-);
-
 // --- Main Home Screen Component ---
-const HomeScreen = ({ navigation }: { navigation: any }) => {
+export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState("");
-
-  const handleNavigation = (screen: string) => {
-    navigation.navigate(screen);
-  };
 
   return (
     <View style={styles.container}>
@@ -84,10 +56,7 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
         <SafeAreaView edges={["bottom"]} style={styles.contentSection}>
           {/* Search Bar */}
           <View style={styles.searchContainer}>
-            <Image
-              source={require("@/assets/images/search1.png")}
-              style={styles.searchIconImage}
-            />
+            <Text style={styles.searchIcon}>🔍</Text>
             <TextInput
               style={styles.searchInput}
               placeholder="Search"
@@ -98,47 +67,23 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
           </View>
 
           {/* Navigation Cards */}
-          <TouchableOpacity
-            style={styles.navCard}
-            onPress={() => handleNavigation("LiveAlert")}
-          >
-            <Image
-              source={require("@/assets/images/alert.png")}
-              style={styles.navIconImage}
-            />
+          <TouchableOpacity style={styles.navCard}>
+            <Text style={styles.navIcon}>⚠️</Text>
             <Text style={styles.navText}>Live Alert</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.navCard}
-            onPress={() => handleNavigation("History")}
-          >
-            <Image
-              source={require("@/assets/images/history.png")}
-              style={styles.navIconImage}
-            />
+          <TouchableOpacity style={styles.navCard}>
+            <Text style={styles.navIcon}>🕐</Text>
             <Text style={styles.navText}>History</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.navCard}
-            onPress={() => handleNavigation("LiveCameraFeed")}
-          >
-            <Image
-              source={require("@/assets/images/camera.png")}
-              style={styles.navIconImage}
-            />
+          <TouchableOpacity style={styles.navCard}>
+            <Text style={styles.navIcon}>📹</Text>
             <Text style={styles.navText}>Live camera feed</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.navCard}
-            onPress={() => handleNavigation("UserUpdates")}
-          >
-            <Image
-              source={require("@/assets/images/mobile.png")}
-              style={styles.navIconImage}
-            />
+          <TouchableOpacity style={styles.navCard}>
+            <Text style={styles.navIcon}>📱</Text>
             <Text style={styles.navText}>User updates</Text>
           </TouchableOpacity>
         </SafeAreaView>
@@ -148,127 +93,98 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navButton}>
           <View style={styles.navIconCircle}>
-            <Image
-              source={require("@/assets/images/info.png")}
-              style={styles.bottomNavIconImage}
-            />
+            <Text style={styles.bottomNavIcon}>ℹ️</Text>
           </View>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.navButton}>
           <View style={styles.navIconCircle}>
-            <Image
-              source={require("@/assets/images/home.png")}
-              style={styles.bottomNavIconImage}
-            />
+            <Text style={styles.bottomNavIcon}>🏠</Text>
           </View>
           <View style={styles.activeIndicator} />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.navButton}>
           <View style={styles.navIconCircle}>
-            <Image
-              source={require("@/assets/images/profile.png")}
-              style={styles.bottomNavIconImage}
-            />
+            <Text style={styles.bottomNavIcon}>👤</Text>
           </View>
         </TouchableOpacity>
       </View>
     </View>
-  );
-};
-
-const Stack = createNativeStackNavigator();
-
-export default function App() {
-  return (
-    <Stack.Navigator
-      screenOptions={{ headerShown: false }}
-      initialRouteName="Home"
-    >
-      <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="LiveAlert" component={LiveAlert} />
-      <Stack.Screen name="History" component={History} />
-      <Stack.Screen name="LiveCameraFeed" component={LiveCameraFeed} />
-      <Stack.Screen name="UserUpdates" component={UserUpdates} />
-    </Stack.Navigator>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#c8dbb3",
+    backgroundColor: "#C8DBB3",
   },
   scrollView: {
     flex: 1,
   },
   heroSection: {
-    height: 250,
+    height: 320,
     width: "100%",
   },
   heroOverlay: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.3)",
     justifyContent: "center",
-    paddingLeft: 20,
+    paddingLeft: 30,
   },
   titleContainer: {
-    marginTop: -10,
+    marginTop: -20,
   },
   titleLine: {
     flexDirection: "row",
     marginBottom: -10,
   },
   titleYellow: {
-    fontSize: 48,
+    fontSize: 52,
     fontWeight: "900",
-    color: "#ffeb3b",
+    color: "#F4E869",
     letterSpacing: -2,
   },
   titleWhite: {
-    fontSize: 48,
+    fontSize: 52,
     fontWeight: "900",
-    color: "#ffffff",
+    color: "#FFFFFF",
     letterSpacing: -2,
   },
   contentSection: {
     flex: 1,
-    backgroundColor: "#c8dbb3",
-    paddingHorizontal: 30,
+    backgroundColor: "#C8DBB3",
+    paddingHorizontal: 24,
     paddingTop: 30,
     paddingBottom: 100,
   },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#e8e8e8",
+    backgroundColor: "#FFFFFF",
     borderRadius: 30,
     paddingHorizontal: 20,
-    paddingVertical: 14,
-    marginBottom: 40,
+    paddingVertical: 16,
+    marginBottom: 30,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
   },
-  searchIconImage: {
-    width: 24,
-    height: 24,
+  searchIcon: {
+    fontSize: 20,
     marginRight: 10,
-    resizeMode: "contain",
-    tintColor: "#999",
   },
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: "#2d2d2d",
+    color: "#2D2D2D",
   },
   navCard: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#e8e8e8",
+    backgroundColor: "#E8E8E8",
     borderRadius: 20,
     paddingVertical: 24,
     paddingHorizontal: 24,
@@ -283,14 +199,9 @@ const styles = StyleSheet.create({
     fontSize: 28,
     marginRight: 20,
   },
-  navIconImage: {
-    width: 32,
-    height: 32,
-    marginRight: 20,
-  },
   navText: {
     fontSize: 18,
-    color: "#5a5a5a",
+    color: "#5A5A5A",
     fontWeight: "500",
   },
   bottomNav: {
@@ -301,9 +212,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    backgroundColor: "#c8dbb3",
+    backgroundColor: "#C8DBB3",
     paddingVertical: 15,
-    paddingBottom: 25,
+    paddingBottom: 30,
     borderTopWidth: 1,
     borderTopColor: "rgba(0, 0, 0, 0.05)",
   },
@@ -315,30 +226,19 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "rgba(255, 255, 255, 0.3)",
+    backgroundColor: "rgba(255, 255, 255, 0.4)",
     justifyContent: "center",
     alignItems: "center",
   },
   bottomNavIcon: {
     fontSize: 24,
   },
-  bottomNavIconImage: {
-    width: 28,
-    height: 28,
-    resizeMode: "contain",
-  },
   activeIndicator: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#ff4444",
+    backgroundColor: "#FF4444",
     position: "absolute",
     bottom: -12,
-  },
-  screen: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#c8dbb3",
   },
 });
