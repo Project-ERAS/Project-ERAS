@@ -210,6 +210,12 @@ const styles = StyleSheet.create({
     fontSize: 28,
     marginRight: 20,
   },
+  navIconImage: {
+    width: 28,
+    height: 28,
+    marginRight: 20,
+    resizeMode: "contain",
+  },
   navText: {
     fontSize: 18,
     color: "#5a5a5a",
