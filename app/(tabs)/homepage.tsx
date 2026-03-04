@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { router } from "expo-router";
 import {
   ImageBackground,
   ScrollView,
@@ -104,7 +105,10 @@ export default function HomeScreen() {
           <View style={styles.activeIndicator} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.navButton}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => router.push("/(tabs)/User-Profile")}
+        >
           <View style={styles.navIconCircle}>
             <Text style={styles.bottomNavIcon}>👤</Text>
           </View>
