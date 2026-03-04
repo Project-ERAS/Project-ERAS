@@ -1,5 +1,6 @@
 import LiveCameraFeedScreen from "@/app/Live-Camera-Feed";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
   ImageBackground,
@@ -24,15 +25,16 @@ const History = () => (
     <Text>History Screen</Text>
   </View>
 );
-const UserUpdates = () => (
+const LiveCameraFeed = () => (
   <View style={styles.screen}>
-    <Text>User Updates Screen</Text>
+    <Text>Live Camera Feed</Text>
   </View>
 );
 
 // --- Main Home Screen Component ---
 export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
 
   return (
     <View style={styles.container}>
@@ -101,8 +103,14 @@ export default function HomeScreen() {
             <Text style={styles.navText}>Live camera feed</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.navCard}>
-            <Text style={styles.navIcon}>📱</Text>
+          <TouchableOpacity
+            style={styles.navCard}
+            onPress={() => router.push("/User-Updates")}
+          >
+            <Image
+              source={require("@/assets/images/mobile.png")}
+              style={styles.navIconImage}
+            />
             <Text style={styles.navText}>User updates</Text>
           </TouchableOpacity>
         </SafeAreaView>
@@ -147,8 +155,7 @@ export default function App() {
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="LiveAlert" component={LiveAlert} />
       <Stack.Screen name="History" component={History} />
-      <Stack.Screen name="LiveCameraFeed" component={LiveCameraFeedScreen} />
-      <Stack.Screen name="UserUpdates" component={UserUpdates} />
+      <Stack.Screen name="LiveCameraFeed" component={LiveCameraFeed} />
     </Stack.Navigator>
   );
 }
