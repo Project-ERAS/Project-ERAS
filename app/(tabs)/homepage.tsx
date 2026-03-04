@@ -1,4 +1,5 @@
-import { router } from "expo-router";
+import LiveCameraFeedScreen from "@/app/Live-Camera-Feed";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useState } from "react";
 import {
   ImageBackground,
@@ -11,6 +12,23 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+// --- Dummy screens for navigation testing ---
+const LiveAlert = () => (
+  <View style={styles.screen}>
+    <Text>Live Alert Screen</Text>
+  </View>
+);
+const History = () => (
+  <View style={styles.screen}>
+    <Text>History Screen</Text>
+  </View>
+);
+const UserUpdates = () => (
+  <View style={styles.screen}>
+    <Text>User Updates Screen</Text>
+  </View>
+);
 
 // --- Main Home Screen Component ---
 export default function HomeScreen() {
@@ -115,6 +133,23 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
     </View>
+  );
+};
+
+const Stack = createNativeStackNavigator();
+
+export default function App() {
+  return (
+    <Stack.Navigator
+      screenOptions={{ headerShown: false }}
+      initialRouteName="Home"
+    >
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="LiveAlert" component={LiveAlert} />
+      <Stack.Screen name="History" component={History} />
+      <Stack.Screen name="LiveCameraFeed" component={LiveCameraFeedScreen} />
+      <Stack.Screen name="UserUpdates" component={UserUpdates} />
+    </Stack.Navigator>
   );
 }
 
