@@ -36,6 +36,10 @@ export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
 
+  const handleNavigation = (screen: string) => {
+    navigation.navigate(screen);
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
@@ -124,7 +128,10 @@ export default function HomeScreen() {
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.navButton}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => navigation.navigate("Home")}
+        >
           <View style={styles.navIconCircle}>
             <Text style={styles.bottomNavIcon}>🏠</Text>
           </View>
@@ -133,7 +140,7 @@ export default function HomeScreen() {
 
         <TouchableOpacity
           style={styles.navButton}
-          onPress={() => router.push("/(tabs)/User-Profile")}
+          onPress={() => router.push("/User-Profile")}
         >
           <View style={styles.navIconCircle}>
             <Text style={styles.bottomNavIcon}>👤</Text>
