@@ -73,7 +73,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.navCard}>
-            <Text style={styles.navIcon}>🕐</Text>
+            <Text style={styles.navIcon}>🕒</Text>
             <Text style={styles.navText}>History</Text>
           </TouchableOpacity>
 
@@ -117,55 +117,55 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#C8DBB3",
+    backgroundColor: "#c8dbb3",
   },
   scrollView: {
     flex: 1,
   },
   heroSection: {
-    height: 320,
+    height: 300,
     width: "100%",
   },
   heroOverlay: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.3)",
     justifyContent: "center",
-    paddingLeft: 30,
+    paddingLeft: 45,
   },
   titleContainer: {
-    marginTop: -20,
+    marginTop: -10,
   },
   titleLine: {
     flexDirection: "row",
     marginBottom: -10,
   },
   titleYellow: {
-    fontSize: 52,
+    fontSize: 48,
     fontWeight: "900",
-    color: "#F4E869",
+    color: "#ffeb3b",
     letterSpacing: -2,
   },
   titleWhite: {
-    fontSize: 52,
+    fontSize: 48,
     fontWeight: "900",
-    color: "#FFFFFF",
+    color: "#ffffff",
     letterSpacing: -2,
   },
   contentSection: {
     flex: 1,
-    backgroundColor: "#C8DBB3",
-    paddingHorizontal: 24,
+    backgroundColor: "#c8dbb3",
+    paddingHorizontal: 30,
     paddingTop: 30,
     paddingBottom: 100,
   },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#e8e8e8",
     borderRadius: 30,
     paddingHorizontal: 20,
-    paddingVertical: 16,
-    marginBottom: 30,
+    paddingVertical: 14,
+    marginBottom: 40,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -179,12 +179,12 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: "#2D2D2D",
+    color: "#2d2d2d",
   },
   navCard: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#E8E8E8",
+    backgroundColor: "#e8e8e8",
     borderRadius: 20,
     paddingVertical: 24,
     paddingHorizontal: 24,
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   },
   navText: {
     fontSize: 18,
-    color: "#5A5A5A",
+    color: "#5a5a5a",
     fontWeight: "500",
   },
   bottomNav: {
@@ -212,9 +212,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    backgroundColor: "#C8DBB3",
+    backgroundColor: "#c8dbb3",
     paddingVertical: 15,
-    paddingBottom: 30,
+    paddingBottom: 25,
     borderTopWidth: 1,
     borderTopColor: "rgba(0, 0, 0, 0.05)",
   },
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "rgba(255, 255, 255, 0.4)",
+    backgroundColor: "rgba(255, 255, 255, 0.3)",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#FF4444",
+    backgroundColor: "#ff4444",
     position: "absolute",
     bottom: -12,
   },
