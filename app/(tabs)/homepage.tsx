@@ -1,7 +1,8 @@
+import LiveCameraFeedScreen from "@/app/Live-Camera-Feed";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-  Image,
   ImageBackground,
   ScrollView,
   StatusBar,
@@ -29,19 +30,11 @@ const LiveCameraFeed = () => (
     <Text>Live Camera Feed</Text>
   </View>
 );
-const UserUpdates = () => (
-  <View style={styles.screen}>
-    <Text>User Updates Screen</Text>
-  </View>
-);
 
 // --- Main Home Screen Component ---
-const HomeScreen = ({ navigation }: { navigation: any }) => {
+export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState("");
-
-  const handleNavigation = (screen: string) => {
-    navigation.navigate(screen);
-  };
+  const router = useRouter();
 
   return (
     <View style={styles.container}>
@@ -84,10 +77,7 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
         <SafeAreaView edges={["bottom"]} style={styles.contentSection}>
           {/* Search Bar */}
           <View style={styles.searchContainer}>
-            <Image
-              source={require("@/assets/images/search1.png")}
-              style={styles.searchIconImage}
-            />
+            <Text style={styles.searchIcon}>🔍</Text>
             <TextInput
               style={styles.searchInput}
               placeholder="Search"
@@ -98,42 +88,24 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
           </View>
 
           {/* Navigation Cards */}
-          <TouchableOpacity
-            style={styles.navCard}
-            onPress={() => handleNavigation("LiveAlert")}
-          >
-            <Image
-              source={require("@/assets/images/alert.png")}
-              style={styles.navIconImage}
-            />
+          <TouchableOpacity style={styles.navCard}>
+            <Text style={styles.navIcon}>⚠️</Text>
             <Text style={styles.navText}>Live Alert</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.navCard}
-            onPress={() => handleNavigation("History")}
-          >
-            <Image
-              source={require("@/assets/images/history.png")}
-              style={styles.navIconImage}
-            />
+          <TouchableOpacity style={styles.navCard}>
+            <Text style={styles.navIcon}>🕒</Text>
             <Text style={styles.navText}>History</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.navCard}
-            onPress={() => handleNavigation("LiveCameraFeed")}
-          >
-            <Image
-              source={require("@/assets/images/camera.png")}
-              style={styles.navIconImage}
-            />
+          <TouchableOpacity style={styles.navCard}>
+            <Text style={styles.navIcon}>📹</Text>
             <Text style={styles.navText}>Live camera feed</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.navCard}
-            onPress={() => handleNavigation("UserUpdates")}
+            onPress={() => router.push("/User-Updates")}
           >
             <Image
               source={require("@/assets/images/mobile.png")}
@@ -148,29 +120,23 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navButton}>
           <View style={styles.navIconCircle}>
-            <Image
-              source={require("@/assets/images/info.png")}
-              style={styles.bottomNavIconImage}
-            />
+            <Text style={styles.bottomNavIcon}>ℹ️</Text>
           </View>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.navButton}>
           <View style={styles.navIconCircle}>
-            <Image
-              source={require("@/assets/images/home.png")}
-              style={styles.bottomNavIconImage}
-            />
+            <Text style={styles.bottomNavIcon}>🏠</Text>
           </View>
           <View style={styles.activeIndicator} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.navButton}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => router.push("/(tabs)/User-Profile")}
+        >
           <View style={styles.navIconCircle}>
-            <Image
-              source={require("@/assets/images/profile.png")}
-              style={styles.bottomNavIconImage}
-            />
+            <Text style={styles.bottomNavIcon}>👤</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -190,7 +156,6 @@ export default function App() {
       <Stack.Screen name="LiveAlert" component={LiveAlert} />
       <Stack.Screen name="History" component={History} />
       <Stack.Screen name="LiveCameraFeed" component={LiveCameraFeed} />
-      <Stack.Screen name="UserUpdates" component={UserUpdates} />
     </Stack.Navigator>
   );
 }
@@ -204,14 +169,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   heroSection: {
-    height: 250,
+    height: 300,
     width: "100%",
   },
   heroOverlay: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.3)",
     justifyContent: "center",
-    paddingLeft: 20,
+    paddingLeft: 45,
   },
   titleContainer: {
     marginTop: -10,
@@ -253,12 +218,9 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
-  searchIconImage: {
-    width: 24,
-    height: 24,
+  searchIcon: {
+    fontSize: 20,
     marginRight: 10,
-    resizeMode: "contain",
-    tintColor: "#999",
   },
   searchInput: {
     flex: 1,
@@ -281,11 +243,6 @@ const styles = StyleSheet.create({
   },
   navIcon: {
     fontSize: 28,
-    marginRight: 20,
-  },
-  navIconImage: {
-    width: 32,
-    height: 32,
     marginRight: 20,
   },
   navText: {
@@ -322,11 +279,6 @@ const styles = StyleSheet.create({
   bottomNavIcon: {
     fontSize: 24,
   },
-  bottomNavIconImage: {
-    width: 28,
-    height: 28,
-    resizeMode: "contain",
-  },
   activeIndicator: {
     width: 8,
     height: 8,
@@ -334,11 +286,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#ff4444",
     position: "absolute",
     bottom: -12,
-  },
-  screen: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#c8dbb3",
   },
 });
