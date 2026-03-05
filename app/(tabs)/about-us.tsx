@@ -20,13 +20,11 @@ export default function AboutUsScreen() {
           </TouchableOpacity>
           
           <View style={styles.logoContainer}>
-            <View style={styles.elephantIcon}>
-              <Image
-                source={require('@/assets/icons/icon.png')}
-                style={styles.elephantImage}
-                resizeMode="contain"
-              />
-            </View>
+            <Image
+              source={require('@/assets/icons/icon.png')}
+              style={styles.elephantImage}
+              resizeMode="contain"
+            />
             <ThemedText style={styles.title}>About E.R.A.S</ThemedText>
           </View>
         </View>
@@ -109,18 +107,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10,
   },
-  elephantIcon: {
-    width: 120,
-    height: 120,
-    backgroundColor: '#fff',
-    borderRadius: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
-  },
   elephantImage: {
-    width: 80,
-    height: 80,
+    width: 140,
+    height: 140,
+    marginBottom: 20,
   },
   title: {
     fontSize: 28,
