@@ -1,14 +1,14 @@
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import {
-    Image,
-    KeyboardAvoidingView,
-    Platform,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    TextInput,
-    View,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -64,7 +64,7 @@ export default function SigninScreen() {
   }
 
   return (
-    <View style={[styles.flex, { backgroundColor: backdropColor }]}>
+    <View style={[styles.flex, { backgroundColor: '#FFFFFF' }]}>
       <SafeAreaView style={styles.flex}>
         <KeyboardAvoidingView
           style={styles.flex}
@@ -92,7 +92,7 @@ export default function SigninScreen() {
                   style={({ pressed }) => [
                     styles.socialButton,
                     {
-                      backgroundColor: socialButtonBackground,
+                      backgroundColor: '#F5F5F5',
                       borderColor,
                       shadowColor,
                       opacity: pressed ? 0.9 : 1,
@@ -113,7 +113,7 @@ export default function SigninScreen() {
                   style={({ pressed }) => [
                     styles.socialButton,
                     {
-                      backgroundColor: socialButtonBackground,
+                      backgroundColor: '#F5F5F5',
                       borderColor,
                       shadowColor,
                       opacity: pressed ? 0.9 : 1,
@@ -150,7 +150,7 @@ export default function SigninScreen() {
                     styles.input,
                     webOutlineNone,
                     {
-                      backgroundColor: inputBackground,
+                      backgroundColor: '#F5F5F5',
                       color: inputText,
                       borderColor: inputBorderFor('identifier'),
                     },
@@ -179,7 +179,7 @@ export default function SigninScreen() {
                     styles.input,
                     webOutlineNone,
                     {
-                      backgroundColor: inputBackground,
+                      backgroundColor: '#F5F5F5',
                       color: inputText,
                       borderColor: inputBorderFor('password'),
                     },
@@ -196,7 +196,7 @@ export default function SigninScreen() {
                 style={({ pressed }) => [
                   styles.primaryButton,
                   {
-                    backgroundColor: primaryButton,
+                    backgroundColor: '#F5F5F5',
                     shadowColor,
                     opacity: !canSubmit ? 0.55 : pressed ? 0.9 : 1,
                   },
