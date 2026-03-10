@@ -92,7 +92,7 @@ export default function SigninScreen() {
                   style={({ pressed }) => [
                     styles.socialButton,
                     {
-                      backgroundColor: '#F5F5F5',
+                      backgroundColor: '#D5E3D5',
                       borderColor,
                       shadowColor,
                       opacity: pressed ? 0.9 : 1,
@@ -113,7 +113,7 @@ export default function SigninScreen() {
                   style={({ pressed }) => [
                     styles.socialButton,
                     {
-                      backgroundColor: '#F5F5F5',
+                      backgroundColor: '#D5E3D5',
                       borderColor,
                       shadowColor,
                       opacity: pressed ? 0.9 : 1,
