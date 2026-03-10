@@ -2,7 +2,6 @@ import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import {
     Image,
-    ImageBackground,
     KeyboardAvoidingView,
     Platform,
     Pressable,
@@ -65,14 +64,7 @@ export default function SigninScreen() {
   }
 
   return (
-    <ImageBackground
-      source={require('@/assets/icons/background.jpg')}
-      resizeMode="cover"
-      blurRadius={Platform.OS === 'web' ? 0 : 0}
-      imageStyle={styles.backgroundImage}
-      style={styles.flex}
-    >
-      <View pointerEvents="none" style={[StyleSheet.absoluteFillObject, { backgroundColor: backdropColor }]} />
+    <View style={[styles.flex, { backgroundColor: backdropColor }]}>
       <SafeAreaView style={styles.flex}>
         <KeyboardAvoidingView
           style={styles.flex}
@@ -223,7 +215,7 @@ export default function SigninScreen() {
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
-    </ImageBackground>
+    </View>
   );
 }
 
