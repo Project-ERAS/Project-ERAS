@@ -2,7 +2,6 @@ import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import {
   Image,
-  ImageBackground,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -72,14 +71,7 @@ export default function SignupScreen() {
   }
 
   return (
-    <ImageBackground
-      source={require('@/assets/icons/background.jpg')}
-      resizeMode="cover"
-      blurRadius={Platform.OS === 'web' ? 0 : 0}
-      imageStyle={styles.backgroundImage}
-      style={styles.flex}
-    >
-      <View pointerEvents="none" style={[StyleSheet.absoluteFillObject, { backgroundColor: backdropColor }]} />
+    <View style={[styles.flex, { backgroundColor: '#FFFFFF' }]}>
       <SafeAreaView style={styles.flex}>
         <KeyboardAvoidingView
           style={styles.flex}
@@ -109,10 +101,12 @@ export default function SignupScreen() {
                 style={({ pressed }) => [
                   styles.socialButton,
                   {
-                    backgroundColor: socialButtonBackground,
-                    borderColor,
-                    shadowColor,
+                    backgroundColor: '#D5E3D5',
+                    borderColor: '#A8BDA8',
+                    borderBottomWidth: 3,
+                    shadowColor: '#000000',
                     opacity: pressed ? 0.9 : 1,
+                    transform: pressed ? [{ translateY: 2 }] : [{ translateY: 0 }],
                   },
                 ]}
               >
@@ -130,10 +124,12 @@ export default function SignupScreen() {
                 style={({ pressed }) => [
                   styles.socialButton,
                   {
-                    backgroundColor: socialButtonBackground,
-                    borderColor,
-                    shadowColor,
+                    backgroundColor: '#D5E3D5',
+                    borderColor: '#A8BDA8',
+                    borderBottomWidth: 3,
+                    shadowColor: '#000000',
                     opacity: pressed ? 0.9 : 1,
+                    transform: pressed ? [{ translateY: 2 }] : [{ translateY: 0 }],
                   },
                 ]}
               >
@@ -168,7 +164,7 @@ export default function SignupScreen() {
                   styles.input,
                   webOutlineNone,
                   {
-                    backgroundColor: inputBackground,
+                    backgroundColor: '#F5F5F5',
                     color: inputText,
                     borderColor: inputBorderFor('email'),
                   },
@@ -192,7 +188,7 @@ export default function SignupScreen() {
                   styles.input,
                   webOutlineNone,
                   {
-                    backgroundColor: inputBackground,
+                    backgroundColor: '#F5F5F5',
                     color: inputText,
                     borderColor: inputBorderFor('password'),
                   },
@@ -215,7 +211,7 @@ export default function SignupScreen() {
                   styles.input,
                   webOutlineNone,
                   {
-                    backgroundColor: inputBackground,
+                    backgroundColor: '#F5F5F5',
                     color: inputText,
                     borderColor: inputBorderFor('username'),
                   },
@@ -239,9 +235,12 @@ export default function SignupScreen() {
               style={({ pressed }) => [
                 styles.primaryButton,
                 {
-                  backgroundColor: primaryButton,
-                  shadowColor,
+                  backgroundColor: '#AFCDA4',
+                  borderColor: '#AFCDA4',
+                  borderBottomWidth: 3,
+                  shadowColor: '#000000',
                   opacity: !canSubmit ? 0.55 : pressed ? 0.9 : 1,
+                  transform: pressed ? [{ translateY: 2 }] : [{ translateY: 0 }],
                 },
               ]}
             >
@@ -260,7 +259,7 @@ export default function SignupScreen() {
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
-    </ImageBackground>
+    </View>
   );
 }
 
@@ -309,10 +308,10 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 14,
     borderWidth: 1,
-    shadowOpacity: 0.12,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 2,
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 8,
   },
   socialIcon: {
     width: 20,
