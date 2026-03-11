@@ -235,8 +235,8 @@ export default function SignupScreen() {
               style={({ pressed }) => [
                 styles.primaryButton,
                 {
-                  backgroundColor: '#AFCDA4',
-                  borderColor: '#AFCDA4',
+                  backgroundColor: '#769b63',
+                  borderColor: '#7A9370',
                   borderBottomWidth: 3,
                   shadowColor: '#000000',
                   opacity: !canSubmit ? 0.55 : pressed ? 0.9 : 1,
