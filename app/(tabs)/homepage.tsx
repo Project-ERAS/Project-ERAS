@@ -34,74 +34,88 @@ export default function HomeScreen() {
           resizeMode="cover"
         >
           <View style={styles.heroOverlay}>
-            <View style={styles.titleContainer}>
-              <Text style={styles.titleLine}>
-                <Text style={styles.titleYellow}>E</Text>
-                <Text style={styles.titleWhite}>lephant</Text>
-              </Text>
-              <Text style={styles.titleLine}>
-                <Text style={styles.titleYellow}>R</Text>
-                <Text style={styles.titleWhite}>ailway</Text>
-              </Text>
-              <Text style={styles.titleLine}>
-                <Text style={styles.titleYellow}>A</Text>
-                <Text style={styles.titleWhite}>lert</Text>
-              </Text>
-              <Text style={styles.titleLine}>
-                <Text style={styles.titleYellow}>S</Text>
-                <Text style={styles.titleWhite}>ystem</Text>
-              </Text>
-            </View>
+            <SafeAreaView edges={["top"]}>
+              <View style={styles.headerContainer}>
+                <View style={styles.logoContainer}>
+                  <Text style={styles.logoText}>ERAS</Text>
+                </View>
+              </View>
+              <View style={styles.titleContainer}>
+                <Text style={styles.welcomeText}>Welcome to</Text>
+                <Text style={styles.mainTitle}>Elephant Railway</Text>
+                <Text style={styles.mainTitle}>Alert System</Text>
+                <Text style={styles.subtitleText}>
+                  Real-time monitoring for safer railways
+                </Text>
+              </View>
+            </SafeAreaView>
           </View>
         </ImageBackground>
 
         {/* Content Section */}
-        <SafeAreaView edges={["bottom"]} style={styles.contentSection}>
+        <View style={styles.contentSection}>
           {/* Search Bar */}
           <View style={styles.searchContainer}>
             <Text style={styles.searchIcon}>🔍</Text>
             <TextInput
               style={styles.searchInput}
-              placeholder="Search"
-              placeholderTextColor="#999"
+              placeholder="Search features..."
+              placeholderTextColor="#8A9A8A"
               value={searchQuery}
               onChangeText={setSearchQuery}
             />
           </View>
 
-          {/* Navigation Cards */}
-          <TouchableOpacity
-            style={styles.navCard}
-            onPress={() => router.push("/live-alert")}
-          >
-            <Text style={styles.navIcon}>⚠️</Text>
-            <Text style={styles.navText}>Live Alert</Text>
-          </TouchableOpacity>
+          {/* Quick Actions Title */}
+          <Text style={styles.sectionTitle}>Quick Actions</Text>
 
-          <TouchableOpacity style={styles.navCard}>
-            <Text style={styles.navIcon}>🕒</Text>
-            <Text style={styles.navText}>History</Text>
-          </TouchableOpacity>
+          {/* Navigation Cards Grid */}
+          <View style={styles.cardsGrid}>
+            <TouchableOpacity
+              style={styles.navCard}
+              onPress={() => router.push("/live-alert")}
+            >
+              <View style={[styles.iconContainer, { backgroundColor: "#FFE5E5" }]}>
+                <Text style={styles.navIcon}>⚠️</Text>
+              </View>
+              <Text style={styles.navText}>Live Alert</Text>
+              <Text style={styles.navSubtext}>Active monitoring</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.navCard}
-            onPress={() => router.push("/Live-Camera-Feed")}
-          >
-            <Text style={styles.navIcon}>📹</Text>
-            <Text style={styles.navText}>Live camera feed</Text>
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.navCard}>
+              <View style={[styles.iconContainer, { backgroundColor: "#E5F0FF" }]}>
+                <Text style={styles.navIcon}>🕒</Text>
+              </View>
+              <Text style={styles.navText}>History</Text>
+              <Text style={styles.navSubtext}>Past incidents</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.navCard}
-            onPress={() => router.push("/User-Updates")}
-          >
-            <Image
-              source={require("@/assets/images/mobile.png")}
-              style={styles.navIconImage}
-            />
-            <Text style={styles.navText}>User updates</Text>
-          </TouchableOpacity>
-        </SafeAreaView>
+            <TouchableOpacity
+              style={styles.navCard}
+              onPress={() => router.push("/Live-Camera-Feed")}
+            >
+              <View style={[styles.iconContainer, { backgroundColor: "#F0E5FF" }]}>
+                <Text style={styles.navIcon}>📹</Text>
+              </View>
+              <Text style={styles.navText}>Live Feed</Text>
+              <Text style={styles.navSubtext}>Camera streams</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.navCard}
+              onPress={() => router.push("/User-Updates")}
+            >
+              <View style={[styles.iconContainer, { backgroundColor: "#FFF5E5" }]}>
+                <Image
+                  source={require("@/assets/images/mobile.png")}
+                  style={styles.navIconImage}
+                />
+              </View>
+              <Text style={styles.navText}>Updates</Text>
+              <Text style={styles.navSubtext}>Latest news</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </ScrollView>
 
       {/* Bottom Navigation */}
@@ -110,16 +124,17 @@ export default function HomeScreen() {
           <View style={styles.navIconCircle}>
             <Text style={styles.bottomNavIcon}>ℹ️</Text>
           </View>
+          <Text style={styles.navLabel}>About</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.navButton}
           onPress={() => router.push("/(tabs)/homepage")}
         >
-          <View style={styles.navIconCircle}>
+          <View style={[styles.navIconCircle, styles.activeNavIcon]}>
             <Text style={styles.bottomNavIcon}>🏠</Text>
           </View>
-          <View style={styles.activeIndicator} />
+          <Text style={[styles.navLabel, styles.activeNavLabel]}>Home</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -129,6 +144,7 @@ export default function HomeScreen() {
           <View style={styles.navIconCircle}>
             <Text style={styles.bottomNavIcon}>👤</Text>
           </View>
+          <Text style={styles.navLabel}>Profile</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -138,98 +154,157 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#c8dbb3",
+    backgroundColor: "#F8FAF9",
   },
   scrollView: {
     flex: 1,
   },
   heroSection: {
-    height: 300,
+    height: 350,
     width: "100%",
   },
   heroOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.3)",
-    justifyContent: "center",
-    paddingLeft: 45,
+    backgroundColor: "rgba(0, 0, 0, 0.45)",
+    justifyContent: "space-between",
+  },
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 24,
+    paddingTop: 16,
+  },
+  logoContainer: {
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.3)",
+  },
+  logoText: {
+    fontSize: 18,
+    fontWeight: "900",
+    color: "#FFFFFF",
+    letterSpacing: 2,
   },
   titleContainer: {
-    marginTop: -10,
+    paddingHorizontal: 24,
+    paddingBottom: 40,
   },
-  titleLine: {
-    flexDirection: "row",
-    marginBottom: -10,
+  welcomeText: {
+    fontSize: 16,
+    color: "rgba(255, 255, 255, 0.9)",
+    fontWeight: "500",
+    marginBottom: 8,
+    letterSpacing: 0.5,
   },
-  titleYellow: {
-    fontSize: 48,
-    fontWeight: "900",
-    color: "#ffeb3b",
-    letterSpacing: -2,
+  mainTitle: {
+    fontSize: 36,
+    fontWeight: "800",
+    color: "#FFFFFF",
+    lineHeight: 42,
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
   },
-  titleWhite: {
-    fontSize: 48,
-    fontWeight: "900",
-    color: "#ffffff",
-    letterSpacing: -2,
+  subtitleText: {
+    fontSize: 14,
+    color: "rgba(255, 255, 255, 0.8)",
+    marginTop: 12,
+    fontWeight: "400",
   },
   contentSection: {
     flex: 1,
-    backgroundColor: "#c8dbb3",
-    paddingHorizontal: 30,
-    paddingTop: 30,
+    backgroundColor: "#F8FAF9",
+    paddingHorizontal: 20,
+    paddingTop: 24,
     paddingBottom: 100,
   },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#e8e8e8",
-    borderRadius: 30,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
     paddingHorizontal: 20,
-    paddingVertical: 14,
-    marginBottom: 40,
+    paddingVertical: 16,
+    marginBottom: 32,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: "#E8EEE8",
   },
   searchIcon: {
     fontSize: 20,
-    marginRight: 10,
+    marginRight: 12,
   },
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: "#2d2d2d",
+    color: "#2D3E2D",
+    fontWeight: "500",
+  },
+  sectionTitle: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#2D3E2D",
+    marginBottom: 20,
+    paddingHorizontal: 4,
+  },
+  cardsGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    gap: 16,
   },
   navCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#e8e8e8",
+    width: "47%",
+    backgroundColor: "#FFFFFF",
     borderRadius: 20,
-    paddingVertical: 24,
-    paddingHorizontal: 24,
-    marginBottom: 20,
+    padding: 20,
+    alignItems: "center",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.15,
-    shadowRadius: 5,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.06,
+    shadowRadius: 16,
+    elevation: 5,
+    borderWidth: 1,
+    borderColor: "#F0F4F0",
+    minHeight: 160,
+    justifyContent: "center",
+  },
+  iconContainer: {
+    width: 64,
+    height: 64,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 16,
   },
   navIcon: {
-    fontSize: 28,
-    marginRight: 20,
+    fontSize: 32,
   },
   navIconImage: {
-    width: 28,
-    height: 28,
-    marginRight: 20,
+    width: 32,
+    height: 32,
     resizeMode: "contain",
   },
   navText: {
-    fontSize: 18,
-    color: "#5a5a5a",
+    fontSize: 16,
+    color: "#2D3E2D",
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 4,
+  },
+  navSubtext: {
+    fontSize: 12,
+    color: "#7A8A7A",
     fontWeight: "500",
+    textAlign: "center",
   },
   bottomNav: {
     position: "absolute",
@@ -239,33 +314,42 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    backgroundColor: "#c8dbb3",
-    paddingVertical: 15,
-    paddingBottom: 25,
-    borderTopWidth: 1,
-    borderTopColor: "rgba(0, 0, 0, 0.05)",
+    backgroundColor: "#FFFFFF",
+    paddingVertical: 12,
+    paddingBottom: 28,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 8,
   },
   navButton: {
     alignItems: "center",
-    position: "relative",
+    paddingHorizontal: 20,
   },
   navIconCircle: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: "rgba(255, 255, 255, 0.3)",
+    width: 56,
+    height: 56,
+    borderRadius: 16,
+    backgroundColor: "#F0F4F0",
     justifyContent: "center",
     alignItems: "center",
+    marginBottom: 6,
+  },
+  activeNavIcon: {
+    backgroundColor: "#C8DBB3",
   },
   bottomNavIcon: {
     fontSize: 24,
   },
-  activeIndicator: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: "#ff4444",
-    position: "absolute",
-    bottom: -12,
+  navLabel: {
+    fontSize: 12,
+    color: "#7A8A7A",
+    fontWeight: "600",
+  },
+  activeNavLabel: {
+    color: "#4A6A4A",
   },
 });
