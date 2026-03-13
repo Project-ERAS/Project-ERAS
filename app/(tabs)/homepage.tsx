@@ -47,7 +47,7 @@ export default function HomeScreen() {
                 </TouchableOpacity>
               </View>
               <View style={styles.titleContainer}>
-                <Text style={styles.welcomeText}>Welcome to</Text>
+                <Text style={styles.welcomeText}>Welcome to <b>E.R.A.S</b></Text>
                 <Text style={styles.mainTitle}>Elephant Railway</Text>
                 <Text style={styles.mainTitle}>Alert System</Text>
                 <Text style={styles.subtitleText}>
@@ -62,11 +62,16 @@ export default function HomeScreen() {
         <View style={styles.contentSection}>
           {/* Search Bar */}
           <View style={styles.searchContainer}>
-            <Text style={styles.searchIcon}>🔍</Text>
+            <View style={styles.searchIconWrapper}>
+              <Image
+                source={require("@/assets/icons/search.png")}
+                style={styles.searchIconImage}
+              />
+            </View>
             <TextInput
               style={styles.searchInput}
-              placeholder="Search features..."
-              placeholderTextColor="#8A9A8A"
+              placeholder="Search features"
+              placeholderTextColor="#1e1e1e"
               value={searchQuery}
               onChangeText={setSearchQuery}
             />
@@ -270,6 +275,20 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginRight: 12,
   },
+  searchIconWrapper: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "#FFFFFF",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
+  searchIconImage: {
+    width: 20,
+    height: 20,
+    resizeMode: "contain",
+  },
   searchInput: {
     flex: 1,
     fontSize: 16,
@@ -336,7 +355,7 @@ const styles = StyleSheet.create({
   },
   bottomNav: {
     position: "absolute",
-    bottom: 0,
+    bottom: -6,
     left: 0,
     right: 0,
     flexDirection: "row",
