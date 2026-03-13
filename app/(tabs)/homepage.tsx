@@ -128,7 +128,10 @@ export default function HomeScreen() {
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navButton}>
           <View style={styles.navIconCircle}>
-            <Text style={styles.bottomNavIcon}>ℹ️</Text>
+            <Image
+              source={require("@/assets/icons/about.png")}
+              style={styles.bottomNavIconImage}
+            />
           </View>
           <Text style={styles.navLabel}>About</Text>
         </TouchableOpacity>
@@ -138,7 +141,10 @@ export default function HomeScreen() {
           onPress={() => router.push("/(tabs)/homepage")}
         >
           <View style={[styles.navIconCircle, styles.activeNavIcon]}>
-            <Text style={styles.bottomNavIcon}>🏠</Text>
+            <Image
+              source={require("@/assets/icons/homeicon.png")}
+              style={styles.bottomNavIconImage}
+            />
           </View>
           <Text style={[styles.navLabel, styles.activeNavLabel]}>Home</Text>
         </TouchableOpacity>
@@ -148,7 +154,10 @@ export default function HomeScreen() {
           onPress={() => router.push("/User-Profile")}
         >
           <View style={styles.navIconCircle}>
-            <Text style={styles.bottomNavIcon}>👤</Text>
+            <Image
+              source={require("@/assets/icons/profile.png")}
+              style={styles.profileNavIconImage}
+            />
           </View>
           <Text style={styles.navLabel}>Profile</Text>
         </TouchableOpacity>
@@ -352,16 +361,26 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 16,
-    backgroundColor: "#F0F4F0",
+    backgroundColor: "#FFFFFF",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 6,
   },
   activeNavIcon: {
-    backgroundColor: "#C8DBB3",
+    backgroundColor: "#FFFFFF",
   },
   bottomNavIcon: {
     fontSize: 24,
+  },
+  bottomNavIconImage: {
+    width: 28,
+    height: 28,
+    resizeMode: "contain",
+  },
+  profileNavIconImage: {
+    width: 34,
+    height: 34,
+    resizeMode: "contain",
   },
   navLabel: {
     fontSize: 12,
