@@ -29,7 +29,7 @@ export default function HomeScreen() {
       >
         {/* Hero Section */}
         <ImageBackground
-          source={require("@/assets/images/MenuImage.png")}
+          source={require("@/assets/images/elephant-home.jpg")}
           style={styles.heroSection}
           resizeMode="cover"
         >
