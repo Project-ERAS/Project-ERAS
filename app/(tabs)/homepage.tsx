@@ -194,7 +194,10 @@ export default function HomeScreen() {
 
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navButton}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => router.push("/about-us")}
+        >
           <View style={styles.navIconCircle}>
             <Image
               source={require("@/assets/icons/about.png")}
@@ -206,7 +209,7 @@ export default function HomeScreen() {
 
         <TouchableOpacity
           style={styles.navButton}
-          onPress={() => router.push("/(tabs)/homepage")}
+          onPress={() => router.push("/homepage")}
         >
           <View style={[styles.navIconCircle, styles.activeNavIcon]}>
             <Image

@@ -49,7 +49,7 @@ export default function AboutUsScreen() {
         <View style={styles.bottomNav}>
           <TouchableOpacity 
             style={styles.navButton}
-            onPress={() => router.push('/(tabs)/about-us')}
+            onPress={() => router.push('/about-us')}
           >
             <Ionicons name="information-circle" size={28} color="#8FA888" />
             <View style={styles.activeIndicator} />
@@ -57,14 +57,14 @@ export default function AboutUsScreen() {
           
           <TouchableOpacity 
             style={styles.navButton}
-            onPress={() => router.push('/(tabs)/homepage')}
+            onPress={() => router.push('/homepage')}
           >
             <Ionicons name="home-outline" size={28} color="#8FA888" />
           </TouchableOpacity>
           
           <TouchableOpacity 
             style={styles.navButton}
-            onPress={() => router.push('/(tabs)/User-Profile')}
+            onPress={() => router.push('/User-Profile')}
           >
             <Ionicons name="person-outline" size={28} color="#8FA888" />
           </TouchableOpacity>
