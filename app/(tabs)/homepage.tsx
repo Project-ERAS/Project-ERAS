@@ -72,7 +72,7 @@ export default function HomeScreen() {
             </View>
             <TextInput
               style={styles.searchInput}
-              placeholder="Search features"
+              placeholder="Search features..."
               placeholderTextColor="#1e1e1e"
               value={searchQuery}
               onChangeText={setSearchQuery}
