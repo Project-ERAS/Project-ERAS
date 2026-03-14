@@ -39,7 +39,7 @@ export default function HomeScreen() {
                 <View style={styles.logoContainer}>
                   <Text style={styles.logoText}>ERAS</Text>
                 </View>
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.authButton}
                   onPress={() => router.push("/signin")}
                 >
@@ -47,7 +47,9 @@ export default function HomeScreen() {
                 </TouchableOpacity>
               </View>
               <View style={styles.titleContainer}>
-                <Text style={styles.welcomeText}>Welcome to <b>E.R.A.S</b></Text>
+                <Text style={styles.welcomeText}>
+                  Welcome to <Text style={{ fontWeight: "bold" }}>E.R.A.S</Text>
+                </Text>
                 <Text style={styles.mainTitle}>Elephant Railway</Text>
                 <Text style={styles.mainTitle}>Alert System</Text>
                 <Text style={styles.subtitleText}>
@@ -86,7 +88,9 @@ export default function HomeScreen() {
               style={styles.navCard}
               onPress={() => router.push("/live-alert")}
             >
-              <View style={[styles.iconContainer, { backgroundColor: "#FFE5E5" }]}>
+              <View
+                style={[styles.iconContainer, { backgroundColor: "#FFE5E5" }]}
+              >
                 <Text style={styles.navIcon}>⚠️</Text>
               </View>
               <Text style={styles.navText}>Live Alert</Text>
@@ -94,7 +98,9 @@ export default function HomeScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.navCard}>
-              <View style={[styles.iconContainer, { backgroundColor: "#E5F0FF" }]}>
+              <View
+                style={[styles.iconContainer, { backgroundColor: "#E5F0FF" }]}
+              >
                 <Text style={styles.navIcon}>🕒</Text>
               </View>
               <Text style={styles.navText}>History</Text>
@@ -105,7 +111,9 @@ export default function HomeScreen() {
               style={styles.navCard}
               onPress={() => router.push("/Live-Camera-Feed")}
             >
-              <View style={[styles.iconContainer, { backgroundColor: "#F0E5FF" }]}>
+              <View
+                style={[styles.iconContainer, { backgroundColor: "#F0E5FF" }]}
+              >
                 <Text style={styles.navIcon}>📹</Text>
               </View>
               <Text style={styles.navText}>Live Feed</Text>
@@ -116,7 +124,9 @@ export default function HomeScreen() {
               style={styles.navCard}
               onPress={() => router.push("/User-Updates")}
             >
-              <View style={[styles.iconContainer, { backgroundColor: "#FFF5E5" }]}>
+              <View
+                style={[styles.iconContainer, { backgroundColor: "#FFF5E5" }]}
+              >
                 <Image
                   source={require("@/assets/images/mobile.png")}
                   style={styles.navIconImage}
