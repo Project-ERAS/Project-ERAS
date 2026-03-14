@@ -15,9 +15,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { ThemedText } from "@/components/themed-text";
 import { useThemeColor } from "@/hooks/use-theme-color";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "./firebase";
 
 type FormState = {
   email: string;
@@ -77,19 +74,8 @@ export default function SignupScreen() {
     setLoading(true);
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        form.email.trim(),
-        form.password,
-      );
-      const user = userCredential.user;
-      await updateProfile(user, { displayName: form.username });
-      await setDoc(doc(db, "users", user.uid), {
-        email: form.email.trim(),
-        username: form.username,
-        createdAt: new Date().toISOString(),
-      });
-      router.replace("/homepage");
+      await new Promise<void>((resolve) => setTimeout(resolve, 250));
+      router.replace("/(tabs)/homepage");
     } catch (err: any) {
       setSubmitError(err?.message || "Failed to create account");
     } finally {

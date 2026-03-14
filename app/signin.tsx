@@ -15,13 +15,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { useThemeColor } from '@/hooks/use-theme-color';
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  updateProfile,
-} from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
-import { auth, db } from './firebase';
 
 type FormState = {
   identifier: string;
@@ -75,36 +68,12 @@ export default function SigninScreen() {
     setLoading(true);
 
     try {
-      // identifier can be email or username; we currently support email
-      await signInWithEmailAndPassword(auth, form.identifier.trim(), form.password);
-      router.replace('/homepage');
+      await new Promise<void>((resolve) => setTimeout(resolve, 250));
+      router.replace('/(tabs)/homepage');
     } catch (err: any) {
       setSubmitError(err?.message || 'Failed to sign in');
     } finally {
       setLoading(false);
-    }
-  }
-
-  // create sample account in Firebase if it doesn't already exist
-  async function ensureSampleUser() {
-    try {
-      const userCred = await createUserWithEmailAndPassword(
-        auth,
-        SAMPLE_ACCOUNT.email,
-        SAMPLE_ACCOUNT.password
-      );
-      const user = userCred.user;
-      await updateProfile(user, { displayName: SAMPLE_ACCOUNT.username });
-      await setDoc(doc(db, 'users', user.uid), {
-        email: SAMPLE_ACCOUNT.email,
-        username: SAMPLE_ACCOUNT.username,
-        createdAt: new Date().toISOString(),
-      });
-    } catch (err: any) {
-      // ignore if user already exists
-      if (err.code !== 'auth/email-already-in-use') {
-        console.warn('Error creating sample user', err);
-      }
     }
   }
 
@@ -115,7 +84,6 @@ export default function SigninScreen() {
   async function handleUseSample() {
     setSubmitError(null);
     setLoading(true);
-    await ensureSampleUser();
     fillSample();
     setLoading(false);
   }
