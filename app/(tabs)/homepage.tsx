@@ -47,7 +47,9 @@ export default function HomeScreen() {
                 </TouchableOpacity>
               </View>
               <View style={styles.titleContainer}>
-                <Text style={styles.welcomeText}>Welcome to <b>E.R.A.S</b></Text>
+                <Text style={styles.welcomeText}>
+                  Welcome to <Text style={styles.welcomeTextStrong}>E.R.A.S</Text>
+                </Text>
                 <Text style={styles.mainTitle}>Elephant Railway</Text>
                 <Text style={styles.mainTitle}>Alert System</Text>
                 <Text style={styles.subtitleText}>
@@ -232,6 +234,9 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     marginBottom: 8,
     letterSpacing: 0.5,
+  },
+  welcomeTextStrong: {
+    fontWeight: "800",
   },
   mainTitle: {
     fontSize: 36,
