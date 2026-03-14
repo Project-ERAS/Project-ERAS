@@ -1,7 +1,8 @@
-import { router } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { router } from "expo-router";
+import { useMemo, useState } from "react";
 import {
   Image,
+  ImageBackground,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -9,11 +10,11 @@ import {
   StyleSheet,
   TextInput,
   View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { ThemedText } from '@/components/themed-text';
-import { useThemeColor } from '@/hooks/use-theme-color';
+import { ThemedText } from "@/components/themed-text";
+import { useThemeColor } from "@/hooks/use-theme-color";
 
 type FormState = {
   email: string;
@@ -23,26 +24,33 @@ type FormState = {
 
 export default function SignupScreen() {
   const [form, setForm] = useState<FormState>({
-    email: '',
-    password: '',
-    username: '',
+    email: "",
+    password: "",
+    username: "",
   });
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [focusedField, setFocusedField] = useState<keyof FormState | null>(null);
+  const [focusedField, setFocusedField] = useState<keyof FormState | null>(
+    null,
+  );
+  const [loading, setLoading] = useState(false);
 
-  const webOutlineNone = Platform.OS === 'web' ? ({ outlineStyle: 'none' } as any) : null;
+  const webOutlineNone =
+    Platform.OS === "web" ? ({ outlineStyle: "none" } as any) : null;
 
-  const inputBackground = useThemeColor({}, 'signupInputBackground');
-  const socialButtonBackground = useThemeColor({}, 'signupSocialButtonBackground');
-  const primaryButton = useThemeColor({}, 'signupPrimaryButton');
-  const buttonText = useThemeColor({}, 'signupButtonText');
-  const shadowColor = useThemeColor({}, 'signupShadow');
-  const mutedText = useThemeColor({}, 'signupMutedText');
-  const inputText = useThemeColor({}, 'signupInputText');
-  const linkColor = useThemeColor({}, 'signupLink');
-  const dividerColor = useThemeColor({}, 'signupDivider');
-  const borderColor = useThemeColor({}, 'signupBorder');
-  const backdropColor = useThemeColor({}, 'signupBackdrop');
+  const inputBackground = useThemeColor({}, "signupInputBackground");
+  const socialButtonBackground = useThemeColor(
+    {},
+    "signupSocialButtonBackground",
+  );
+  const primaryButton = useThemeColor({}, "signupPrimaryButton");
+  const buttonText = useThemeColor({}, "signupButtonText");
+  const shadowColor = useThemeColor({}, "signupShadow");
+  const mutedText = useThemeColor({}, "signupMutedText");
+  const inputText = useThemeColor({}, "signupInputText");
+  const linkColor = useThemeColor({}, "signupLink");
+  const dividerColor = useThemeColor({}, "signupDivider");
+  const borderColor = useThemeColor({}, "signupBorder");
+  const backdropColor = useThemeColor({}, "signupBackdrop");
 
   function inputBorderFor(field: keyof FormState) {
     return focusedField === field ? primaryButton : borderColor;
@@ -60,22 +68,40 @@ export default function SignupScreen() {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  function onSubmit() {
+  async function onSubmit() {
     setSubmitError(null);
+    if (!canSubmit) return;
+    setLoading(true);
 
-    // Frontend-only: wire this up to your auth backend later.
-    console.log('Signup submit:', {
-      email: form.email,
-      username: form.username,
-    });
+    try {
+      await new Promise<void>((resolve) => setTimeout(resolve, 250));
+      router.replace("/(tabs)/homepage");
+    } catch (err: any) {
+      setSubmitError(err?.message || "Failed to create account");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
-    <View style={[styles.flex, { backgroundColor: '#FFFFFF' }]}>
+    <ImageBackground
+      source={require("@/assets/icons/background.jpg")}
+      resizeMode="cover"
+      blurRadius={Platform.OS === "web" ? 0 : 0}
+      imageStyle={styles.backgroundImage}
+      style={styles.flex}
+    >
+      <View
+        pointerEvents="none"
+        style={[
+          StyleSheet.absoluteFillObject,
+          { backgroundColor: backdropColor },
+        ]}
+      />
       <SafeAreaView style={styles.flex}>
         <KeyboardAvoidingView
           style={styles.flex}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
           <ScrollView
             contentContainerStyle={styles.scrollContent}
@@ -85,7 +111,7 @@ export default function SignupScreen() {
             <View style={styles.content}>
               <View style={styles.headerSection}>
                 <Image
-                  source={require('@/assets/icons/icon.png')}
+                  source={require("@/assets/icons/icon.png")}
                   style={styles.logo}
                   resizeMode="contain"
                 />
@@ -94,172 +120,219 @@ export default function SignupScreen() {
                 </ThemedText>
               </View>
 
-            <View style={styles.socialSection}>
-              <Pressable
-                accessibilityRole="button"
-                onPress={() => console.log('Google signup')}
-                style={({ pressed }) => [
-                  styles.socialButton,
-                  {
-                    backgroundColor: '#D5E3D5',
-                    borderColor: '#A8BDA8',
-                    borderBottomWidth: 3,
-                    shadowColor: '#000000',
-                    opacity: pressed ? 0.9 : 1,
-                    transform: pressed ? [{ translateY: 2 }] : [{ translateY: 0 }],
-                  },
-                ]}
-              >
-                <Image
-                  source={require('@/assets/images/Google.png')}
-                  style={styles.socialIcon}
-                  resizeMode="contain"
+              <View style={styles.socialSection}>
+                <Pressable
+                  accessibilityRole="button"
+                  onPress={() => console.log("Google signup")}
+                  style={({ pressed }) => [
+                    styles.socialButton,
+                    {
+                      backgroundColor: socialButtonBackground,
+                      borderColor,
+                      shadowColor,
+                      opacity: pressed ? 0.9 : 1,
+                    },
+                  ]}
+                >
+                  <Image
+                    source={require("@/assets/images/Google.png")}
+                    style={styles.socialIcon}
+                    resizeMode="contain"
+                  />
+                  <ThemedText style={[styles.socialText, { color: mutedText }]}>
+                    Sign up with Google
+                  </ThemedText>
+                </Pressable>
+
+                <Pressable
+                  accessibilityRole="button"
+                  onPress={() => console.log("Apple signup")}
+                  style={({ pressed }) => [
+                    styles.socialButton,
+                    {
+                      backgroundColor: socialButtonBackground,
+                      borderColor,
+                      shadowColor,
+                      opacity: pressed ? 0.9 : 1,
+                    },
+                  ]}
+                >
+                  <Image
+                    source={require("@/assets/images/Apple.png")}
+                    style={styles.socialIcon}
+                    resizeMode="contain"
+                  />
+                  <ThemedText style={[styles.socialText, { color: mutedText }]}>
+                    Sign up with Apple
+                  </ThemedText>
+                </Pressable>
+              </View>
+
+              <View style={styles.dividerRow}>
+                <View
+                  style={[styles.divider, { backgroundColor: dividerColor }]}
                 />
-                <ThemedText style={[styles.socialText, { color: mutedText }]}>Sign up with Google</ThemedText>
-              </Pressable>
-
-              <Pressable
-                accessibilityRole="button"
-                onPress={() => console.log('Apple signup')}
-                style={({ pressed }) => [
-                  styles.socialButton,
-                  {
-                    backgroundColor: '#D5E3D5',
-                    borderColor: '#A8BDA8',
-                    borderBottomWidth: 3,
-                    shadowColor: '#000000',
-                    opacity: pressed ? 0.9 : 1,
-                    transform: pressed ? [{ translateY: 2 }] : [{ translateY: 0 }],
-                  },
-                ]}
-              >
-                <Image
-                  source={require('@/assets/images/Apple.png')}
-                  style={styles.socialIcon}
-                  resizeMode="contain"
+                <ThemedText style={[styles.dividerText, { color: mutedText }]}>
+                  or
+                </ThemedText>
+                <View
+                  style={[styles.divider, { backgroundColor: dividerColor }]}
                 />
-                <ThemedText style={[styles.socialText, { color: mutedText }]}>Sign up with Apple</ThemedText>
-              </Pressable>
-            </View>
+              </View>
 
-            <View style={styles.dividerRow}>
-              <View style={[styles.divider, { backgroundColor: dividerColor }]} />
-              <ThemedText style={[styles.dividerText, { color: mutedText }]}>or</ThemedText>
-              <View style={[styles.divider, { backgroundColor: dividerColor }]} />
-            </View>
+              <View style={styles.field}>
+                <ThemedText style={[styles.label, { color: mutedText }]}>
+                  Email*
+                </ThemedText>
+                <TextInput
+                  value={form.email}
+                  onChangeText={(v) => updateField("email", v)}
+                  onFocus={() => setFocusedField("email")}
+                  onBlur={() =>
+                    setFocusedField((prev) => (prev === "email" ? null : prev))
+                  }
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                  placeholder=""
+                  placeholderTextColor={mutedText}
+                  selectionColor={primaryButton}
+                  style={[
+                    styles.input,
+                    webOutlineNone,
+                    {
+                      backgroundColor: inputBackground,
+                      color: inputText,
+                      borderColor: inputBorderFor("email"),
+                    },
+                  ]}
+                />
+              </View>
 
-            <View style={styles.field}>
-              <ThemedText style={[styles.label, { color: mutedText }]}>Email*</ThemedText>
-              <TextInput
-                value={form.email}
-                onChangeText={(v) => updateField('email', v)}
-                onFocus={() => setFocusedField('email')}
-                onBlur={() => setFocusedField((prev) => (prev === 'email' ? null : prev))}
-                autoCapitalize="none"
-                keyboardType="email-address"
-                placeholder=""
-                placeholderTextColor={mutedText}
-                selectionColor={primaryButton}
-                style={[
-                  styles.input,
-                  webOutlineNone,
-                  {
-                    backgroundColor: '#F5F5F5',
-                    color: inputText,
-                    borderColor: inputBorderFor('email'),
-                  },
-                ]}
-              />
-            </View>
+              <View style={styles.field}>
+                <ThemedText style={[styles.label, { color: mutedText }]}>
+                  Password*
+                </ThemedText>
+                <TextInput
+                  value={form.password}
+                  onChangeText={(v) => updateField("password", v)}
+                  onFocus={() => setFocusedField("password")}
+                  onBlur={() =>
+                    setFocusedField((prev) =>
+                      prev === "password" ? null : prev,
+                    )
+                  }
+                  autoCapitalize="none"
+                  secureTextEntry
+                  placeholder=""
+                  placeholderTextColor={mutedText}
+                  selectionColor={primaryButton}
+                  style={[
+                    styles.input,
+                    webOutlineNone,
+                    {
+                      backgroundColor: inputBackground,
+                      color: inputText,
+                      borderColor: inputBorderFor("password"),
+                    },
+                  ]}
+                />
+              </View>
 
-            <View style={styles.field}>
-              <ThemedText style={[styles.label, { color: mutedText }]}>Password*</ThemedText>
-              <TextInput
-                value={form.password}
-                onChangeText={(v) => updateField('password', v)}
-                onFocus={() => setFocusedField('password')}
-                onBlur={() => setFocusedField((prev) => (prev === 'password' ? null : prev))}
-                autoCapitalize="none"
-                secureTextEntry
-                placeholder=""
-                placeholderTextColor={mutedText}
-                selectionColor={primaryButton}
-                style={[
-                  styles.input,
-                  webOutlineNone,
-                  {
-                    backgroundColor: '#F5F5F5',
-                    color: inputText,
-                    borderColor: inputBorderFor('password'),
-                  },
-                ]}
-              />
-            </View>
+              <View style={styles.field}>
+                <ThemedText style={[styles.label, { color: mutedText }]}>
+                  Username*
+                </ThemedText>
+                <TextInput
+                  value={form.username}
+                  onChangeText={(v) => updateField("username", v)}
+                  onFocus={() => setFocusedField("username")}
+                  onBlur={() =>
+                    setFocusedField((prev) =>
+                      prev === "username" ? null : prev,
+                    )
+                  }
+                  autoCapitalize="none"
+                  placeholder=""
+                  placeholderTextColor={mutedText}
+                  selectionColor={primaryButton}
+                  style={[
+                    styles.input,
+                    webOutlineNone,
+                    {
+                      backgroundColor: inputBackground,
+                      color: inputText,
+                      borderColor: inputBorderFor("username"),
+                    },
+                  ]}
+                />
+              </View>
 
-            <View style={styles.field}>
-              <ThemedText style={[styles.label, { color: mutedText }]}>Username*</ThemedText>
-              <TextInput
-                value={form.username}
-                onChangeText={(v) => updateField('username', v)}
-                onFocus={() => setFocusedField('username')}
-                onBlur={() => setFocusedField((prev) => (prev === 'username' ? null : prev))}
-                autoCapitalize="none"
-                placeholder=""
-                placeholderTextColor={mutedText}
-                selectionColor={primaryButton}
-                style={[
-                  styles.input,
-                  webOutlineNone,
-                  {
-                    backgroundColor: '#F5F5F5',
-                    color: inputText,
-                    borderColor: inputBorderFor('username'),
-                  },
-                ]}
-              />
-            </View>
+              {submitError ? (
+                <ThemedText style={{ color: linkColor }}>
+                  {submitError}
+                </ThemedText>
+              ) : null}
 
-            {submitError ? (
-              <ThemedText style={{ color: linkColor }}>{submitError}</ThemedText>
-            ) : null}
-
-            <ThemedText style={[styles.terms, { color: mutedText }]}>
-              By creating an account, you agree to the terms of service. For more information about E.R.A.S
-              information, see the project info page. We’ll occasionally send you updates through email.
-            </ThemedText>
-
-            <Pressable
-              accessibilityRole="button"
-              onPress={onSubmit}
-              disabled={!canSubmit}
-              style={({ pressed }) => [
-                styles.primaryButton,
-                {
-                  backgroundColor: '#769b63',
-                  borderColor: '#7A9370',
-                  borderBottomWidth: 3,
-                  shadowColor: '#000000',
-                  opacity: !canSubmit ? 0.55 : pressed ? 0.9 : 1,
-                  transform: pressed ? [{ translateY: 2 }] : [{ translateY: 0 }],
-                },
-              ]}
-            >
-              <ThemedText style={[styles.primaryButtonText, { color: buttonText }]}>
-                Create Account {'>'}
+              <ThemedText style={[styles.terms, { color: mutedText }]}>
+                By creating an account, you agree to the terms of service. For
+                more information about E.R.A.S information, see the project info
+                page. We’ll occasionally send you updates through email.
               </ThemedText>
-            </Pressable>
 
-            <View style={styles.signInRow}>
-              <ThemedText style={{ color: mutedText }}>Already have an account? </ThemedText>
-              <Pressable onPress={() => router.push('/signin' as any)}>
-                <ThemedText style={[styles.signInLink, { color: linkColor }]}>Sign in</ThemedText>
+              <Pressable
+                accessibilityRole="button"
+                onPress={onSubmit}
+                disabled={!canSubmit || loading}
+                style={({ pressed }) => [
+                  styles.primaryButton,
+                  {
+                    backgroundColor: primaryButton,
+                    shadowColor,
+                    opacity: !canSubmit || loading ? 0.55 : pressed ? 0.9 : 1,
+                  },
+                ]}
+              >
+                <ThemedText
+                  style={[styles.primaryButtonText, { color: buttonText }]}
+                >
+                  {loading ? "Creating..." : "Create Account {'>'}"}
+                </ThemedText>
               </Pressable>
-            </View>
+
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => router.push("/(tabs)/homepage")}
+                style={({ pressed }) => [
+                  styles.socialButton,
+                  {
+                    backgroundColor: socialButtonBackground,
+                    borderColor,
+                    shadowColor,
+                    opacity: pressed ? 0.9 : 1,
+                    marginTop: 14,
+                  },
+                ]}
+              >
+                <ThemedText style={[styles.socialText, { color: mutedText }]}>
+                  Test: Go to Home
+                </ThemedText>
+              </Pressable>
+
+              <View style={styles.signInRow}>
+                <ThemedText style={{ color: mutedText }}>
+                  Already have an account?{" "}
+                </ThemedText>
+                <Pressable onPress={() => router.push("/signin" as any)}>
+                  <ThemedText style={[styles.signInLink, { color: linkColor }]}>
+                    Sign in
+                  </ThemedText>
+                </Pressable>
+              </View>
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
-    </View>
+    </ImageBackground>
   );
 }
 
@@ -270,18 +343,18 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     paddingHorizontal: 30,
     paddingVertical: 24,
-    alignItems: 'center',
+    alignItems: "center",
   },
   content: {
-    width: '100%',
+    width: "100%",
     maxWidth: 720,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   headerSection: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 20,
   },
   logo: {
@@ -291,27 +364,27 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 22,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   socialSection: {
     gap: 12,
     marginTop: 18,
-    alignItems: 'center',
+    alignItems: "center",
   },
   socialButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 25,
-    width: '100%',
+    width: "100%",
     maxWidth: 320,
     paddingVertical: 14,
     paddingHorizontal: 14,
     borderWidth: 1,
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 6 },
-    elevation: 8,
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 2,
   },
   socialIcon: {
     width: 20,
@@ -320,14 +393,14 @@ const styles = StyleSheet.create({
   },
   socialText: {
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   dividerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     marginVertical: 20,
-    width: '100%',
+    width: "100%",
   },
   divider: {
     flex: 1,
@@ -338,9 +411,9 @@ const styles = StyleSheet.create({
   },
   field: {
     marginBottom: 18,
-    width: '100%',
+    width: "100%",
     maxWidth: 600,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   label: {
     fontSize: 14,
@@ -349,38 +422,38 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderRadius: 25,
-    width: '100%',
+    width: "100%",
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 15,
   },
   terms: {
     fontSize: 11,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 20,
   },
   primaryButton: {
     borderRadius: 30,
-    width: '100%',
+    width: "100%",
     maxWidth: 360,
     paddingVertical: 16,
-    alignItems: 'center',
+    alignItems: "center",
     shadowOpacity: 0.18,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 6 },
     elevation: 3,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   primaryButtonText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   signInRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginTop: 12,
   },
   signInLink: {
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });
