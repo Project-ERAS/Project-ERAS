@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import LottieView from 'lottie-react-native';
 import { useState } from 'react';
 import {
   Pressable,
@@ -42,32 +43,43 @@ export default function HistorySearchScreen() {
 
       {/* Content */}
       <View style={styles.content}>
-        <Text style={styles.label}>Enter location</Text>
-        
-        <View style={styles.searchContainer}>
-          <View style={styles.searchIconWrapper}>
-            <Ionicons name="search" size={18} color="#7A8A7A" />
+        <View style={styles.topSection}>
+          <Text style={styles.label}>Enter location</Text>
+
+          <View style={styles.searchContainer}>
+            <View style={styles.searchIconWrapper}>
+              <Ionicons name="search" size={18} color="#7A8A7A" />
+            </View>
+            <TextInput
+              style={styles.input}
+              value={location}
+              onChangeText={setLocation}
+              placeholder="Search by location..."
+              placeholderTextColor="#7A8A7A"
+              returnKeyType="search"
+              onSubmitEditing={handleEnter}
+            />
           </View>
-          <TextInput
-            style={styles.input}
-            value={location}
-            onChangeText={setLocation}
-            placeholder="Search by location..."
-            placeholderTextColor="#7A8A7A"
-            returnKeyType="search"
-            onSubmitEditing={handleEnter}
-          />
+
+          <Pressable
+            style={({ pressed }) => [
+              styles.enterButton,
+              pressed ? styles.enterButtonPressed : null,
+            ]}
+            onPress={handleEnter}
+          >
+            <Text style={styles.enterButtonText}>Enter</Text>
+          </Pressable>
         </View>
 
-        <Pressable
-          style={({ pressed }) => [
-            styles.enterButton,
-            pressed ? styles.enterButtonPressed : null,
-          ]}
-          onPress={handleEnter}
-        >
-          <Text style={styles.enterButtonText}>Enter</Text>
-        </Pressable>
+        <View style={styles.animationContainer}>
+          <LottieView
+            source={require('../assets/animations/history.json')}
+            autoPlay
+            loop
+            style={styles.animation}
+          />
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -110,6 +122,10 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingTop: 24,
+    justifyContent: 'space-between',
+  },
+  topSection: {
+    gap: 0,
   },
   label: {
     fontSize: 14,
@@ -173,5 +189,14 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '800',
+  },
+  animationContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: 8,
+  },
+  animation: {
+    width: 220,
+    height: 220,
   },
 });
