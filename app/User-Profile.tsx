@@ -226,18 +226,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
   },
-  backButton: {
-    position: "absolute",
-    left: 20,
-    top: 20,
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    borderWidth: 2,
-    borderColor: "#FFFFFF",
-    alignItems: "center",
-    justifyContent: "center",
-  },
+
   avatarCircle: {
     width: 140,
     height: 140,
