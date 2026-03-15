@@ -408,7 +408,19 @@ export default function SignupScreen() {
                 page. We’ll occasionally send you updates through email.
               </ThemedText>
 
-              <Pressable accessibilityRole="button" onPress={onSubmit}>
+              <Pressable
+                accessibilityRole="button"
+                onPress={onSubmit}
+                disabled={!canSubmit || loading}
+                style={({ pressed }) => [
+                  styles.primaryButton,
+                  {
+                    backgroundColor: primaryButton,
+                    shadowColor,
+                    opacity: !canSubmit || loading ? 0.55 : pressed ? 0.9 : 1,
+                  },
+                ]}
+              >
                 <ThemedText
                   style={[styles.primaryButtonText, { color: buttonText }]}
                 >
