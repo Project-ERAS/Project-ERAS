@@ -205,3 +205,11 @@ uploadButtonText: {
   fontSize: 16,
   fontWeight: "800",
 },
+
+updatesBackground: {
+  marginTop: 16,
+  width: "100%",
+  flex: 1,
+  minHeight: 240,
+  backgroundColor: "#F2F5F3",
+},
