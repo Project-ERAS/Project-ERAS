@@ -66,18 +66,6 @@ export default function SignupScreen() {
     return focusedField === field ? primaryButton : borderColor;
   }
 
-  const emailValidation = useMemo(
-    () => validateEmail(form.email),
-    [form.email],
-  );
-  const passwordValidation = useMemo(
-    () => validatePassword(form.password),
-    [form.password],
-  );
-
-  const showEmailHint = form.email.length > 0 && !emailValidation.ok;
-  const showPasswordHint = form.password.length > 0 && !passwordValidation.ok;
-
   const canSubmit = useMemo(() => {
     return (
       emailValidation.ok &&
