@@ -270,3 +270,17 @@ postTime: {
   fontWeight: "700",
   marginRight: 8,
 },
+
+postContent: {
+  color: "#4A6A4A",
+  fontSize: 16,
+  marginTop: 6,
+  lineHeight: 24,
+  fontWeight: "600",
+  maxWidth: "95%",
+},
+postFooterRow: {
+  flexDirection: "row",
+  alignItems: "center",
+  marginTop: 10,
+},
