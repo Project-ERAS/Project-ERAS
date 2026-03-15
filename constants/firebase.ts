@@ -39,3 +39,33 @@ const shouldUseEmulators =
   typeof process !== "undefined" &&
   typeof process.env !== "undefined" &&
   (process.env.EXPO_PUBLIC_USE_FIREBASE_EMULATORS ?? "0") === "1";
+
+if (shouldUseEmulators && !emulatorsConnected) {
+  const hostFromEnv =
+    typeof process !== "undefined" &&
+    typeof process.env !== "undefined" &&
+    typeof process.env.EXPO_PUBLIC_FIREBASE_EMULATOR_HOST === "string"
+      ? process.env.EXPO_PUBLIC_FIREBASE_EMULATOR_HOST
+      : null;
+
+  const defaultHost = Platform.OS === "android" ? "10.0.2.2" : "127.0.0.1";
+  const host = hostFromEnv ?? defaultHost;
+
+  const authPortRaw =
+    typeof process.env.EXPO_PUBLIC_FIREBASE_AUTH_EMULATOR_PORT === "string"
+      ? process.env.EXPO_PUBLIC_FIREBASE_AUTH_EMULATOR_PORT
+      : null;
+  const firestorePortRaw =
+    typeof process.env.EXPO_PUBLIC_FIREBASE_FIRESTORE_EMULATOR_PORT === "string"
+      ? process.env.EXPO_PUBLIC_FIREBASE_FIRESTORE_EMULATOR_PORT
+      : null;
+
+  const authPort = authPortRaw ? Number(authPortRaw) : 9098;
+  const firestorePort = firestorePortRaw ? Number(firestorePortRaw) : 8088;
+
+  connectAuthEmulator(auth, `http://${host}:${authPort}`, {
+    disableWarnings: true,
+  });
+  connectFirestoreEmulator(db, host, firestorePort);
+  emulatorsConnected = true;
+}
