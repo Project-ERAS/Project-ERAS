@@ -556,7 +556,14 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     fontSize: 15,
   },
-
+  passwordHintContainer: {
+    marginTop: 8,
+    minHeight: 16,
+    paddingHorizontal: 6,
+  },
+  passwordHintText: {
+    fontSize: 12,
+  },
   terms: {
     fontSize: 11,
     textAlign: "center",
