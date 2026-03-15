@@ -199,3 +199,9 @@ uploadButton: {
 uploadButtonPressed: {
   backgroundColor: "#4c9c3e",
 },
+
+uploadButtonText: {
+  color: "#fff",
+  fontSize: 16,
+  fontWeight: "800",
+},
