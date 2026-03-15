@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
   },
 
   card: {
-    marginTop: -22,
+    marginTop: -8,
     marginHorizontal: 20,
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   attentionAnim: {
-    width: 140,
-    height: 140,
+    width: 180,
+    height: 180,
   },
 });

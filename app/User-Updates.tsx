@@ -3,13 +3,13 @@ import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-	ScrollView,
-	StatusBar,
-	StyleSheet,
-	Text,
-	TextInput,
-	TouchableOpacity,
-	View,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -70,7 +70,7 @@ export default function UserUpdatesScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
 
       <View style={styles.header}>
         <TouchableOpacity
@@ -78,7 +78,7 @@ export default function UserUpdatesScreen() {
           onPress={() => router.back()}
           activeOpacity={0.8}
         >
-          <Ionicons name="chevron-back" size={36} color="#fff" />
+          <Ionicons name="chevron-back" size={30} color={styles.headerTitle.color as string} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>User updates</Text>
       </View>
@@ -123,18 +123,13 @@ export default function UserUpdatesScreen() {
 
               <View style={styles.postFooterRow}>
                 <View style={styles.reactionGroup}>
-                  <Feather name="heart" size={20} color="#000" />
+                  <Feather name="heart" size={20} color="#2D3E2D" />
                   <Text style={styles.reactionText}>{post.likes}</Text>
                 </View>
 
                 <View style={styles.reactionGroup}>
-                  <Feather name="message-square" size={19} color="#000" />
+                  <Feather name="message-square" size={19} color="#2D3E2D" />
                   <Text style={styles.reactionText}>{post.comments}</Text>
-                </View>
-
-                <View style={styles.imageChip}>
-                  <Ionicons name="image" size={20} color="#5f6f8f" />
-                  <Text style={styles.imageChipText}>image</Text>
                 </View>
               </View>
             </View>
@@ -148,30 +143,46 @@ export default function UserUpdatesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#a9c5a0",
+    backgroundColor: "#F8FAF9",
   },
   header: {
-    height: 100,
-    backgroundColor: "#2f7a34",
-    justifyContent: "center",
+    height: 92,
+    backgroundColor: "#FFFFFF",
+    justifyContent: "flex-end",
     alignItems: "center",
     position: "relative",
+    paddingBottom: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E8EEE8",
   },
   backButton: {
     position: "absolute",
     left: 20,
-    top: 32,
+    bottom: 10,
     zIndex: 2,
+    width: 44,
+    height: 44,
+    borderRadius: 16,
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#E8EEE8",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
   },
   headerTitle: {
-    fontSize: 31,
-    fontWeight: "700",
-    color: "#fff",
+    fontSize: 24,
+    fontWeight: "800",
+    color: "#2D3E2D",
     marginTop: 1,
   },
   body: {
     flex: 1,
-    backgroundColor: "#a9c5a0",
+    backgroundColor: "#F8FAF9",
   },
   bodyContent: {
     paddingHorizontal: 22,
@@ -180,47 +191,55 @@ const styles = StyleSheet.create({
   },
   shareLabel: {
     fontSize: 20,
-    color: "#2f7a34",
-    fontWeight: "500",
-    marginLeft: 10,
+    color: "#2D3E2D",
+    fontWeight: "800",
     marginBottom: 14,
   },
   shareInput: {
     minHeight: 210,
-    borderRadius: 18,
-    backgroundColor: "#ececec",
+    borderRadius: 20,
+    backgroundColor: "#FFFFFF",
     padding: 16,
     fontSize: 16,
-    color: "#2d2d2d",
+    color: "#2D3E2D",
+    borderWidth: 1,
+    borderColor: "#E8EEE8",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 4,
   },
   uploadButton: {
-    backgroundColor: "#2f7a34",
-    borderRadius: 12,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    backgroundColor: "#2f6a39",
+    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     marginTop: 14,
     alignSelf: "flex-end",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.22,
-    shadowRadius: 5,
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
     elevation: 5,
   },
   uploadButtonText: {
     color: "#fff",
-    fontSize: 19,
-    fontWeight: "500",
+    fontSize: 16,
+    fontWeight: "800",
   },
   postCard: {
     marginTop: 34,
-    borderRadius: 28,
+    borderRadius: 20,
     paddingVertical: 18,
     paddingHorizontal: 16,
-    backgroundColor: "#99c39d",
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#F0F4F0",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 7,
+    shadowOpacity: 0.06,
+    shadowRadius: 16,
     elevation: 6,
     flexDirection: "row",
     gap: 14,
@@ -229,14 +248,14 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: "#5fb23b",
+    backgroundColor: "#93cc72",
     alignItems: "center",
     justifyContent: "center",
     marginTop: 12,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
     elevation: 4,
   },
   postMain: {
@@ -248,22 +267,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   postName: {
-    color: "#000",
-    fontSize: 17,
-    fontWeight: "500",
+    color: "#2D3E2D",
+    fontSize: 16,
+    fontWeight: "800",
   },
   postTime: {
-    color: "#f3f3f3",
-    fontSize: 15,
-    fontWeight: "500",
+    color: "#7A8A7A",
+    fontSize: 12,
+    fontWeight: "700",
     marginRight: 8,
   },
   postContent: {
-    color: "#2b6d35",
-    fontSize: 18,
+    color: "#4A6A4A",
+    fontSize: 16,
     marginTop: 6,
     lineHeight: 24,
-    fontWeight: "500",
+    fontWeight: "600",
     maxWidth: "95%",
   },
   postFooterRow: {
@@ -277,31 +296,9 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   reactionText: {
-    color: "#000",
-    fontSize: 16,
+    color: "#2D3E2D",
+    fontSize: 14,
     marginLeft: 5,
-    fontWeight: "500",
-  },
-  imageChip: {
-    marginLeft: "auto",
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#5fa56a",
-    borderRadius: 12,
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    minWidth: 104,
-    justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  imageChipText: {
-    fontSize: 17,
-    color: "#f0f0f0",
-    marginLeft: 5,
-    fontWeight: "500",
+    fontWeight: "700",
   },
 });
