@@ -3,6 +3,7 @@ import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
+  ImageBackground,
   Pressable,
   ScrollView,
   StatusBar,
@@ -80,34 +81,41 @@ export default function UserUpdatesScreen() {
           <Text style={styles.uploadButtonText}>Upload image</Text>
         </Pressable>
 
-        {updatePosts.map((post) => (
-          <View key={post.id} style={styles.postCard}>
-            <View style={styles.avatarCircle}>
-              <Ionicons name="person" size={38} color="#fff" />
-            </View>
-
-            <View style={styles.postMain}>
-              <View style={styles.postHeaderRow}>
-                <Text style={styles.postName}>{post.name}</Text>
-                <Text style={styles.postTime}>{post.time}</Text>
+        <ImageBackground
+          source={require("../assets/images/user updates.jpg")}
+          resizeMode="cover"
+          style={styles.updatesBackground}
+          imageStyle={styles.updatesBackgroundImage}
+        >
+          {updatePosts.map((post) => (
+            <View key={post.id} style={styles.postCard}>
+              <View style={styles.avatarCircle}>
+                <Ionicons name="person" size={38} color="#fff" />
               </View>
 
-              <Text style={styles.postContent}>{post.content}</Text>
-
-              <View style={styles.postFooterRow}>
-                <View style={styles.reactionGroup}>
-                  <Feather name="heart" size={20} color="#2D3E2D" />
-                  <Text style={styles.reactionText}>{post.likes}</Text>
+              <View style={styles.postMain}>
+                <View style={styles.postHeaderRow}>
+                  <Text style={styles.postName}>{post.name}</Text>
+                  <Text style={styles.postTime}>{post.time}</Text>
                 </View>
 
-                <View style={styles.reactionGroup}>
-                  <Feather name="message-square" size={19} color="#2D3E2D" />
-                  <Text style={styles.reactionText}>{post.comments}</Text>
+                <Text style={styles.postContent}>{post.content}</Text>
+
+                <View style={styles.postFooterRow}>
+                  <View style={styles.reactionGroup}>
+                    <Feather name="heart" size={20} color="#2D3E2D" />
+                    <Text style={styles.reactionText}>{post.likes}</Text>
+                  </View>
+
+                  <View style={styles.reactionGroup}>
+                    <Feather name="message-square" size={19} color="#2D3E2D" />
+                    <Text style={styles.reactionText}>{post.comments}</Text>
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
-        ))}
+          ))}
+        </ImageBackground>
       </ScrollView>
     </SafeAreaView>
   );
@@ -203,6 +211,14 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "800",
+  },
+  updatesBackground: {
+    marginTop: 16,
+    width: "100%",
+    minHeight: 240,
+  },
+  updatesBackgroundImage: {
+    opacity: 0.9,
   },
   postCard: {
     marginTop: 34,
