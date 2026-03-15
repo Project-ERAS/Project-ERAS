@@ -1,8 +1,12 @@
 import { router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import {
-  signOut
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  signOut,
+  updateProfile,
 } from "firebase/auth";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { useMemo, useState } from "react";
 import {
   Image,
@@ -18,7 +22,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { ThemedText } from "@/components/themed-text";
-import { auth } from "@/constants/firebase";
+import { auth, db } from "@/constants/firebase";
 import { validateEmail, validatePassword } from "@/constants/utils/validation";
 import { useThemeColor } from "@/hooks/use-theme-color";
 
@@ -115,6 +119,36 @@ export default function SignupScreen() {
     setLoading(true);
 
     try {
+      const credential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+
+      await sendEmailVerification(credential.user);
+      await updateProfile(credential.user, { displayName: username });
+
+      try {
+        await setDoc(
+          doc(db, "users", credential.user.uid),
+          {
+            uid: credential.user.uid,
+            email,
+            username,
+            displayName: username,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+          },
+          { merge: true },
+        );
+      } catch (profileErr: any) {
+        const profileCode =
+          typeof profileErr?.code === "string" ? profileErr.code : null;
+        if (profileCode !== "permission-denied") {
+          throw profileErr;
+        }
+      }
+
       await signOut(auth);
       router.replace({
         pathname: "/verify-email",
