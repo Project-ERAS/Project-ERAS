@@ -314,6 +314,16 @@ export default function SignupScreen() {
                     },
                   ]}
                 />
+                <View style={styles.passwordHintContainer}>
+                  {showEmailHint ? (
+                    <ThemedText
+                      style={[styles.passwordHintText, { color: "#cc0000" }]}
+                      numberOfLines={1}
+                    >
+                      Please enter a valid email address.
+                    </ThemedText>
+                  ) : null}
+                </View>
               </View>
 
               <View style={styles.field}>
