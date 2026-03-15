@@ -162,3 +162,9 @@ const styles = StyleSheet.create({
     color: "#2D3E2D",
     marginTop: 1,
   },
+
+  body: {
+  flex: 1,
+  backgroundColor: "#F2F5F3",
+},
+
