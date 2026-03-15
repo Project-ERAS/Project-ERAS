@@ -1,4 +1,12 @@
 import { router } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  signOut,
+  updateProfile,
+} from "firebase/auth";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { useMemo, useState } from "react";
 import {
   Image,
@@ -14,6 +22,8 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { ThemedText } from "@/components/themed-text";
+import { auth, db } from "@/constants/firebase";
+import { validateEmail, validatePassword } from "@/constants/utils/validation";
 import { useThemeColor } from "@/hooks/use-theme-color";
 
 type FormState = {
@@ -56,13 +66,25 @@ export default function SignupScreen() {
     return focusedField === field ? primaryButton : borderColor;
   }
 
+  const emailValidation = useMemo(
+    () => validateEmail(form.email),
+    [form.email],
+  );
+  const passwordValidation = useMemo(
+    () => validatePassword(form.password),
+    [form.password],
+  );
+
+  const showEmailHint = form.email.length > 0 && !emailValidation.ok;
+  const showPasswordHint = form.password.length > 0 && !passwordValidation.ok;
+
   const canSubmit = useMemo(() => {
     return (
-      form.email.trim().length > 0 &&
-      form.password.length > 0 &&
+      emailValidation.ok &&
+      passwordValidation.ok &&
       form.username.trim().length > 0
     );
-  }, [form]);
+  }, [emailValidation.ok, form.username, passwordValidation.ok]);
 
   function updateField<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -70,16 +92,100 @@ export default function SignupScreen() {
 
   async function onSubmit() {
     setSubmitError(null);
-    if (!canSubmit) return;
+
+    const email = form.email.trim();
+    const password = form.password;
+    const username = form.username.trim();
+
+    const emailResult = validateEmail(email);
+    if (!emailResult.ok) {
+      setSubmitError(emailResult.message ?? "Enter a valid email address");
+      return;
+    }
+
+    const passwordResult = validatePassword(password);
+    if (!passwordResult.ok) {
+      setSubmitError(
+        passwordResult.message ?? "Password does not meet requirements",
+      );
+      return;
+    }
+
+    if (username.length === 0) {
+      setSubmitError("Username is required");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      await new Promise<void>((resolve) => setTimeout(resolve, 250));
-      router.replace("/(tabs)/homepage");
+      const credential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+
+      await sendEmailVerification(credential.user);
+      await updateProfile(credential.user, { displayName: username });
+
+      try {
+        await setDoc(
+          doc(db, "users", credential.user.uid),
+          {
+            uid: credential.user.uid,
+            email,
+            username,
+            displayName: username,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+          },
+          { merge: true },
+        );
+      } catch (profileErr: any) {
+        const profileCode =
+          typeof profileErr?.code === "string" ? profileErr.code : null;
+        if (profileCode !== "permission-denied") {
+          throw profileErr;
+        }
+      }
+
+      await signOut(auth);
+      router.replace({
+        pathname: "/verify-email",
+        params: { email },
+      } as any);
     } catch (err: any) {
-      setSubmitError(err?.message || "Failed to create account");
+      const code = typeof err?.code === "string" ? err.code : null;
+      if (code === "auth/network-request-failed") {
+        const useEmulators =
+          typeof process !== "undefined" &&
+          typeof process.env !== "undefined" &&
+          (process.env.EXPO_PUBLIC_USE_FIREBASE_EMULATORS ?? "0") === "1";
+        setSubmitError(
+          useEmulators
+            ? "Network request failed. Firebase emulators may be enabled; set EXPO_PUBLIC_USE_FIREBASE_EMULATORS=0 on device."
+            : "Network request failed. Check your internet connection and Firebase project settings.",
+        );
+      } else if (code === "auth/email-already-in-use") {
+        setSubmitError("Email is already in use");
+      } else if (code === "auth/invalid-email") {
+        setSubmitError("Invalid email address");
+      } else if (code === "auth/weak-password") {
+        setSubmitError("Password is too weak");
+      } else {
+        setSubmitError(err?.message || "Failed to create account");
+      }
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function openExternalSignup(url: string) {
+    setSubmitError(null);
+    try {
+      await WebBrowser.openBrowserAsync(url);
+    } catch (err: any) {
+      setSubmitError(err?.message || "Failed to open signup page");
     }
   }
 
@@ -123,7 +229,11 @@ export default function SignupScreen() {
               <View style={styles.socialSection}>
                 <Pressable
                   accessibilityRole="button"
-                  onPress={() => console.log("Google signup")}
+                  onPress={() =>
+                    openExternalSignup(
+                      "https://accounts.google.com/signin/v2/identifier",
+                    )
+                  }
                   style={({ pressed }) => [
                     styles.socialButton,
                     {
@@ -146,7 +256,9 @@ export default function SignupScreen() {
 
                 <Pressable
                   accessibilityRole="button"
-                  onPress={() => console.log("Apple signup")}
+                  onPress={() =>
+                    openExternalSignup("https://appleid.apple.com/sign-in")
+                  }
                   style={({ pressed }) => [
                     styles.socialButton,
                     {
@@ -206,6 +318,16 @@ export default function SignupScreen() {
                     },
                   ]}
                 />
+                <View style={styles.passwordHintContainer}>
+                  {showEmailHint ? (
+                    <ThemedText
+                      style={[styles.passwordHintText, { color: "#cc0000" }]}
+                      numberOfLines={1}
+                    >
+                      Please enter a valid email address.
+                    </ThemedText>
+                  ) : null}
+                </View>
               </View>
 
               <View style={styles.field}>
@@ -236,6 +358,17 @@ export default function SignupScreen() {
                     },
                   ]}
                 />
+                <View style={styles.passwordHintContainer}>
+                  {showPasswordHint ? (
+                    <ThemedText
+                      style={[styles.passwordHintText, { color: "#cc0000" }]}
+                      numberOfLines={1}
+                    >
+                      Must be 8+ characters with uppercase, lowercase, a number,
+                      and a symbol.
+                    </ThemedText>
+                  ) : null}
+                </View>
               </View>
 
               <View style={styles.field}>
@@ -426,6 +559,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 15,
+  },
+  passwordHintContainer: {
+    marginTop: 8,
+    minHeight: 16,
+    paddingHorizontal: 6,
+  },
+  passwordHintText: {
+    fontSize: 12,
   },
   terms: {
     fontSize: 11,
