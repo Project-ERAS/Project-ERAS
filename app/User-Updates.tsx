@@ -181,3 +181,17 @@ shareLabel: {
   fontWeight: "800",
   marginBottom: 14,
 },
+
+uploadButton: {
+  backgroundColor: "#93cc72",
+  borderRadius: 16,
+  paddingVertical: 12,
+  paddingHorizontal: 16,
+  marginTop: 14,
+  alignSelf: "flex-end",
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 3 },
+  shadowOpacity: 0.12,
+  shadowRadius: 12,
+  elevation: 5,
+},
