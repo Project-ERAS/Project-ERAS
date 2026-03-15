@@ -195,3 +195,7 @@ uploadButton: {
   shadowRadius: 12,
   elevation: 5,
 },
+
+uploadButtonPressed: {
+  backgroundColor: "#4c9c3e",
+},
