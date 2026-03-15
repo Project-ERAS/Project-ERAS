@@ -1,0 +1,121 @@
+import { Feather, Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import {
+  ImageBackground,
+  Pressable,
+  ScrollView,
+  StatusBar,
+  Text,
+  TextInput,
+  View
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+type UpdatePost = {
+  id: number;
+  name: string;
+  time: string;
+  content: string;
+  likes: number;
+  comments: number;
+};
+
+const updatePosts: UpdatePost[] = [];
+
+export default function UserUpdatesScreen() {
+  const router = useRouter();
+  const [updateText, setUpdateText] = useState("");
+  const [, setSelectedImageUri] = useState<string | null>(null);
+
+  async function handlePickImage() {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permission.granted) return;
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      quality: 1,
+    });
+
+    if (result.canceled) return;
+    setSelectedImageUri(result.assets[0]?.uri ?? null);
+  }
+
+  return (
+    <SafeAreaView style={styles.container} edges={["top"]}>
+      <StatusBar barStyle="dark-content" />
+
+      <View style={styles.header}>
+        <Pressable
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
+          <Ionicons name="chevron-back" size={30} color="#2D3E2D" />
+        </Pressable>
+        <Text style={styles.headerTitle}>User updates</Text>
+      </View>
+
+      <ScrollView
+        style={styles.body}
+        contentContainerStyle={styles.bodyContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <Text style={styles.shareLabel}>Share an update</Text>
+
+        <TextInput
+          value={updateText}
+          onChangeText={setUpdateText}
+          style={styles.shareInput}
+          multiline
+          textAlignVertical="top"
+          placeholder=""
+        />
+
+        <Pressable
+          onPress={handlePickImage}
+          style={({ pressed }) => [styles.uploadButton, pressed && styles.uploadButtonPressed]}
+        >
+          <Text style={styles.uploadButtonText}>Upload image</Text>
+        </Pressable>
+
+        <ImageBackground
+          source={require("../assets/images/user updates.png")}
+          resizeMode="cover"
+          style={styles.updatesBackground}
+          imageStyle={styles.updatesBackgroundImage}
+        >
+          {updatePosts.map((post) => (
+            <View key={post.id} style={styles.postCard}>
+              <View style={styles.avatarCircle}>
+                <Ionicons name="person" size={38} color="#fff" />
+              </View>
+
+              <View style={styles.postMain}>
+                <View style={styles.postHeaderRow}>
+                  <Text style={styles.postName}>{post.name}</Text>
+                  <Text style={styles.postTime}>{post.time}</Text>
+                </View>
+
+                <Text style={styles.postContent}>{post.content}</Text>
+
+                <View style={styles.postFooterRow}>
+                  <View style={styles.reactionGroup}>
+                    <Feather name="heart" size={20} color="#2D3E2D" />
+                    <Text style={styles.reactionText}>{post.likes}</Text>
+                  </View>
+
+                  <View style={styles.reactionGroup}>
+                    <Feather name="message-square" size={19} color="#2D3E2D" />
+                    <Text style={styles.reactionText}>{post.comments}</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+          ))}
+        </ImageBackground>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
