@@ -250,3 +250,23 @@ avatarCircle: {
   shadowRadius: 10,
   elevation: 4,
 },
+
+postMain: {
+  flex: 1,
+},
+postHeaderRow: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+},
+postName: {
+  color: "#2D3E2D",
+  fontSize: 16,
+  fontWeight: "800",
+},
+postTime: {
+  color: "#7A8A7A",
+  fontSize: 12,
+  fontWeight: "700",
+  marginRight: 8,
+},
