@@ -79,3 +79,14 @@ export default function UserProfileScreen() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  safeArea: { flex: 1 },
+  contentSection: { flex: 1 },
+  contentContainer: {
+    paddingHorizontal: 30,
+    paddingTop: 48,
+    paddingBottom: 44,
+    gap: 24,
+  },
+});
