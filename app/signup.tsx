@@ -423,9 +423,7 @@ export default function SignupScreen() {
               >
                 <ThemedText
                   style={[styles.primaryButtonText, { color: buttonText }]}
-                >
-                  {loading ? "Creating..." : "Create Account {'>'}"}
-                </ThemedText>
+                ></ThemedText>
               </Pressable>
 
               <Pressable
