@@ -1,14 +1,14 @@
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
-    Alert,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Switch,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -116,7 +116,7 @@ export default function LiveAlert() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Colors.light.signupBackground },
+  safe: { flex: 1, backgroundColor: Colors.light.background },
   header: { height: 120, backgroundColor: '#2f6a39' },
   container: { padding: 20, paddingTop: 24 },
   rowTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 },
@@ -129,11 +129,18 @@ const styles = StyleSheet.create({
   countryText: { color: '#2f6a39', fontWeight: '600' },
   input: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.light.signupInputBackground,
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 10,
     color: '#000',
+    borderWidth: 1,
+    borderColor: Colors.light.signupBorder,
+    shadowColor: Colors.light.signupShadow,
+    shadowOpacity: 0.12,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 3,
+    elevation: 2,
   },
   confirmButton: {
     alignSelf: 'flex-end',
