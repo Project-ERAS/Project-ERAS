@@ -1,44 +1,53 @@
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
+import type { ImageSourcePropType } from "react-native";
 import {
-  Image,
-  ImageBackground,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    Image,
+    ImageBackground,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type RouterPushArg = Parameters<ReturnType<typeof useRouter>["push"]>[0];
 
-type QuickAction = {
+type QuickActionBase = {
   title: string;
   subtitle: string;
   route: RouterPushArg;
   iconBackgroundColor: string;
-  type: "emoji" | "image";
-  icon: string | number;
-  iconTintColor?: string;
   keywords?: string[];
 };
+
+type QuickAction =
+  | (QuickActionBase & {
+      type: "emoji";
+      icon: string;
+    })
+  | (QuickActionBase & {
+      type: "image";
+      icon: ImageSourcePropType;
+      iconTintColor?: string;
+    });
 
 // --- Main Home Screen Component ---
 export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
 
-  const quickActions = useMemo(() => {
+  const quickActions = useMemo<QuickAction[]>(() => {
     return [
       {
         title: "Live Alert",
         subtitle: "Active monitoring",
         route: "/live-alert",
         iconBackgroundColor: "#FFFFFF",
-        type: "image" as const,
+        type: "image",
         icon: require("@/assets/icons/live alert.jpeg"),
         keywords: ["alert", "live", "monitor", "monitoring", "warning", "otp"],
       },
@@ -47,7 +56,7 @@ export default function HomeScreen() {
         subtitle: "Past incidents",
         route: "/history_search",
         iconBackgroundColor: "#FFFFFF",
-        type: "image" as const,
+        type: "image",
         icon: require("@/assets/icons/history.jpeg"),
         keywords: ["history", "past", "incidents", "search"],
       },
@@ -55,8 +64,8 @@ export default function HomeScreen() {
         title: "Live Feed",
         subtitle: "Camera streams",
         route: "/Live-Camera-Feed",
-        iconBackgroundColor: "#F0E5FF",
-        type: "image" as const,
+        iconBackgroundColor: "#FFFFFF",
+        type: "image",
         icon: require("@/assets/icons/livefeed.jpeg"),
         keywords: ["camera", "live", "feed", "stream", "streams"],
       },
@@ -64,13 +73,13 @@ export default function HomeScreen() {
         title: "Updates",
         subtitle: "Latest news",
         route: "/User-Updates",
-        iconBackgroundColor: "#FFF5E5",
-        type: "image" as const,
+        iconBackgroundColor: "#FFFFFF",
+        type: "image",
         icon: require("@/assets/icons/user updates.jpeg"),
         iconTintColor: "#000",
         keywords: ["updates", "news", "latest"],
       },
-    ] satisfies QuickAction[];
+    ];
   }, []);
 
   const filteredQuickActions = useMemo(() => {
