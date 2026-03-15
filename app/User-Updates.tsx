@@ -131,11 +131,6 @@ export default function UserUpdatesScreen() {
                   <Feather name="message-square" size={19} color="#2D3E2D" />
                   <Text style={styles.reactionText}>{post.comments}</Text>
                 </View>
-
-                <View style={styles.imageChip}>
-                  <Ionicons name="image" size={20} color="#4A6A4A" />
-                  <Text style={styles.imageChipText}>image</Text>
-                </View>
               </View>
             </View>
           </View>
@@ -305,24 +300,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginLeft: 5,
     fontWeight: "700",
-  },
-  imageChip: {
-    marginLeft: "auto",
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#F0F4F0",
-    borderRadius: 14,
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    minWidth: 104,
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "#E8EEE8",
-  },
-  imageChipText: {
-    fontSize: 14,
-    color: "#4A6A4A",
-    marginLeft: 5,
-    fontWeight: "800",
   },
 });
