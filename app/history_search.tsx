@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
+  Pressable,
   SafeAreaView,
   StatusBar,
   StyleSheet,
@@ -58,13 +59,15 @@ export default function HistorySearchScreen() {
           />
         </View>
 
-        <TouchableOpacity 
-          style={styles.enterButton}
+        <Pressable
+          style={({ pressed }) => [
+            styles.enterButton,
+            pressed ? styles.enterButtonPressed : null,
+          ]}
           onPress={handleEnter}
-          activeOpacity={0.85}
         >
           <Text style={styles.enterButtonText}>Enter</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </SafeAreaView>
   );
@@ -148,7 +151,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   enterButton: {
-    backgroundColor: '#2F6A39',
+    backgroundColor: '#93cc72',
     borderRadius: 14,
     paddingVertical: 14,
     paddingHorizontal: 20,
@@ -162,6 +165,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.12,
     shadowRadius: 10,
     elevation: 4,
+  },
+  enterButtonPressed: {
+    backgroundColor: '#4c9c3e',
   },
   enterButtonText: {
     color: '#fff',
