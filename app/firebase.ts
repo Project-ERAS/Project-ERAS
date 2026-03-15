@@ -1,6 +1,4 @@
-import { getApps, getApp, initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';git checkout -b fix-firebase-config
-import { getFirestore } from 'firebase/firestore';
+import { getApps, initializeApp } from "firebase/app";
 
 // TODO: Replace these values with your Firebase project's config.
 const firebaseConfig = {
@@ -10,7 +8,7 @@ const firebaseConfig = {
   storageBucket: "eras-cfa09.firebasestorage.app",
   messagingSenderId: "318087849877",
   appId: "1:318087849877:web:49a4b74765c976081d789c",
-  measurementId: "G-JNLJNVLBCJ"
+  measurementId: "G-JNLJNVLBCJ",
 };
 
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
