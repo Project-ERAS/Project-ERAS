@@ -2,12 +2,12 @@ import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
   Alert,
+  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Switch,
   TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native';
 
@@ -123,9 +123,9 @@ export default function LiveAlert() {
             />
           </View>
 
-          <TouchableOpacity onPress={onConfirm} style={styles.confirmButton} activeOpacity={0.85}>
+          <Pressable onPress={onConfirm} style={({ pressed }) => [styles.confirmButton, pressed && styles.confirmButtonPressed]}>
             <ThemedText style={styles.confirmText}>Confirm</ThemedText>
-          </TouchableOpacity>
+          </Pressable>
 
           <View style={styles.attentionWrap} pointerEvents="none">
             <LottieView
@@ -179,8 +179,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
     padding: 18,
-    borderWidth: 1,
-    borderColor: '#E8EEE8',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.06,
@@ -229,7 +227,7 @@ const styles = StyleSheet.create({
   },
   confirmButton: {
     alignSelf: 'stretch',
-    backgroundColor: '#2f6a39',
+    backgroundColor: '#93cc72',
     paddingVertical: 14,
     borderRadius: 16,
     alignItems: 'center',
@@ -238,6 +236,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.12,
     shadowRadius: 14,
     elevation: 5,
+  },
+  confirmButtonPressed: {
+    backgroundColor: '#4c9c3e',
   },
   confirmText: { color: '#fff', fontWeight: '800' },
 
