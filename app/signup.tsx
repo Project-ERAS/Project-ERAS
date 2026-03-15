@@ -252,9 +252,6 @@ export default function SignupScreen() {
 
                 <Pressable
                   accessibilityRole="button"
-                  onPress={() =>
-                    openExternalSignup("https://appleid.apple.com/sign-in")
-                  }
                   style={({ pressed }) => [
                     styles.socialButton,
                     {
