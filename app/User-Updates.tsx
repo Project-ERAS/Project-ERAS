@@ -168,3 +168,10 @@ const styles = StyleSheet.create({
   backgroundColor: "#F2F5F3",
 },
 
+bodyContent: {
+  paddingHorizontal: 22,
+  paddingTop: 28,
+  paddingBottom: 34,
+  flexGrow: 1,
+},
+
