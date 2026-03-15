@@ -77,13 +77,6 @@ export default function SignupScreen() {
 
   const showEmailHint = form.email.length > 0 && !emailValidation.ok;
   const showPasswordHint = form.password.length > 0 && !passwordValidation.ok;
-  const canSubmit = useMemo(() => {
-    return (
-      emailValidation.ok &&
-      passwordValidation.ok &&
-      form.username.trim().length > 0
-    );
-  }, [emailValidation.ok, form.username, passwordValidation.ok]);
 
   function updateField<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
