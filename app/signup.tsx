@@ -177,6 +177,14 @@ export default function SignupScreen() {
     }
   }
 
+  async function openExternalSignup(url: string) {
+    setSubmitError(null);
+    try {
+      await WebBrowser.openBrowserAsync(url);
+    } catch (err: any) {
+      setSubmitError(err?.message || "Failed to open signup page");
+    }
+  }
   return (
     <ImageBackground
       source={require("@/assets/icons/background.jpg")}
