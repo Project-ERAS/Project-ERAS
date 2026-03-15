@@ -11,6 +11,8 @@ import {
   View,
 } from 'react-native';
 
+import LottieView from 'lottie-react-native';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { ThemedText } from '@/components/themed-text';
@@ -124,6 +126,15 @@ export default function LiveAlert() {
           <TouchableOpacity onPress={onConfirm} style={styles.confirmButton} activeOpacity={0.85}>
             <ThemedText style={styles.confirmText}>Confirm</ThemedText>
           </TouchableOpacity>
+
+          <View style={styles.attentionWrap} pointerEvents="none">
+            <LottieView
+              source={require('@/assets/animations/Attention.json')}
+              autoPlay
+              loop
+              style={styles.attentionAnim}
+            />
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -229,4 +240,14 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   confirmText: { color: '#fff', fontWeight: '800' },
+
+  attentionWrap: {
+    marginTop: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  attentionAnim: {
+    width: 140,
+    height: 140,
+  },
 });
