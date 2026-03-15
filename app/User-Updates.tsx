@@ -22,32 +22,7 @@ type UpdatePost = {
   comments: number;
 };
 
-const updatePosts: UpdatePost[] = [
-  {
-    id: 1,
-    name: "Wathila gunarathna",
-    time: "12 min ago",
-    content: "Spotted a herd of 12 elephants near the tracker 10.",
-    likes: 5,
-    comments: 3,
-  },
-  {
-    id: 2,
-    name: "Tashmi fernando",
-    time: "15 min ago",
-    content: "Spotted an elephants near the tracker 2.",
-    likes: 7,
-    comments: 4,
-  },
-  {
-    id: 3,
-    name: "Imantha rathnayake",
-    time: "30 min ago",
-    content: "Saw a herd of 7 elephants near the tracker 5.",
-    likes: 20,
-    comments: 7,
-  },
-];
+const updatePosts: UpdatePost[] = [];
 
 export default function UserUpdatesScreen() {
   const router = useRouter();
@@ -78,7 +53,7 @@ export default function UserUpdatesScreen() {
           onPress={() => router.back()}
           activeOpacity={0.8}
         >
-          <Ionicons name="chevron-back" size={30} color={styles.headerTitle.color as string} />
+          <Ionicons name="chevron-back" size={30} color="#2D3E2D" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>User updates</Text>
       </View>
