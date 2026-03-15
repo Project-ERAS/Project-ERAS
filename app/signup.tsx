@@ -396,12 +396,6 @@ export default function SignupScreen() {
                 />
               </View>
 
-              {submitError ? (
-                <ThemedText style={{ color: linkColor }}>
-                  {submitError}
-                </ThemedText>
-              ) : null}
-
               <ThemedText style={[styles.terms, { color: mutedText }]}>
                 By creating an account, you agree to the terms of service. For
                 more information about E.R.A.S information, see the project info
