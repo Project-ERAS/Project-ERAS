@@ -37,8 +37,8 @@ export default function HomeScreen() {
         subtitle: "Active monitoring",
         route: "/live-alert",
         iconBackgroundColor: "#FFE5E5",
-        type: "emoji" as const,
-        icon: "⚠️",
+        type: "image" as const,
+        icon: require("@/assets/icons/live alert.jpeg"),
         keywords: ["alert", "live", "monitor", "monitoring", "warning", "otp"],
       },
       {
@@ -46,8 +46,8 @@ export default function HomeScreen() {
         subtitle: "Past incidents",
         route: "/history_search",
         iconBackgroundColor: "#E5F0FF",
-        type: "emoji" as const,
-        icon: "🕒",
+        type: "image" as const,
+        icon: require("@/assets/icons/history.jpeg"),
         keywords: ["history", "past", "incidents", "search"],
       },
       {
