@@ -2,8 +2,7 @@ import { router } from "expo-router";
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
-  signOut,
-  updateProfile,
+  updateProfile
 } from "firebase/auth";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { useMemo, useState } from "react";
@@ -145,12 +144,6 @@ export default function SignupScreen() {
           throw profileErr;
         }
       }
-
-      await signOut(auth);
-      router.replace({
-        pathname: "/verify-email",
-        params: { email },
-      } as any);
     } catch (err: any) {
       const code = typeof err?.code === "string" ? err.code : null;
       if (code === "auth/network-request-failed") {
