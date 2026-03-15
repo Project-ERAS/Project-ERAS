@@ -3,12 +3,12 @@ import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
+  Pressable,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -48,13 +48,12 @@ export default function UserUpdatesScreen() {
       <StatusBar barStyle="dark-content" />
 
       <View style={styles.header}>
-        <TouchableOpacity
+        <Pressable
           style={styles.backButton}
           onPress={() => router.back()}
-          activeOpacity={0.8}
         >
           <Ionicons name="chevron-back" size={30} color="#2D3E2D" />
-        </TouchableOpacity>
+        </Pressable>
         <Text style={styles.headerTitle}>User updates</Text>
       </View>
 
@@ -74,13 +73,12 @@ export default function UserUpdatesScreen() {
           placeholder=""
         />
 
-        <TouchableOpacity
-          style={styles.uploadButton}
-          activeOpacity={0.85}
+        <Pressable
           onPress={handlePickImage}
+          style={({ pressed }) => [styles.uploadButton, pressed && styles.uploadButtonPressed]}
         >
           <Text style={styles.uploadButtonText}>Upload image</Text>
-        </TouchableOpacity>
+        </Pressable>
 
         {updatePosts.map((post) => (
           <View key={post.id} style={styles.postCard}>
@@ -186,7 +184,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   uploadButton: {
-    backgroundColor: "#2f6a39",
+    backgroundColor: "#93cc72",
     borderRadius: 16,
     paddingVertical: 12,
     paddingHorizontal: 16,
@@ -197,6 +195,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.12,
     shadowRadius: 12,
     elevation: 5,
+  },
+  uploadButtonPressed: {
+    backgroundColor: "#4c9c3e",
   },
   uploadButtonText: {
     color: "#fff",
