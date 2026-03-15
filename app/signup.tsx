@@ -141,7 +141,40 @@ export default function SignupScreen() {
           },
           { merge: true },
         );
-      
+      } catch (profileErr: any) {
+        const profileCode =
+          typeof profileErr?.code === "string" ? profileErr.code : null;
+        if (profileCode !== "permission-denied") {
+          throw profileErr;
+        }
+      }
+
+      await signOut(auth);
+      router.replace({
+        pathname: "/verify-email",
+        params: { email },
+      } as any);
+    } catch (err: any) {
+      const code = typeof err?.code === "string" ? err.code : null;
+      if (code === "auth/network-request-failed") {
+        const useEmulators =
+          typeof process !== "undefined" &&
+          typeof process.env !== "undefined" &&
+          (process.env.EXPO_PUBLIC_USE_FIREBASE_EMULATORS ?? "0") === "1";
+        setSubmitError(
+          useEmulators
+            ? "Network request failed. Firebase emulators may be enabled; set EXPO_PUBLIC_USE_FIREBASE_EMULATORS=0 on device."
+            : "Network request failed. Check your internet connection and Firebase project settings.",
+        );
+      } else if (code === "auth/email-already-in-use") {
+        setSubmitError("Email is already in use");
+      } else if (code === "auth/invalid-email") {
+        setSubmitError("Invalid email address");
+      } else if (code === "auth/weak-password") {
+        setSubmitError("Password is too weak");
+      } else {
+        setSubmitError(err?.message || "Failed to create account");
+      }
     } finally {
       setLoading(false);
     }
