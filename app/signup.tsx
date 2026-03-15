@@ -225,11 +225,6 @@ export default function SignupScreen() {
               <View style={styles.socialSection}>
                 <Pressable
                   accessibilityRole="button"
-                  onPress={() =>
-                    openExternalSignup(
-                      "https://accounts.google.com/signin/v2/identifier",
-                    )
-                  }
                   style={({ pressed }) => [
                     styles.socialButton,
                     {
