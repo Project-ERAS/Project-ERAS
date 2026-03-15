@@ -323,7 +323,7 @@ export default function SignupScreen() {
                   Already have an account?{" "}
                 </ThemedText>
                 <Pressable onPress={() => router.push("/signin" as any)}>
-                  <ThemedText style={[styles.signInLink, { color: linkColor }]}>
+                  <ThemedText style={[styles.signInLink, { color: black }]}>
                     Sign in
                   </ThemedText>
                 </Pressable>
