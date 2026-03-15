@@ -22,6 +22,7 @@ type QuickAction = {
   iconBackgroundColor: string;
   type: "emoji" | "image";
   icon: string | number;
+  iconTintColor?: string;
   keywords?: string[];
 };
 
@@ -55,8 +56,8 @@ export default function HomeScreen() {
         subtitle: "Camera streams",
         route: "/Live-Camera-Feed",
         iconBackgroundColor: "#F0E5FF",
-        type: "emoji" as const,
-        icon: "📹",
+        type: "image" as const,
+        icon: require("@/assets/icons/livefeed.jpeg"),
         keywords: ["camera", "live", "feed", "stream", "streams"],
       },
       {
@@ -65,7 +66,8 @@ export default function HomeScreen() {
         route: "/User-Updates",
         iconBackgroundColor: "#FFF5E5",
         type: "image" as const,
-        icon: require("@/assets/images/mobile.png"),
+        icon: require("@/assets/icons/user updates.jpeg"),
+        iconTintColor: "#000",
         keywords: ["updates", "news", "latest"],
       },
     ] satisfies QuickAction[];
@@ -178,7 +180,12 @@ export default function HomeScreen() {
                       ) : (
                         <Image
                           source={action.icon}
-                          style={styles.navIconImage}
+                          style={[
+                            styles.navIconImage,
+                            action.iconTintColor
+                              ? { tintColor: action.iconTintColor }
+                              : null,
+                          ]}
                         />
                       )}
                     </View>

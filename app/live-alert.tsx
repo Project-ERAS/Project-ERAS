@@ -33,7 +33,7 @@ export default function LiveAlert() {
         const p = await AsyncStorage.getItem(PHONE_KEY);
         setEnabled(v === 'true');
         setPhone(p ?? '');
-      } catch (e) {
+      } catch {
         // ignore load errors
       } finally {
         setLoading(false);
@@ -45,7 +45,7 @@ export default function LiveAlert() {
     setEnabled(value);
     try {
       await AsyncStorage.setItem(ENABLE_KEY, value ? 'true' : 'false');
-    } catch (e) {
+    } catch {
       // noop
     }
   };
@@ -69,7 +69,7 @@ export default function LiveAlert() {
       await AsyncStorage.setItem(PHONE_KEY, phone);
       // after saving navigate to the OTP entry screen
       router.push('/live-alert/otp');
-    } catch (e) {
+    } catch {
       Alert.alert('Error', 'Failed to save phone number.');
     }
   };
