@@ -175,3 +175,9 @@ bodyContent: {
   flexGrow: 1,
 },
 
+shareLabel: {
+  fontSize: 20,
+  color: "#2D3E2D",
+  fontWeight: "800",
+  marginBottom: 14,
+},
