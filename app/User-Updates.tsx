@@ -116,7 +116,7 @@ export default function UserUpdatesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8FAF9",
+    backgroundColor: "#F2F5F3",
   },
   header: {
     height: 92,
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    backgroundColor: "#F8FAF9",
+    backgroundColor: "#F2F5F3",
   },
   bodyContent: {
     paddingHorizontal: 22,
