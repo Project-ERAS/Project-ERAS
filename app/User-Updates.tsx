@@ -284,3 +284,17 @@ postFooterRow: {
   alignItems: "center",
   marginTop: 10,
 },
+
+reactionGroup: {
+  flexDirection: "row",
+  alignItems: "center",
+  marginRight: 16,
+},
+reactionText: {
+  color: "#2D3E2D",
+  fontSize: 14,
+  marginLeft: 5,
+  fontWeight: "700",
+},
+
+});
