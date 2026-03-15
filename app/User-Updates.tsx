@@ -82,7 +82,7 @@ export default function UserUpdatesScreen() {
         </Pressable>
 
         <ImageBackground
-          source={require("../assets/images/user updates.jpg")}
+          source={require("../assets/images/user updates.png")}
           resizeMode="cover"
           style={styles.updatesBackground}
           imageStyle={styles.updatesBackgroundImage}
@@ -169,6 +169,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
     paddingTop: 28,
     paddingBottom: 34,
+    flexGrow: 1,
   },
   shareLabel: {
     fontSize: 20,
@@ -215,10 +216,13 @@ const styles = StyleSheet.create({
   updatesBackground: {
     marginTop: 16,
     width: "100%",
+    flex: 1,
     minHeight: 240,
+    backgroundColor: "#F2F5F3",
   },
   updatesBackgroundImage: {
-    opacity: 0.9,
+    opacity: 0.35,
+    backgroundColor: "#F2F5F3",
   },
   postCard: {
     marginTop: 34,
