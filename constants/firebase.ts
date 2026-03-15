@@ -31,3 +31,11 @@ export const auth =
         }
       })();
 export const db = getFirestore(app);
+let emulatorsConnected = false;
+
+const shouldUseEmulators =
+  typeof __DEV__ !== "undefined" &&
+  __DEV__ &&
+  typeof process !== "undefined" &&
+  typeof process.env !== "undefined" &&
+  (process.env.EXPO_PUBLIC_USE_FIREBASE_EMULATORS ?? "0") === "1";
