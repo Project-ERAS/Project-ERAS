@@ -2,13 +2,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
-    SafeAreaView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Pressable,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 export default function HistorySearchScreen() {
@@ -25,15 +26,16 @@ export default function HistorySearchScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
       
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity 
           style={styles.backButton}
           onPress={() => router.back()}
+          activeOpacity={0.8}
         >
-          <Ionicons name="chevron-back" size={32} color="#fff" />
+          <Ionicons name="chevron-back" size={22} color="#2D3E2D" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>History</Text>
       </View>
@@ -43,29 +45,29 @@ export default function HistorySearchScreen() {
         <Text style={styles.label}>Enter location</Text>
         
         <View style={styles.searchContainer}>
-          <Ionicons 
-            name="search" 
-            size={20} 
-            color="#666" 
-            style={styles.searchIcon}
-          />
+          <View style={styles.searchIconWrapper}>
+            <Ionicons name="search" size={18} color="#7A8A7A" />
+          </View>
           <TextInput
             style={styles.input}
             value={location}
             onChangeText={setLocation}
-            placeholder=""
-            placeholderTextColor="#999"
+            placeholder="Search by location..."
+            placeholderTextColor="#7A8A7A"
             returnKeyType="search"
             onSubmitEditing={handleEnter}
           />
         </View>
 
-        <TouchableOpacity 
-          style={styles.enterButton}
+        <Pressable
+          style={({ pressed }) => [
+            styles.enterButton,
+            pressed ? styles.enterButtonPressed : null,
+          ]}
           onPress={handleEnter}
         >
           <Text style={styles.enterButtonText}>Enter</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </SafeAreaView>
   );
@@ -74,81 +76,102 @@ export default function HistorySearchScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#b8d4a8',
+    backgroundColor: '#F8FAF9',
   },
   header: {
-    backgroundColor: '#507852',
-    paddingVertical: 20,
+    backgroundColor: '#FFFFFF',
     paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 12,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E8EEE8',
   },
   backButton: {
-    marginRight: 15,
+    width: 40,
+    height: 40,
+    borderRadius: 14,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#E8EEE8',
   },
   headerTitle: {
-    fontSize: 28,
-    fontWeight: '600',
-    color: '#fff',
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#2D3E2D',
     flex: 1,
     textAlign: 'center',
-    marginRight: 47, // To center the title with back button present
+    marginRight: 40,
   },
   content: {
     flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 40,
+    paddingHorizontal: 20,
+    paddingTop: 24,
   },
   label: {
-    fontSize: 16,
-    color: '#4a5e4a',
-    marginBottom: 12,
-    fontWeight: '500',
+    fontSize: 14,
+    color: '#2D3E2D',
+    marginBottom: 10,
+    fontWeight: '700',
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 25,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    marginBottom: 20,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    marginBottom: 18,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 4,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: '#E8EEE8',
   },
-  searchIcon: {
-    marginRight: 10,
+  searchIconWrapper: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
   },
   input: {
     flex: 1,
     fontSize: 16,
-    color: '#333',
+    color: '#2D3E2D',
+    fontWeight: '600',
   },
   enterButton: {
-    backgroundColor: '#507852',
-    borderRadius: 20,
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    alignSelf: 'flex-end',
+    backgroundColor: '#93cc72',
+    borderRadius: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    alignSelf: 'stretch',
+    alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 3,
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    elevation: 4,
+  },
+  enterButtonPressed: {
+    backgroundColor: '#4c9c3e',
   },
   enterButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '800',
   },
 });
