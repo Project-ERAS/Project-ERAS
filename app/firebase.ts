@@ -1,5 +1,5 @@
-import { getApps, initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { getApps, getApp, initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';git checkout -b fix-firebase-config
 import { getFirestore } from 'firebase/firestore';
 
 // TODO: Replace these values with your Firebase project's config.
