@@ -137,9 +137,11 @@ const styles = StyleSheet.create({
 
   hero: {
     height: 170,
-    backgroundColor: '#2f6a39',
+    backgroundColor: '#F8FAF9',
     borderBottomLeftRadius: 28,
     borderBottomRightRadius: 28,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E8EEE8',
   },
   heroInner: {
     flex: 1,
@@ -150,14 +152,14 @@ const styles = StyleSheet.create({
   heroTitle: {
     fontSize: 28,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: '#2D3E2D',
     lineHeight: 32,
   },
   heroSubtitle: {
     marginTop: 6,
     fontSize: 14,
     fontWeight: '500',
-    color: 'rgba(255, 255, 255, 0.85)',
+    color: '#7A8A7A',
   },
 
   card: {
