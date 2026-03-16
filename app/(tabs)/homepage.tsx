@@ -71,12 +71,11 @@ export default function HomeScreen() {
       },
       {
         title: "User Updates",
-        subtitle: "Latest news",
+        subtitle: "User-submitted information",
         route: "/User-Updates",
         iconBackgroundColor: "#FFFFFF",
         type: "image",
-        icon: require("@/assets/icons/user updates.jpeg"),
-        iconTintColor: "#000",
+        icon: require("@/assets/icons/User Updates.jpg"),
         keywords: ["updates", "news", "latest"],
       },
     ];
