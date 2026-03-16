@@ -206,8 +206,8 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   profileNavIconImage: {
-    width: 34,
-    height: 34,
+    width: 38,
+    height: 38,
     resizeMode: 'contain',
   },
   navLabel: {
