@@ -2,15 +2,15 @@ import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
 import type { ImageSourcePropType } from "react-native";
 import {
-    Image,
-    ImageBackground,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Image,
+  ImageBackground,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -70,7 +70,7 @@ export default function HomeScreen() {
         keywords: ["camera", "live", "feed", "stream", "streams"],
       },
       {
-        title: "Updates",
+        title: "User Updates",
         subtitle: "Latest news",
         route: "/User-Updates",
         iconBackgroundColor: "#FFFFFF",
