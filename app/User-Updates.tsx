@@ -7,6 +7,7 @@ import {
   Pressable,
   ScrollView,
   StatusBar,
+  StyleSheet,
   Text,
   TextInput,
   View
@@ -180,6 +181,19 @@ shareLabel: {
   color: "#2D3E2D",
   fontWeight: "800",
   marginBottom: 14,
+},
+
+shareInput: {
+  backgroundColor: "#FFFFFF",
+  borderWidth: 1,
+  borderColor: "#E8EEE8",
+  borderRadius: 16,
+  paddingHorizontal: 14,
+  paddingVertical: 12,
+  minHeight: 110,
+  color: "#2D3E2D",
+  fontSize: 16,
+  fontWeight: "600",
 },
 
 uploadButton: {
