@@ -51,7 +51,7 @@ export default function UserUpdatesScreen() {
       <View style={styles.header}>
         <Pressable
           style={styles.backButton}
-          onPress={() => router.back()}
+          onPress={() => router.replace("/(tabs)/homepage")}
         >
           <Ionicons name="chevron-back" size={30} color="#2D3E2D" />
         </Pressable>
