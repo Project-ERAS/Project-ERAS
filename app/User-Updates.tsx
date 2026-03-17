@@ -10,7 +10,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  View,
+  View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -51,7 +51,7 @@ export default function UserUpdatesScreen() {
       <View style={styles.header}>
         <Pressable
           style={styles.backButton}
-          onPress={() => router.back()}
+          onPress={() => router.replace("/(tabs)/homepage")}
         >
           <Ionicons name="chevron-back" size={30} color="#2D3E2D" />
         </Pressable>
@@ -126,6 +126,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F2F5F3",
   },
+
+
   header: {
     height: 92,
     backgroundColor: "#FFFFFF",
@@ -161,140 +163,152 @@ const styles = StyleSheet.create({
     color: "#2D3E2D",
     marginTop: 1,
   },
+
   body: {
-    flex: 1,
-    backgroundColor: "#F2F5F3",
-  },
-  bodyContent: {
-    paddingHorizontal: 22,
-    paddingTop: 28,
-    paddingBottom: 34,
-    flexGrow: 1,
-  },
-  shareLabel: {
-    fontSize: 20,
-    color: "#2D3E2D",
-    fontWeight: "800",
-    marginBottom: 14,
-  },
-  shareInput: {
-    minHeight: 210,
-    borderRadius: 20,
-    backgroundColor: "#FFFFFF",
-    padding: 16,
-    fontSize: 16,
-    color: "#2D3E2D",
-    borderWidth: 1,
-    borderColor: "#E8EEE8",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 4,
-  },
-  uploadButton: {
-    backgroundColor: "#93cc72",
-    borderRadius: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    marginTop: 14,
-    alignSelf: "flex-end",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.12,
-    shadowRadius: 12,
-    elevation: 5,
-  },
-  uploadButtonPressed: {
-    backgroundColor: "#4c9c3e",
-  },
-  uploadButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "800",
-  },
-  updatesBackground: {
-    marginTop: 16,
-    width: "100%",
-    flex: 1,
-    minHeight: 240,
-    backgroundColor: "#F2F5F3",
-  },
-  updatesBackgroundImage: {
-    opacity: 0.35,
-    backgroundColor: "#F2F5F3",
-  },
-  postCard: {
-    marginTop: 34,
-    borderRadius: 20,
-    paddingVertical: 18,
-    paddingHorizontal: 16,
-    backgroundColor: "#FFFFFF",
-    borderWidth: 1,
-    borderColor: "#F0F4F0",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 16,
-    elevation: 6,
-    flexDirection: "row",
-    gap: 14,
-  },
-  avatarCircle: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: "#93cc72",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 4,
-  },
-  postMain: {
-    flex: 1,
-  },
-  postHeaderRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  postName: {
-    color: "#2D3E2D",
-    fontSize: 16,
-    fontWeight: "800",
-  },
-  postTime: {
-    color: "#7A8A7A",
-    fontSize: 12,
-    fontWeight: "700",
-    marginRight: 8,
-  },
-  postContent: {
-    color: "#4A6A4A",
-    fontSize: 16,
-    marginTop: 6,
-    lineHeight: 24,
-    fontWeight: "600",
-    maxWidth: "95%",
-  },
-  postFooterRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 10,
-  },
-  reactionGroup: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginRight: 16,
-  },
-  reactionText: {
-    color: "#2D3E2D",
-    fontSize: 14,
-    marginLeft: 5,
-    fontWeight: "700",
-  },
+  flex: 1,
+  backgroundColor: "#F2F5F3",
+},
+
+bodyContent: {
+  paddingHorizontal: 22,
+  paddingTop: 28,
+  paddingBottom: 34,
+  flexGrow: 1,
+},
+
+shareLabel: {
+  fontSize: 20,
+  color: "#2D3E2D",
+  fontWeight: "800",
+  marginBottom: 14,
+},
+
+shareInput: {
+  backgroundColor: "#FFFFFF",
+  borderWidth: 1,
+  borderColor: "#E8EEE8",
+  borderRadius: 16,
+  paddingHorizontal: 14,
+  paddingVertical: 12,
+  minHeight: 110,
+  color: "#2D3E2D",
+  fontSize: 16,
+  fontWeight: "600",
+},
+
+uploadButton: {
+  backgroundColor: "#93cc72",
+  borderRadius: 16,
+  paddingVertical: 12,
+  paddingHorizontal: 16,
+  marginTop: 14,
+  alignSelf: "flex-end",
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 3 },
+  shadowOpacity: 0.12,
+  shadowRadius: 12,
+  elevation: 5,
+},
+
+uploadButtonPressed: {
+  backgroundColor: "#4c9c3e",
+},
+
+uploadButtonText: {
+  color: "#fff",
+  fontSize: 16,
+  fontWeight: "800",
+},
+
+updatesBackground: {
+  marginTop: 16,
+  width: "100%",
+  flex: 1,
+  minHeight: 240,
+  backgroundColor: "#F2F5F3",
+},
+
+updatesBackgroundImage: {
+  opacity: 0.35,
+  backgroundColor: "#F2F5F3",
+},
+
+postCard: {
+  marginTop: 34,
+  borderRadius: 20,
+  paddingVertical: 18,
+  paddingHorizontal: 16,
+  backgroundColor: "#FFFFFF",
+  borderWidth: 1,
+  borderColor: "#F0F4F0",
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.06,
+  shadowRadius: 16,
+  elevation: 6,
+  flexDirection: "row",
+  gap: 14,
+},
+
+avatarCircle: {
+  width: 72,
+  height: 72,
+  borderRadius: 36,
+  backgroundColor: "#93cc72",
+  alignItems: "center",
+  justifyContent: "center",
+  marginTop: 12,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.1,
+  shadowRadius: 10,
+  elevation: 4,
+},
+
+postMain: {
+  flex: 1,
+},
+postHeaderRow: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+},
+postName: {
+  color: "#2D3E2D",
+  fontSize: 16,
+  fontWeight: "800",
+},
+postTime: {
+  color: "#7A8A7A",
+  fontSize: 12,
+  fontWeight: "700",
+  marginRight: 8,
+},
+
+postContent: {
+  color: "#4A6A4A",
+  fontSize: 16,
+  marginTop: 6,
+  lineHeight: 24,
+  fontWeight: "600",
+  maxWidth: "95%",
+},
+postFooterRow: {
+  flexDirection: "row",
+  alignItems: "center",
+  marginTop: 10,
+},
+
+reactionGroup: {
+  flexDirection: "row",
+  alignItems: "center",
+  marginRight: 16,
+},
+reactionText: {
+  color: "#2D3E2D",
+  fontSize: 14,
+  marginLeft: 5,
+  fontWeight: "700",
+},
+
 });

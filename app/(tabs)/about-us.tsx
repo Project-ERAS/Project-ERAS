@@ -16,7 +16,7 @@ export default function AboutUsScreen() {
             onPress={() => router.back()}
             activeOpacity={0.7}
           >
-            <Ionicons name="arrow-back" size={24} color="#fff" />
+            <Ionicons name="arrow-back" size={24} color="#2D3E2D" />
           </TouchableOpacity>
           
           <View style={styles.logoContainer}>
@@ -85,71 +85,79 @@ export default function AboutUsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#8FA888',
+    backgroundColor: '#F8FAF9',
   },
   safeArea: {
     flex: 1,
+    backgroundColor: '#F8FAF9',
   },
   header: {
-    backgroundColor: '#8FA888',
-    paddingTop: 20,
-    paddingBottom: 40,
-    paddingHorizontal: 20,
+    backgroundColor: '#FFFFFF',
+    paddingTop: 14,
+    paddingBottom: 18,
+    paddingHorizontal: 22,
     alignItems: 'center',
+    justifyContent: 'flex-end',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E8EEE8',
   },
   backButton: {
     position: 'absolute',
-    left: 20,
-    top: 20,
+    left: 18,
+    top: 10,
     width: 44,
     height: 44,
-    borderRadius: 22,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderWidth: 2,
-    borderColor: '#fff',
+    borderRadius: 16,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E8EEE8',
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
   },
   logoContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
+    gap: 12,
+    paddingTop: 8,
   },
   elephantImage: {
-    width: 140,
-    height: 140,
-    marginBottom: 20,
+    width: 44,
+    height: 44,
   },
   title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#fff',
-    letterSpacing: 0.5,
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#2D3E2D',
+    letterSpacing: 0.4,
   },
   content: {
     flex: 1,
-    backgroundColor: '#C8DBB3',
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
+    backgroundColor: '#F8FAF9',
   },
   contentContainer: {
-    paddingHorizontal: 30,
-    paddingTop: 50,
+    paddingHorizontal: 22,
+    paddingTop: 28,
     paddingBottom: 140,
   },
   missionHeading: {
-    fontSize: 26,
-    fontWeight: '700',
-    color: '#000',
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#2D3E2D',
     textAlign: 'center',
-    marginBottom: 30,
+    marginBottom: 16,
   },
   missionText: {
     fontSize: 16,
-    lineHeight: 28,
-    color: '#5A6B5A',
+    lineHeight: 26,
+    color: '#4A6A4A',
     textAlign: 'center',
-    fontWeight: '500',
+    fontWeight: '600',
   },
   spacer: {
     height: 40,
@@ -198,8 +206,8 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   profileNavIconImage: {
-    width: 34,
-    height: 34,
+    width: 38,
+    height: 38,
     resizeMode: 'contain',
   },
   navLabel: {

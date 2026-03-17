@@ -2,17 +2,15 @@ import { Feather, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
-	Platform,
-	Pressable,
-	SafeAreaView,
-	ScrollView,
-	StyleSheet,
-	Text,
-	TextInput,
-	View,
+  Platform,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
-
-import { useThemeColor } from "@/hooks/use-theme-color";
 
 export default function UserProfileScreen() {
   const [profile, setProfile] = useState({
@@ -23,11 +21,13 @@ export default function UserProfileScreen() {
   const [draftProfile, setDraftProfile] = useState(profile);
   const [isEditing, setIsEditing] = useState(false);
 
-  const headerGreen = useThemeColor({}, "signupPrimaryButton");
-  const backgroundGreen = useThemeColor({}, "signupBackground");
-  const fieldBackground = useThemeColor({}, "signupInputBackground");
-  const buttonText = useThemeColor({}, "signupButtonText");
-  const shadowColor = useThemeColor({}, "signupShadow");
+  const backgroundColor = "#F8FAF9";
+  const surfaceColor = "#FFFFFF";
+  const borderColor = "#E8EEE8";
+  const textPrimary = "#2D3E2D";
+  const accentGreen = "#93cc72";
+  const accentGreenPressed = "#4c9c3e";
+  const cardShadowColor = "#000";
   const webOutlineNone =
     Platform.OS === "web" ? ({ outlineStyle: "none" } as any) : null;
 
@@ -43,41 +43,50 @@ export default function UserProfileScreen() {
   }
 
   return (
-    <SafeAreaView
-      style={[styles.safeArea, { backgroundColor: backgroundGreen }]}
-    >
-      <View style={[styles.headerSection, { backgroundColor: headerGreen }]}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor }]}>
+      <View
+        style={[
+          styles.headerSection,
+          { backgroundColor: surfaceColor, borderBottomColor: borderColor },
+        ]}
+      >
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Go back"
           onPress={() => router.back()}
           style={({ pressed }) => [
             styles.backButton,
-            { opacity: pressed ? 0.8 : 1 },
+            {
+              opacity: pressed ? 0.8 : 1,
+              backgroundColor: surfaceColor,
+              borderColor,
+            },
           ]}
         >
-          <Ionicons name="arrow-back" size={32} color="#FFFFFF" />
+          <Ionicons name="arrow-back" size={28} color={textPrimary} />
         </Pressable>
 
         <View
           style={[
             styles.avatarCircle,
-            { backgroundColor: "#67C23A", shadowColor },
+            { backgroundColor: accentGreen, shadowColor: cardShadowColor },
           ]}
         >
-          <Ionicons name="person" size={72} color="#F3F3F3" />
+          <Ionicons name="person" size={64} color="#FFFFFF" />
         </View>
 
-        <Text style={styles.nameText}>{profile.fullName}</Text>
+        <Text style={[styles.nameText, { color: textPrimary }]}>
+          {profile.fullName}
+        </Text>
       </View>
 
       <ScrollView
-        style={styles.contentSection}
+        style={[styles.contentSection, { backgroundColor }]}
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.fieldGroup}>
-          <Text style={[styles.label, { color: headerGreen }]}>Full name</Text>
+          <Text style={[styles.label, { color: textPrimary }]}>Full name</Text>
           {isEditing ? (
             <TextInput
               value={draftProfile.fullName}
@@ -88,17 +97,25 @@ export default function UserProfileScreen() {
                 styles.inputCard,
                 styles.inputEditable,
                 webOutlineNone,
-                { backgroundColor: fieldBackground, shadowColor },
+                {
+                  backgroundColor: surfaceColor,
+                  shadowColor: cardShadowColor,
+                  borderColor,
+                },
               ]}
               placeholder="Enter full name"
               placeholderTextColor="#707070"
-              selectionColor={headerGreen}
+              selectionColor={accentGreen}
             />
           ) : (
             <View
               style={[
                 styles.inputCard,
-                { backgroundColor: fieldBackground, shadowColor },
+                {
+                  backgroundColor: surfaceColor,
+                  shadowColor: cardShadowColor,
+                  borderColor,
+                },
               ]}
             >
               <Text style={styles.inputText}>{profile.fullName}</Text>
@@ -107,7 +124,7 @@ export default function UserProfileScreen() {
         </View>
 
         <View style={styles.fieldGroup}>
-          <Text style={[styles.label, { color: headerGreen }]}>Email</Text>
+          <Text style={[styles.label, { color: textPrimary }]}>Email</Text>
           {isEditing ? (
             <TextInput
               value={draftProfile.email}
@@ -118,11 +135,15 @@ export default function UserProfileScreen() {
                 styles.inputCard,
                 styles.inputEditable,
                 webOutlineNone,
-                { backgroundColor: fieldBackground, shadowColor },
+                {
+                  backgroundColor: surfaceColor,
+                  shadowColor: cardShadowColor,
+                  borderColor,
+                },
               ]}
               placeholder="Enter email"
               placeholderTextColor="#707070"
-              selectionColor={headerGreen}
+              selectionColor={accentGreen}
               autoCapitalize="none"
               keyboardType="email-address"
             />
@@ -130,7 +151,11 @@ export default function UserProfileScreen() {
             <View
               style={[
                 styles.inputCard,
-                { backgroundColor: fieldBackground, shadowColor },
+                {
+                  backgroundColor: surfaceColor,
+                  shadowColor: cardShadowColor,
+                  borderColor,
+                },
               ]}
             >
               <Text style={styles.inputText}>{profile.email}</Text>
@@ -139,9 +164,7 @@ export default function UserProfileScreen() {
         </View>
 
         <View style={styles.fieldGroup}>
-          <Text style={[styles.label, { color: headerGreen }]}>
-            Phone number
-          </Text>
+          <Text style={[styles.label, { color: textPrimary }]}>Phone number</Text>
           {isEditing ? (
             <TextInput
               value={draftProfile.phone}
@@ -152,18 +175,26 @@ export default function UserProfileScreen() {
                 styles.inputCard,
                 styles.inputEditable,
                 webOutlineNone,
-                { backgroundColor: fieldBackground, shadowColor },
+                {
+                  backgroundColor: surfaceColor,
+                  shadowColor: cardShadowColor,
+                  borderColor,
+                },
               ]}
               placeholder="Enter phone number"
               placeholderTextColor="#707070"
-              selectionColor={headerGreen}
+              selectionColor={accentGreen}
               keyboardType="phone-pad"
             />
           ) : (
             <View
               style={[
                 styles.inputCard,
-                { backgroundColor: fieldBackground, shadowColor },
+                {
+                  backgroundColor: surfaceColor,
+                  shadowColor: cardShadowColor,
+                  borderColor,
+                },
               ]}
             >
               <Text style={styles.inputText}>{profile.phone}</Text>
@@ -178,8 +209,8 @@ export default function UserProfileScreen() {
             style={({ pressed }) => [
               styles.actionButton,
               {
-                backgroundColor: headerGreen,
-                shadowColor,
+                backgroundColor: pressed ? accentGreenPressed : accentGreen,
+                shadowColor: cardShadowColor,
                 opacity: pressed ? 0.86 : 1,
               },
             ]}
@@ -187,9 +218,9 @@ export default function UserProfileScreen() {
             <Feather
               name={isEditing ? "check" : "edit-2"}
               size={23}
-              color={buttonText}
+              color="#FFFFFF"
             />
-            <Text style={[styles.actionText, { color: buttonText }]}>
+            <Text style={[styles.actionText, { color: "#FFFFFF" }]}>
               {isEditing ? "Save" : "Edit"}
             </Text>
           </Pressable>
@@ -200,16 +231,14 @@ export default function UserProfileScreen() {
             style={({ pressed }) => [
               styles.actionButton,
               {
-                backgroundColor: headerGreen,
-                shadowColor,
+                backgroundColor: pressed ? accentGreenPressed : accentGreen,
+                shadowColor: cardShadowColor,
                 opacity: pressed ? 0.86 : 1,
               },
             ]}
           >
-            <Feather name="log-out" size={23} color={buttonText} />
-            <Text style={[styles.actionText, { color: buttonText }]}>
-              Logout
-            </Text>
+            <Feather name="log-out" size={23} color="#FFFFFF" />
+            <Text style={[styles.actionText, { color: "#FFFFFF" }]}>Logout</Text>
           </Pressable>
         </View>
       </ScrollView>
@@ -218,84 +247,74 @@ export default function UserProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
+  safeArea: { flex: 1 },
   headerSection: {
     alignItems: "center",
-    paddingTop: 20,
-    paddingBottom: 28,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
+    paddingTop: 14,
+    paddingBottom: 18,
+    borderBottomWidth: 1,
   },
   backButton: {
     position: "absolute",
-    left: 20,
-    top: 20,
+    left: 18,
+    top: 10,
     width: 48,
     height: 48,
-    borderRadius: 24,
-    borderWidth: 2,
-    borderColor: "#FFFFFF",
+    borderRadius: 16,
+    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
-  },
-  avatarCircle: {
-    width: 140,
-    height: 140,
-    borderRadius: 70,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 52,
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 6 },
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
     elevation: 4,
   },
+  avatarCircle: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 56,
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 6,
+  },
   nameText: {
-    color: "#FFFFFF",
-    marginTop: 20,
-    fontSize: 18,
-    fontWeight: "400",
+    marginTop: 16,
+    fontSize: 22,
+    fontWeight: "800",
   },
-  contentSection: {
-    flex: 1,
-  },
+  contentSection: { flex: 1 },
   contentContainer: {
-    paddingHorizontal: 30,
-    paddingTop: 48,
+    paddingHorizontal: 22,
+    paddingTop: 28,
     paddingBottom: 44,
     gap: 24,
   },
-  fieldGroup: {
-    gap: 10,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "500",
-    marginLeft: 8,
-  },
+  fieldGroup: { gap: 10 },
+  label: { fontSize: 14, fontWeight: "800", marginLeft: 8 },
   inputCard: {
     minHeight: 48,
-    borderRadius: 18,
+    borderRadius: 16,
     justifyContent: "center",
     paddingHorizontal: 16,
-    shadowOpacity: 0.22,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 5 },
-    elevation: 3,
+    borderWidth: 1,
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 4,
   },
-  inputText: {
-    color: "#121212",
-    fontSize: 16,
-    fontWeight: "400",
-  },
+  inputText: { color: "#2D3E2D", fontSize: 16, fontWeight: "600" },
   inputEditable: {
-    color: "#121212",
+    color: "#2D3E2D",
     fontSize: 16,
-    fontWeight: "400",
+    fontWeight: "600",
     paddingVertical: 12,
   },
+
   actionsRow: {
     flexDirection: "row",
     justifyContent: "center",
@@ -312,13 +331,10 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     paddingVertical: 12,
     paddingHorizontal: 16,
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 4,
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 6,
   },
-  actionText: {
-    fontSize: 16,
-    fontWeight: "500",
-  },
+  actionText: { fontSize: 16, fontWeight: "500" },
 });

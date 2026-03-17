@@ -2,15 +2,15 @@ import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
 import type { ImageSourcePropType } from "react-native";
 import {
-    Image,
-    ImageBackground,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Image,
+  ImageBackground,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -70,13 +70,12 @@ export default function HomeScreen() {
         keywords: ["camera", "live", "feed", "stream", "streams"],
       },
       {
-        title: "Updates",
-        subtitle: "Latest news",
+        title: "User Updates",
+        subtitle: "User-submitted information",
         route: "/User-Updates",
         iconBackgroundColor: "#FFFFFF",
         type: "image",
-        icon: require("@/assets/icons/user updates.jpeg"),
-        iconTintColor: "#000",
+        icon: require("@/assets/icons/User Updates.jpg"),
         keywords: ["updates", "news", "latest"],
       },
     ];
@@ -131,8 +130,7 @@ export default function HomeScreen() {
               </View>
               <View style={styles.titleContainer}>
                 <Text style={styles.welcomeText}>
-                  Welcome to{" "}
-                  <Text style={styles.welcomeTextStrong}>E.R.A.S</Text>
+                  Welcome to <Text style={styles.welcomeTextStrong}>E.R.A.S</Text>
                 </Text>
                 <Text style={styles.mainTitle}>Elephant Railway</Text>
                 <Text style={styles.mainTitle}>Alert System</Text>
@@ -191,6 +189,9 @@ export default function HomeScreen() {
                           source={action.icon}
                           style={[
                             styles.navIconImage,
+                            action.title === "User Updates"
+                              ? { width: 28, height: 28 }
+                              : null,
                             action.iconTintColor
                               ? { tintColor: action.iconTintColor }
                               : null,
