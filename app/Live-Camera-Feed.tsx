@@ -1,5 +1,6 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import LottieView from 'lottie-react-native';
 import { useState } from 'react';
 import {
   KeyboardAvoidingView,
@@ -207,27 +208,40 @@ export default function LiveCameraFeedScreen() {
         {/* Map Section */}
         {Platform.OS !== 'web' && MapView ? (
           <View style={[styles.mapContainer, { backgroundColor: surfaceColor, borderColor, shadowColor: cardShadowColor }]}>
-            <MapView
-              style={styles.map}
-              initialRegion={INITIAL_REGION}
-              provider="google"
-              zoomEnabled={true}
-              scrollEnabled={true}
-              pitchEnabled={true}
-              rotateEnabled={true}
-            >
-              {markers.map((camera) => (
-                <Marker
-                  key={camera.id}
-                  coordinate={{
-                    latitude: camera.latitude,
-                    longitude: camera.longitude,
-                  }}
-                  title={camera.name}
-                  description={camera.location}
+            {markers.length > 0 ? (
+              <MapView
+                style={styles.map}
+                initialRegion={INITIAL_REGION}
+                provider="google"
+                zoomEnabled={true}
+                scrollEnabled={true}
+                pitchEnabled={true}
+                rotateEnabled={true}
+              >
+                {markers.map((camera) => (
+                  <Marker
+                    key={camera.id}
+                    coordinate={{
+                      latitude: camera.latitude,
+                      longitude: camera.longitude,
+                    }}
+                    title={camera.name}
+                    description={camera.location}
+                  />
+                ))}
+              </MapView>
+            ) : (
+              <View style={styles.noResultsContainer}>
+                <MaterialIcons name="location-on" size={52} color={accentGreenPressed} />
+                <Text style={[styles.webMapTitle, { color: textPrimary }]}>Camera Locations</Text>
+                <LottieView
+                  source={require('../assets/animations/No results.json')}
+                  autoPlay
+                  loop
+                  style={styles.noResultsAnimation}
                 />
-              ))}
-            </MapView>
+              </View>
+            )}
           </View>
         ) : (
           <ScrollView style={[styles.mapContainer, { backgroundColor: surfaceColor, borderColor, shadowColor: cardShadowColor }]}>
@@ -254,7 +268,14 @@ export default function LiveCameraFeedScreen() {
                   </View>
                 ))
               ) : (
-                <Text style={[styles.noResultsText, { color: textSecondary }]}>No cameras found</Text>
+                <View style={styles.noResultsContainer}>
+                  <LottieView
+                    source={require('../assets/animations/No results.json')}
+                    autoPlay
+                    loop
+                    style={styles.noResultsAnimation}
+                  />
+                </View>
               )}
             </View>
           </ScrollView>
@@ -407,6 +428,16 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
     marginTop: 12,
     marginBottom: 16,
+  },
+  noResultsContainer: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+  },
+  noResultsAnimation: {
+    width: 220,
+    height: 220,
   },
   cameraItem: {
     width: '100%',
