@@ -1,17 +1,16 @@
-import { Colors } from '@/constants/theme';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
-    KeyboardAvoidingView,
-    Platform,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 let MapView: any;
@@ -80,8 +79,15 @@ export default function LiveCameraFeedScreen() {
   const [location, setLocation] = useState('');
   const [cameraNo, setCameraNo] = useState('');
   const [markers, setMarkers] = useState(CAMERA_LOCATIONS);
-  const colorScheme = 'light';
-  const colors = Colors[colorScheme];
+
+  const backgroundColor = '#F8FAF9';
+  const surfaceColor = '#FFFFFF';
+  const borderColor = '#E8EEE8';
+  const textPrimary = '#2D3E2D';
+  const textSecondary = '#7A8A7A';
+  const accentGreen = '#93cc72';
+  const accentGreenPressed = '#4c9c3e';
+  const cardShadowColor = '#000';
 
   const handleEnter = () => {
     // Filter cameras based on location and camera number
@@ -109,38 +115,42 @@ export default function LiveCameraFeedScreen() {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.signupBackground }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor }]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardAvoid}
       >
         {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <MaterialIcons name="arrow-back" size={24} color="#ffffff" />
+        <View style={[styles.header, { backgroundColor: surfaceColor, borderBottomColor: borderColor }]}>
+          <TouchableOpacity
+            onPress={() => router.back()}
+            style={[styles.backButton, { backgroundColor: surfaceColor, borderColor, shadowColor: cardShadowColor }]}
+            activeOpacity={0.75}
+          >
+            <MaterialIcons name="arrow-back" size={24} color={textPrimary} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Live camera feed</Text>
+          <Text style={[styles.headerTitle, { color: textPrimary }]}>Live camera feed</Text>
           <View style={styles.headerSpacer} />
         </View>
 
         {/* Input Section */}
-        <View style={styles.cardContainer}>
+        <View style={[styles.cardContainer, { backgroundColor: surfaceColor, borderColor, shadowColor: cardShadowColor }]}>
           {/* Location Input */}
-          <Text style={styles.label}>Enter location</Text>
+          <Text style={[styles.label, { color: textPrimary }]}>Enter location</Text>
           <TextInput
-            style={[styles.input, { color: colors.signupInputText }]}
+            style={[styles.input, { color: textPrimary, backgroundColor: surfaceColor, borderColor, shadowColor: cardShadowColor }]}
             placeholder="e.g., Anuradhapura"
-            placeholderTextColor="#999"
+            placeholderTextColor={textSecondary}
             value={location}
             onChangeText={setLocation}
           />
 
           {/* Camera Number Input */}
-          <Text style={[styles.label, { marginTop: 16 }]}>Enter camera no.</Text>
+          <Text style={[styles.label, { marginTop: 16, color: textPrimary }]}>Enter camera no.</Text>
           <TextInput
-            style={[styles.input, { color: colors.signupInputText }]}
+            style={[styles.input, { color: textPrimary, backgroundColor: surfaceColor, borderColor, shadowColor: cardShadowColor }]}
             placeholder="e.g., 1, 2, 3"
-            placeholderTextColor="#999"
+            placeholderTextColor={textSecondary}
             value={cameraNo}
             onChangeText={setCameraNo}
             keyboardType="numeric"
@@ -149,23 +159,25 @@ export default function LiveCameraFeedScreen() {
           {/* Button Row */}
           <View style={styles.buttonRow}>
             <TouchableOpacity
-              style={[styles.button, styles.enterButton]}
+              style={[styles.button, styles.enterButton, { backgroundColor: accentGreen }]}
               onPress={handleEnter}
+              activeOpacity={0.85}
             >
               <Text style={styles.buttonText}>Enter</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.button, styles.resetButton]}
+              style={[styles.button, styles.resetButton, { backgroundColor: surfaceColor, borderColor }]}
               onPress={handleReset}
+              activeOpacity={0.85}
             >
-              <Text style={styles.resetButtonText}>Reset</Text>
+              <Text style={[styles.resetButtonText, { color: textPrimary }]}>Reset</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Map Section */}
         {Platform.OS !== 'web' && MapView ? (
-          <View style={styles.mapContainer}>
+          <View style={[styles.mapContainer, { backgroundColor: surfaceColor, borderColor, shadowColor: cardShadowColor }]}>
             <MapView
               style={styles.map}
               initialRegion={INITIAL_REGION}
@@ -189,25 +201,31 @@ export default function LiveCameraFeedScreen() {
             </MapView>
           </View>
         ) : (
-          <ScrollView style={styles.mapContainer}>
+          <ScrollView style={[styles.mapContainer, { backgroundColor: surfaceColor, borderColor, shadowColor: cardShadowColor }]}>
             <View style={styles.webMapFallback}>
-              <MaterialIcons name="location-on" size={48} color="#2d5016" />
-              <Text style={styles.webMapTitle}>Camera Locations</Text>
+              <MaterialIcons name="location-on" size={48} color={accentGreenPressed} />
+              <Text style={[styles.webMapTitle, { color: textPrimary }]}>Camera Locations</Text>
               {markers.length > 0 ? (
                 markers.map((camera) => (
-                  <View key={camera.id} style={styles.cameraItem}>
+                  <View
+                    key={camera.id}
+                    style={[
+                      styles.cameraItem,
+                      { backgroundColor: surfaceColor, borderColor, borderLeftColor: accentGreenPressed },
+                    ]}
+                  >
                     <View style={styles.cameraItemHeader}>
-                      <MaterialIcons name="videocam" size={20} color="#2d5016" />
-                      <Text style={styles.cameraItemName}>{camera.name}</Text>
+                      <MaterialIcons name="videocam" size={20} color={accentGreenPressed} />
+                      <Text style={[styles.cameraItemName, { color: textPrimary }]}>{camera.name}</Text>
                     </View>
-                    <Text style={styles.cameraItemLocation}>{camera.location}</Text>
-                    <Text style={styles.cameraItemCoords}>
+                    <Text style={[styles.cameraItemLocation, { color: textSecondary }]}>{camera.location}</Text>
+                    <Text style={[styles.cameraItemCoords, { color: textSecondary }]}>
                       {camera.latitude.toFixed(4)}, {camera.longitude.toFixed(4)}
                     </Text>
                   </View>
                 ))
               ) : (
-                <Text style={styles.noResultsText}>No cameras found</Text>
+                <Text style={[styles.noResultsText, { color: textSecondary }]}>No cameras found</Text>
               )}
             </View>
           </ScrollView>
@@ -216,7 +234,7 @@ export default function LiveCameraFeedScreen() {
         {/* Camera Count */}
         {markers.length > 0 && (
           <View style={styles.cameraCount}>
-            <Text style={styles.cameraCountText}>
+            <Text style={[styles.cameraCountText, { color: textSecondary }]}>
               Found {markers.length} camera{markers.length !== 1 ? 's' : ''}
             </Text>
           </View>
@@ -237,18 +255,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: '#2d5016',
+    paddingHorizontal: 18,
+    paddingTop: 10,
+    paddingBottom: 14,
+    borderBottomWidth: 1,
   },
   backButton: {
-    padding: 8,
-    borderRadius: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 16,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
   },
   headerTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#ffffff',
+    fontSize: 24,
+    fontWeight: '800',
     flex: 1,
     textAlign: 'center',
   },
@@ -256,26 +282,32 @@ const styles = StyleSheet.create({
     width: 40,
   },
   cardContainer: {
-    margin: 16,
-    padding: 16,
-    backgroundColor: '#c8dbb3',
-    borderRadius: 12,
+    marginHorizontal: 22,
+    marginTop: 18,
     marginBottom: 12,
+    padding: 16,
+    borderRadius: 20,
+    borderWidth: 1,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.06,
+    shadowRadius: 16,
+    elevation: 5,
   },
   label: {
     fontSize: 14,
-    fontWeight: '500',
-    color: '#11181C',
+    fontWeight: '800',
     marginBottom: 8,
   },
   input: {
-    backgroundColor: '#ffffff',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 14,
+    borderRadius: 16,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 16,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 4,
   },
   buttonRow: {
     flexDirection: 'row',
@@ -286,33 +318,34 @@ const styles = StyleSheet.create({
   button: {
     paddingHorizontal: 16,
     paddingVertical: 10,
-    borderRadius: 6,
+    borderRadius: 14,
     minWidth: 90,
     alignItems: 'center',
   },
-  enterButton: {
-    backgroundColor: '#3f7047',
-  },
+  enterButton: {},
   resetButton: {
-    backgroundColor: '#e0e0e0',
+    borderWidth: 1,
   },
   buttonText: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '800',
     color: '#ffffff',
   },
   resetButtonText: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#11181C',
+    fontWeight: '800',
   },
   mapContainer: {
     flex: 1,
-    margin: 16,
+    marginHorizontal: 22,
     marginTop: 0,
-    borderRadius: 12,
+    borderRadius: 20,
     overflow: 'hidden',
-    backgroundColor: '#f0f0f0',
+    borderWidth: 1,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.06,
+    shadowRadius: 16,
+    elevation: 5,
   },
   map: {
     flex: 1,
@@ -324,8 +357,7 @@ const styles = StyleSheet.create({
   },
   cameraCountText: {
     fontSize: 12,
-    color: '#666666',
-    fontWeight: '500',
+    fontWeight: '600',
   },
   webMapFallback: {
     padding: 16,
@@ -333,19 +365,17 @@ const styles = StyleSheet.create({
   },
   webMapTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#2d5016',
+    fontWeight: '800',
     marginTop: 12,
     marginBottom: 16,
   },
   cameraItem: {
     width: '100%',
-    backgroundColor: '#ffffff',
-    borderRadius: 8,
+    borderRadius: 16,
     padding: 12,
     marginBottom: 12,
     borderLeftWidth: 4,
-    borderLeftColor: '#2d5016',
+    borderWidth: 1,
   },
   cameraItemHeader: {
     flexDirection: 'row',
@@ -354,22 +384,18 @@ const styles = StyleSheet.create({
   },
   cameraItemName: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#2d5016',
+    fontWeight: '800',
     marginLeft: 8,
   },
   cameraItemLocation: {
     fontSize: 12,
-    color: '#666666',
     marginBottom: 4,
   },
   cameraItemCoords: {
     fontSize: 11,
-    color: '#999999',
   },
   noResultsText: {
     fontSize: 14,
-    color: '#999999',
     marginTop: 16,
   },
 });
