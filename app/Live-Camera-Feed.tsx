@@ -89,6 +89,7 @@ export default function LiveCameraFeedScreen() {
   const accentGreen = '#93cc72';
   const accentGreenPressed = '#4c9c3e';
   const cardShadowColor = '#000';
+  const inputFillColor = '#EEF0EE';
 
   const handleEnter = () => {
     // Filter cameras based on location and camera number
@@ -139,7 +140,15 @@ export default function LiveCameraFeedScreen() {
           {/* Location Input */}
           <Text style={[styles.label, { color: textPrimary }]}>Enter location</Text>
           <TextInput
-            style={[styles.input, { color: textPrimary, backgroundColor: surfaceColor, borderColor, shadowColor: cardShadowColor }]}
+            style={[
+              styles.input,
+              {
+                color: textPrimary,
+                backgroundColor: inputFillColor,
+                borderColor,
+                shadowColor: cardShadowColor,
+              },
+            ]}
             placeholder="e.g., Anuradhapura"
             placeholderTextColor={textSecondary}
             value={location}
@@ -149,7 +158,15 @@ export default function LiveCameraFeedScreen() {
           {/* Camera Number Input */}
           <Text style={[styles.label, { marginTop: 16, color: textPrimary }]}>Enter camera no.</Text>
           <TextInput
-            style={[styles.input, { color: textPrimary, backgroundColor: surfaceColor, borderColor, shadowColor: cardShadowColor }]}
+            style={[
+              styles.input,
+              {
+                color: textPrimary,
+                backgroundColor: inputFillColor,
+                borderColor,
+                shadowColor: cardShadowColor,
+              },
+            ]}
             placeholder="e.g., 1, 2, 3"
             placeholderTextColor={textSecondary}
             value={cameraNo}
@@ -171,13 +188,19 @@ export default function LiveCameraFeedScreen() {
             >
               <Text style={styles.buttonText}>Enter</Text>
             </Pressable>
-            <TouchableOpacity
-              style={[styles.button, styles.resetButton, { backgroundColor: surfaceColor, borderColor }]}
+            <Pressable
               onPress={handleReset}
-              activeOpacity={0.85}
+              style={({ pressed }) => [
+                styles.button,
+                styles.resetButton,
+                {
+                  backgroundColor: pressed ? '#afb3af' : surfaceColor,
+                  borderColor,
+                },
+              ]}
             >
               <Text style={[styles.resetButtonText, { color: textPrimary }]}>Reset</Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
 
@@ -279,8 +302,9 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: '800',
+    letterSpacing: 0.3,
     flex: 1,
     textAlign: 'center',
   },
@@ -291,29 +315,30 @@ const styles = StyleSheet.create({
     marginHorizontal: 22,
     marginTop: 18,
     marginBottom: 12,
-    padding: 16,
-    borderRadius: 20,
+    padding: 18,
+    borderRadius: 22,
     borderWidth: 1,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.06,
-    shadowRadius: 16,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.07,
+    shadowRadius: 18,
+    elevation: 6,
   },
   label: {
     fontSize: 14,
     fontWeight: '800',
+    letterSpacing: 0.2,
     marginBottom: 8,
   },
   input: {
-    borderRadius: 16,
+    borderRadius: 18,
     paddingHorizontal: 14,
     paddingVertical: 12,
     fontSize: 16,
     borderWidth: 1,
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 4,
+    shadowRadius: 14,
+    elevation: 5,
   },
   buttonRow: {
     flexDirection: 'row',
@@ -322,11 +347,16 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   button: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 14,
-    minWidth: 90,
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+    borderRadius: 16,
+    minWidth: 104,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
+    elevation: 6,
   },
   enterButton: {},
   resetButton: {
@@ -335,23 +365,25 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 14,
     fontWeight: '800',
+    letterSpacing: 0.2,
     color: '#ffffff',
   },
   resetButtonText: {
     fontSize: 14,
     fontWeight: '800',
+    letterSpacing: 0.2,
   },
   mapContainer: {
     flex: 1,
     marginHorizontal: 22,
     marginTop: 0,
-    borderRadius: 20,
+    borderRadius: 22,
     overflow: 'hidden',
     borderWidth: 1,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.06,
-    shadowRadius: 16,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.07,
+    shadowRadius: 18,
+    elevation: 6,
   },
   map: {
     flex: 1,
@@ -372,16 +404,22 @@ const styles = StyleSheet.create({
   webMapTitle: {
     fontSize: 16,
     fontWeight: '800',
+    letterSpacing: 0.3,
     marginTop: 12,
     marginBottom: 16,
   },
   cameraItem: {
     width: '100%',
-    borderRadius: 16,
-    padding: 12,
+    borderRadius: 18,
+    padding: 14,
     marginBottom: 12,
     borderLeftWidth: 4,
     borderWidth: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.06,
+    shadowRadius: 14,
+    elevation: 4,
   },
   cameraItemHeader: {
     flexDirection: 'row',
@@ -391,6 +429,7 @@ const styles = StyleSheet.create({
   cameraItemName: {
     fontSize: 14,
     fontWeight: '800',
+    letterSpacing: 0.2,
     marginLeft: 8,
   },
   cameraItemLocation: {
