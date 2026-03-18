@@ -4,6 +4,7 @@ import { useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -158,13 +159,18 @@ export default function LiveCameraFeedScreen() {
 
           {/* Button Row */}
           <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={[styles.button, styles.enterButton, { backgroundColor: accentGreen }]}
+            <Pressable
               onPress={handleEnter}
-              activeOpacity={0.85}
+              style={({ pressed }) => [
+                styles.button,
+                styles.enterButton,
+                {
+                  backgroundColor: pressed ? accentGreenPressed : accentGreen,
+                },
+              ]}
             >
               <Text style={styles.buttonText}>Enter</Text>
-            </TouchableOpacity>
+            </Pressable>
             <TouchableOpacity
               style={[styles.button, styles.resetButton, { backgroundColor: surfaceColor, borderColor }]}
               onPress={handleReset}
