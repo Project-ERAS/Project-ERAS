@@ -1,5 +1,6 @@
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import type { ImageSourcePropType } from "react-native";
 import {
   Image,
   ImageBackground,
@@ -13,10 +14,91 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+type RouterPushArg = Parameters<ReturnType<typeof useRouter>["push"]>[0];
+
+type QuickActionBase = {
+  title: string;
+  subtitle: string;
+  route: RouterPushArg;
+  iconBackgroundColor: string;
+  keywords?: string[];
+};
+
+type QuickAction =
+  | (QuickActionBase & {
+      type: "emoji";
+      icon: string;
+    })
+  | (QuickActionBase & {
+      type: "image";
+      icon: ImageSourcePropType;
+      iconTintColor?: string;
+    });
+
 // --- Main Home Screen Component ---
 export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
+
+  const quickActions = useMemo<QuickAction[]>(() => {
+    return [
+      {
+        title: "Live Alert",
+        subtitle: "Active monitoring",
+        route: "/live-alert",
+        iconBackgroundColor: "#FFFFFF",
+        type: "image",
+        icon: require("@/assets/icons/live alert.jpeg"),
+        keywords: ["alert", "live", "monitor", "monitoring", "warning", "otp"],
+      },
+      {
+        title: "History",
+        subtitle: "Past incidents",
+        route: "/history_search",
+        iconBackgroundColor: "#FFFFFF",
+        type: "image",
+        icon: require("@/assets/icons/history.jpeg"),
+        keywords: ["history", "past", "incidents", "search"],
+      },
+      {
+        title: "Live Feed",
+        subtitle: "Camera streams",
+        route: "/Live-Camera-Feed",
+        iconBackgroundColor: "#FFFFFF",
+        type: "image",
+        icon: require("@/assets/icons/livefeed.jpeg"),
+        keywords: ["camera", "live", "feed", "stream", "streams"],
+      },
+      {
+        title: "User Updates",
+        subtitle: "User-submitted information",
+        route: "/User-Updates",
+        iconBackgroundColor: "#FFFFFF",
+        type: "image",
+        icon: require("@/assets/icons/User Updates.jpg"),
+        keywords: ["updates", "news", "latest"],
+      },
+    ];
+  }, []);
+
+  const filteredQuickActions = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return quickActions;
+
+    const tokens = query.split(/\s+/).filter(Boolean);
+
+    return quickActions.filter((action) => {
+      const haystack = [
+        action.title,
+        action.subtitle,
+        ...(action.keywords ?? []),
+      ]
+        .join(" ")
+        .toLowerCase();
+
+      return tokens.every((token) => haystack.includes(token));
+    });
+  }, [quickActions, searchQuery]);
 
   return (
     <View style={styles.container}>
@@ -39,7 +121,7 @@ export default function HomeScreen() {
                 <View style={styles.logoContainer}>
                   <Text style={styles.logoText}>ERAS</Text>
                 </View>
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.authButton}
                   onPress={() => router.push("/signin")}
                 >
@@ -83,57 +165,56 @@ export default function HomeScreen() {
           <Text style={styles.sectionTitle}>Quick Actions</Text>
 
           {/* Navigation Cards Grid */}
-          <View style={styles.cardsGrid}>
-            <TouchableOpacity
-              style={styles.navCard}
-              onPress={() => router.push("/live-alert")}
-            >
-              <View style={[styles.iconContainer, { backgroundColor: "#FFE5E5" }]}>
-                <Text style={styles.navIcon}>⚠️</Text>
-              </View>
-              <Text style={styles.navText}>Live Alert</Text>
-              <Text style={styles.navSubtext}>Active monitoring</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.navCard}>
-              <View style={[styles.iconContainer, { backgroundColor: "#E5F0FF" }]}>
-                <Text style={styles.navIcon}>🕒</Text>
-              </View>
-              <Text style={styles.navText}>History</Text>
-              <Text style={styles.navSubtext}>Past incidents</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.navCard}
-              onPress={() => router.push("/Live-Camera-Feed")}
-            >
-              <View style={[styles.iconContainer, { backgroundColor: "#F0E5FF" }]}>
-                <Text style={styles.navIcon}>📹</Text>
-              </View>
-              <Text style={styles.navText}>Live Feed</Text>
-              <Text style={styles.navSubtext}>Camera streams</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.navCard}
-              onPress={() => router.push("/User-Updates")}
-            >
-              <View style={[styles.iconContainer, { backgroundColor: "#FFF5E5" }]}>
-                <Image
-                  source={require("@/assets/images/mobile.png")}
-                  style={styles.navIconImage}
-                />
-              </View>
-              <Text style={styles.navText}>Updates</Text>
-              <Text style={styles.navSubtext}>Latest news</Text>
-            </TouchableOpacity>
-          </View>
+          {filteredQuickActions.length === 0 ? (
+            <Text style={styles.noResultsText}>No results found</Text>
+          ) : (
+            <View style={styles.cardsGrid}>
+              {filteredQuickActions.map((action) => {
+                return (
+                  <TouchableOpacity
+                    key={action.title}
+                    style={styles.navCard}
+                    onPress={() => router.push(action.route)}
+                  >
+                    <View
+                      style={[
+                        styles.iconContainer,
+                        { backgroundColor: action.iconBackgroundColor },
+                      ]}
+                    >
+                      {action.type === "emoji" ? (
+                        <Text style={styles.navIcon}>{action.icon}</Text>
+                      ) : (
+                        <Image
+                          source={action.icon}
+                          style={[
+                            styles.navIconImage,
+                            action.title === "User Updates"
+                              ? { width: 28, height: 28 }
+                              : null,
+                            action.iconTintColor
+                              ? { tintColor: action.iconTintColor }
+                              : null,
+                          ]}
+                        />
+                      )}
+                    </View>
+                    <Text style={styles.navText}>{action.title}</Text>
+                    <Text style={styles.navSubtext}>{action.subtitle}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          )}
         </View>
       </ScrollView>
 
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navButton}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => router.push("/about-us")}
+        >
           <View style={styles.navIconCircle}>
             <Image
               source={require("@/assets/icons/about.png")}
@@ -145,7 +226,7 @@ export default function HomeScreen() {
 
         <TouchableOpacity
           style={styles.navButton}
-          onPress={() => router.push("/(tabs)/homepage")}
+          onPress={() => router.push("/homepage")}
         >
           <View style={[styles.navIconCircle, styles.activeNavIcon]}>
             <Image
@@ -306,6 +387,13 @@ const styles = StyleSheet.create({
     color: "#2D3E2D",
     marginBottom: 20,
     paddingHorizontal: 4,
+  },
+  noResultsText: {
+    fontSize: 14,
+    color: "#7A8A7A",
+    fontWeight: "600",
+    textAlign: "center",
+    paddingVertical: 14,
   },
   cardsGrid: {
     flexDirection: "row",

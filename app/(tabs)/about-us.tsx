@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { Image, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
@@ -16,7 +16,7 @@ export default function AboutUsScreen() {
             onPress={() => router.back()}
             activeOpacity={0.7}
           >
-            <Ionicons name="arrow-back" size={24} color="#fff" />
+            <Ionicons name="arrow-back" size={24} color="#2D3E2D" />
           </TouchableOpacity>
           
           <View style={styles.logoContainer}>
@@ -47,26 +47,34 @@ export default function AboutUsScreen() {
 
         {/* Bottom Navigation */}
         <View style={styles.bottomNav}>
-          <TouchableOpacity 
-            style={styles.navButton}
-            onPress={() => router.push('/(tabs)/about-us')}
-          >
-            <Ionicons name="information-circle" size={28} color="#8FA888" />
-            <View style={styles.activeIndicator} />
+          <TouchableOpacity style={styles.navButton} onPress={() => router.push('/about-us')}>
+            <View style={[styles.navIconCircle, styles.activeNavIcon]}>
+              <Image
+                source={require('@/assets/icons/about.png')}
+                style={styles.bottomNavIconImage}
+              />
+            </View>
+            <Text style={[styles.navLabel, styles.activeNavLabel]}>About</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={styles.navButton}
-            onPress={() => router.push('/(tabs)/homepage')}
-          >
-            <Ionicons name="home-outline" size={28} color="#8FA888" />
+
+          <TouchableOpacity style={styles.navButton} onPress={() => router.push('/homepage')}>
+            <View style={styles.navIconCircle}>
+              <Image
+                source={require('@/assets/icons/homeicon.png')}
+                style={styles.bottomNavIconImage}
+              />
+            </View>
+            <Text style={styles.navLabel}>Home</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={styles.navButton}
-            onPress={() => router.push('/(tabs)/User-Profile')}
-          >
-            <Ionicons name="person-outline" size={28} color="#8FA888" />
+
+          <TouchableOpacity style={styles.navButton} onPress={() => router.push('/User-Profile')}>
+            <View style={styles.navIconCircle}>
+              <Image
+                source={require('@/assets/icons/profile.png')}
+                style={styles.profileNavIconImage}
+              />
+            </View>
+            <Text style={styles.navLabel}>Profile</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -77,99 +85,137 @@ export default function AboutUsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#8FA888',
+    backgroundColor: '#F8FAF9',
   },
   safeArea: {
     flex: 1,
+    backgroundColor: '#F8FAF9',
   },
   header: {
-    backgroundColor: '#8FA888',
-    paddingTop: 20,
-    paddingBottom: 40,
-    paddingHorizontal: 20,
+    backgroundColor: '#FFFFFF',
+    paddingTop: 14,
+    paddingBottom: 18,
+    paddingHorizontal: 22,
     alignItems: 'center',
+    justifyContent: 'flex-end',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E8EEE8',
   },
   backButton: {
     position: 'absolute',
-    left: 20,
-    top: 20,
+    left: 18,
+    top: 10,
     width: 44,
     height: 44,
-    borderRadius: 22,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderWidth: 2,
-    borderColor: '#fff',
+    borderRadius: 16,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E8EEE8',
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
   },
   logoContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
+    gap: 12,
+    paddingTop: 8,
   },
   elephantImage: {
-    width: 140,
-    height: 140,
-    marginBottom: 20,
+    width: 44,
+    height: 44,
   },
   title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#fff',
-    letterSpacing: 0.5,
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#2D3E2D',
+    letterSpacing: 0.4,
   },
   content: {
     flex: 1,
-    backgroundColor: '#C8DBB3',
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
+    backgroundColor: '#F8FAF9',
   },
   contentContainer: {
-    paddingHorizontal: 30,
-    paddingTop: 50,
-    paddingBottom: 100,
+    paddingHorizontal: 22,
+    paddingTop: 28,
+    paddingBottom: 140,
   },
   missionHeading: {
-    fontSize: 26,
-    fontWeight: '700',
-    color: '#000',
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#2D3E2D',
     textAlign: 'center',
-    marginBottom: 30,
+    marginBottom: 16,
   },
   missionText: {
     fontSize: 16,
-    lineHeight: 28,
-    color: '#5A6B5A',
+    lineHeight: 26,
+    color: '#4A6A4A',
     textAlign: 'center',
-    fontWeight: '500',
+    fontWeight: '600',
   },
   spacer: {
     height: 40,
   },
   bottomNav: {
     position: 'absolute',
-    bottom: 0,
+    bottom: -6,
     left: 0,
     right: 0,
     flexDirection: 'row',
-    backgroundColor: '#C8DBB3',
-    paddingVertical: 15,
-    paddingHorizontal: 40,
     justifyContent: 'space-around',
     alignItems: 'center',
-    borderTopWidth: 0,
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 12,
+    paddingBottom: 28,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 8,
   },
   navButton: {
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 10,
-    position: 'relative',
+    paddingHorizontal: 20,
   },
-  activeIndicator: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#FF6B6B',
-    marginTop: 4,
+  navIconCircle: {
+    width: 56,
+    height: 56,
+    borderRadius: 16,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  activeNavIcon: {
+    backgroundColor: '#FFFFFF',
+  },
+  bottomNavIcon: {
+    fontSize: 24,
+  },
+  bottomNavIconImage: {
+    width: 28,
+    height: 28,
+    resizeMode: 'contain',
+  },
+  profileNavIconImage: {
+    width: 38,
+    height: 38,
+    resizeMode: 'contain',
+  },
+  navLabel: {
+    fontSize: 12,
+    color: '#7A8A7A',
+    fontWeight: '600',
+  },
+  activeNavLabel: {
+    color: '#4A6A4A',
   },
 });
