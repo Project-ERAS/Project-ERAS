@@ -2,6 +2,7 @@ import { Feather, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
+  Image,
   Platform,
   Pressable,
   SafeAreaView,
@@ -9,6 +10,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from "react-native";
 
@@ -44,6 +46,7 @@ export default function UserProfileScreen() {
 
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor }]}>
+      <View style={styles.pageBody}>
       <View
         style={[
           styles.headerSection,
@@ -78,6 +81,7 @@ export default function UserProfileScreen() {
         <Text style={[styles.nameText, { color: textPrimary }]}>
           {profile.fullName}
         </Text>
+        <Text style={styles.subtitleText}>Account details</Text>
       </View>
 
       <ScrollView
@@ -242,12 +246,58 @@ export default function UserProfileScreen() {
           </Pressable>
         </View>
       </ScrollView>
+
+      <View style={styles.bottomNav}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => router.push("/about-us")}
+        >
+          <View style={styles.navIconCircle}>
+            <Image
+              source={require("@/assets/icons/about.png")}
+              style={styles.bottomNavIconImage}
+            />
+          </View>
+          <Text style={styles.navLabel}>About</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => router.push("/homepage")}
+        >
+          <View style={styles.navIconCircle}>
+            <Image
+              source={require("@/assets/icons/homeicon.png")}
+              style={styles.bottomNavIconImage}
+            />
+          </View>
+          <Text style={styles.navLabel}>Home</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => router.push("/User-Profile")}
+        >
+          <View style={[styles.navIconCircle, styles.activeNavIcon]}>
+            <Image
+              source={require("@/assets/icons/profile.png")}
+              style={styles.profileNavIconImage}
+            />
+          </View>
+          <Text style={[styles.navLabel, styles.activeNavLabel]}>Profile</Text>
+        </TouchableOpacity>
+      </View>
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1 },
+  pageBody: {
+    flex: 1,
+    backgroundColor: "#F8FAF9",
+  },
   headerSection: {
     alignItems: "center",
     paddingTop: 14,
@@ -287,11 +337,17 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "800",
   },
+  subtitleText: {
+    marginTop: 6,
+    fontSize: 14,
+    color: "#7A8A7A",
+    fontWeight: "600",
+  },
   contentSection: { flex: 1 },
   contentContainer: {
     paddingHorizontal: 22,
     paddingTop: 28,
-    paddingBottom: 44,
+    paddingBottom: 150,
     gap: 24,
   },
   fieldGroup: { gap: 10 },
@@ -337,4 +393,57 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   actionText: { fontSize: 16, fontWeight: "500" },
+  bottomNav: {
+    position: "absolute",
+    bottom: -6,
+    left: 0,
+    right: 0,
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    paddingVertical: 12,
+    paddingBottom: 28,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  navButton: {
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  navIconCircle: {
+    width: 56,
+    height: 56,
+    borderRadius: 16,
+    backgroundColor: "#FFFFFF",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 6,
+  },
+  activeNavIcon: {
+    backgroundColor: "#FFFFFF",
+  },
+  bottomNavIconImage: {
+    width: 28,
+    height: 28,
+    resizeMode: "contain",
+  },
+  profileNavIconImage: {
+    width: 34,
+    height: 34,
+    resizeMode: "contain",
+  },
+  navLabel: {
+    fontSize: 12,
+    color: "#7A8A7A",
+    fontWeight: "600",
+  },
+  activeNavLabel: {
+    color: "#4A6A4A",
+  },
 });
