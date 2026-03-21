@@ -26,6 +26,11 @@ npm-debug.*
 yarn-debug.*
 yarn-error.*
 
+# Firebase emulator logs / local state
+.firebase/
+firebase-debug.log
+firestore-debug.log
+
 # macOS
 .DS_Store
 *.pem
@@ -41,3 +46,4 @@ app-example
 # generated native folders
 /ios
 /android
+servideAccountKey.json

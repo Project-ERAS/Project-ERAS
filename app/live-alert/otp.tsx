@@ -1,50 +1,97 @@
-import { useRef, useState } from 'react';
+import { useRef, useState } from "react";
 import {
-    SafeAreaView,
-    StyleSheet,
-    TextInput,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+  Alert,
+  SafeAreaView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Colors } from '@/constants/theme';
-import { useRouter } from 'expo-router';
+import { Ionicons } from "@expo/vector-icons";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import {
+  PhoneAuthProvider,
+  linkWithCredential,
+  signInWithCredential,
+} from "firebase/auth";
+
+import { ThemedText } from "@/components/themed-text";
+import { auth } from "@/constants/firebase";
 
 export default function OtpScreen() {
   const router = useRouter();
-  const [code, setCode] = useState(['', '', '', '']);
-  const inputs = [useRef<TextInput>(null), useRef<TextInput>(null), useRef<TextInput>(null), useRef<TextInput>(null)];
+  const params = useLocalSearchParams();
+  const verificationId =
+    typeof params.verificationId === "string" ? params.verificationId : "";
+  const phoneNumber = typeof params.phone === "string" ? params.phone : "";
+  const [verifying, setVerifying] = useState(false);
+  const [code, setCode] = useState(["", "", "", "", "", ""]);
+  const inputRefs = useRef<(TextInput | null)[]>([]);
 
   const onChange = (text: string, index: number) => {
     if (!/^[0-9]?$/.test(text)) return;
     const newCode = [...code];
     newCode[index] = text;
     setCode(newCode);
-    if (text && index < 3) {
-      inputs[index + 1].current?.focus();
+    if (text && index < code.length - 1) {
+      inputRefs.current[index + 1]?.focus();
     }
   };
 
-  const onSubmit = () => {
-    const joined = code.join('');
-    if (joined.length === 4) {
-      // TODO: verify OTP with server
-      router.push('/');
+  const onSubmit = async () => {
+    const joined = code.join("");
+    if (joined.length !== 6) {
+      Alert.alert("Invalid code", "Enter the 6-digit code sent to your phone.");
+      return;
+    }
+    if (!verificationId) {
+      Alert.alert("Missing verification", "Please request a new OTP.");
+      return;
+    }
+
+    setVerifying(true);
+    try {
+      const credential = PhoneAuthProvider.credential(verificationId, joined);
+      const user = auth.currentUser;
+      if (user) {
+        await linkWithCredential(user, credential);
+      } else {
+        await signInWithCredential(auth, credential);
+      }
+
+      Alert.alert("Verified", "Phone number verified.");
+      router.replace("/live-alert");
+    } catch (err: any) {
+      Alert.alert(err?.message || "Failed to verify code.");
+    } finally {
+      setVerifying(false);
     }
   };
 
   return (
     <SafeAreaView style={styles.safe}>
-      <ThemedView lightColor={Colors.light.signupBackground} style={styles.header} />
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+          activeOpacity={0.85}
+        >
+          <Ionicons name="chevron-back" size={28} color="#2F6A39" />
+        </TouchableOpacity>
+      </View>
+
       <View style={styles.container}>
-        <ThemedText style={styles.prompt}>Enter the 4 digit code sent to your phone</ThemedText>
+        <ThemedText style={styles.prompt}>
+          Enter the 6 digit code sent to {phoneNumber || "your phone"}
+        </ThemedText>
         <View style={styles.otpRow}>
           {code.map((digit, i) => (
             <TextInput
               key={i}
-              ref={inputs[i]}
+              ref={(r) => {
+                inputRefs.current[i] = r;
+              }}
               value={digit}
               onChangeText={(t) => onChange(t, i)}
               keyboardType="number-pad"
@@ -53,8 +100,15 @@ export default function OtpScreen() {
             />
           ))}
         </View>
-        <TouchableOpacity onPress={onSubmit} style={styles.confirmButton} activeOpacity={0.8}>
-          <ThemedText style={styles.confirmText}>Enter</ThemedText>
+        <TouchableOpacity
+          onPress={onSubmit}
+          style={styles.confirmButton}
+          activeOpacity={0.8}
+          disabled={verifying}
+        >
+          <ThemedText style={styles.confirmText}>
+            {verifying ? "Verifying..." : "Verify"}
+          </ThemedText>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -62,29 +116,74 @@ export default function OtpScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Colors.light.signupBackground },
-  header: { height: 120, backgroundColor: '#2f6a39' },
-  container: { flex: 1, padding: 20, paddingTop: 24, alignItems: 'center' },
-  prompt: { color: '#2f6a39', marginBottom: 20, textAlign: 'center' },
-  otpRow: { flexDirection: 'row', justifyContent: 'center', gap: 12, marginBottom: 24 },
+  safe: { flex: 1, backgroundColor: "#F5F7F5" },
+  header: {
+    paddingTop: 60,
+    paddingHorizontal: 18,
+    paddingBottom: 10,
+    backgroundColor: "transparent",
+  },
+  backButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 2,
+  },
+  container: {
+    flex: 1,
+    paddingHorizontal: 22,
+    paddingTop: 34,
+    alignItems: "center",
+  },
+  prompt: {
+    color: "#2F6A39",
+    opacity: 0.85,
+    marginBottom: 22,
+    textAlign: "center",
+    fontSize: 16,
+    fontWeight: "700",
+    maxWidth: 320,
+  },
+  otpRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 10,
+    marginBottom: 22,
+    paddingHorizontal: 10,
+  },
   otpBox: {
-    width: 50,
-    height: 50,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    textAlign: 'center',
-    fontSize: 24,
-    color: '#000',
+    width: 44,
+    height: 54,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    textAlign: "center",
+    fontSize: 22,
+    color: "#111827",
+    fontWeight: "800",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.1,
+    shadowRadius: 14,
+    elevation: 2,
   },
   confirmButton: {
-    backgroundColor: '#2f6a39',
-    paddingVertical: 8,
-    paddingHorizontal: 18,
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 4,
+    backgroundColor: "#95D57D",
+    width: "100%",
+    borderRadius: 14,
+    paddingVertical: 14,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.12,
+    shadowOffset: { width: 0, height: 10 },
+    shadowRadius: 16,
+    elevation: 3,
   },
-  confirmText: { color: '#fff', fontWeight: '600' },
+  confirmText: { color: "#FFFFFF", fontWeight: "800", fontSize: 18 },
 });

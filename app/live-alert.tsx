@@ -1,40 +1,44 @@
-import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useRouter } from "expo-router";
+import { useEffect, useRef, useState } from "react";
 import {
   Alert,
-  Pressable,
+  Image,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Switch,
+  Text,
   TextInput,
+  TouchableOpacity,
   View,
-} from 'react-native';
+} from "react-native";
 
-import LottieView from 'lottie-react-native';
+import { MaterialIcons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
+import { PhoneAuthProvider } from "firebase/auth";
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ThemedText } from "@/components/themed-text";
+import { auth, firebaseConfig } from "@/constants/firebase";
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Colors } from '@/constants/theme';
-
-const ENABLE_KEY = 'liveAlertsEnabled';
-const PHONE_KEY = 'liveAlertsPhone';
-const COUNTRY_CODE = '+94';
+const ENABLE_KEY = "liveAlertsEnabled";
+const PHONE_KEY = "liveAlertsPhone";
+const COUNTRY_CODE = "+94";
 
 export default function LiveAlert() {
   const [enabled, setEnabled] = useState<boolean>(false);
-  const [phone, setPhone] = useState<string>('');
+  const [phone, setPhone] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
+  const [sendingOtp, setSendingOtp] = useState<boolean>(false);
+  const recaptchaVerifierRef = useRef<FirebaseRecaptchaVerifierModal>(null);
 
   useEffect(() => {
     (async () => {
       try {
         const v = await AsyncStorage.getItem(ENABLE_KEY);
         const p = await AsyncStorage.getItem(PHONE_KEY);
-        setEnabled(v === 'true');
-        setPhone(p ?? '');
+        setEnabled(v === "true");
+        setPhone(p ?? "");
       } catch {
         // ignore load errors
       } finally {
@@ -46,7 +50,7 @@ export default function LiveAlert() {
   const toggle = async (value: boolean) => {
     setEnabled(value);
     try {
-      await AsyncStorage.setItem(ENABLE_KEY, value ? 'true' : 'false');
+      await AsyncStorage.setItem(ENABLE_KEY, value ? "true" : "false");
     } catch {
       // noop
     }
@@ -54,7 +58,7 @@ export default function LiveAlert() {
 
   const validatePhone = (raw: string) => {
     // strip non-digits
-    const digits = raw.replace(/\D/g, '');
+    const digits = raw.replace(/\D/g, "");
     // Sri Lanka: typical local number length is 9 (without leading 0)
     return digits.length === 9;
   };
@@ -63,16 +67,37 @@ export default function LiveAlert() {
 
   const onConfirm = async () => {
     if (!validatePhone(phone)) {
-      Alert.alert('Invalid phone', 'Enter a 9-digit phone number (without the leading 0).');
+      Alert.alert(
+        "Invalid phone",
+        "Enter a 9-digit phone number (without the leading 0).",
+      );
       return;
     }
 
     try {
-      await AsyncStorage.setItem(PHONE_KEY, phone);
-      // after saving navigate to the OTP entry screen
-      router.push('/live-alert/otp');
-    } catch {
-      Alert.alert('Error', 'Failed to save phone number.');
+      const digits = phone.replace(/\D/g, "");
+      const phoneNumber = `${COUNTRY_CODE}${digits}`;
+      await AsyncStorage.setItem(PHONE_KEY, digits);
+
+      setSendingOtp(true);
+      const provider = new PhoneAuthProvider(auth);
+      const verificationId = await provider.verifyPhoneNumber(
+        phoneNumber,
+        recaptchaVerifierRef.current as any,
+      );
+
+      router.push({
+        pathname: "/live-alert/otp",
+        params: { verificationId, phone: phoneNumber },
+      } as any);
+    } catch (e) {
+      const msg =
+        typeof (e as any)?.message === "string"
+          ? (e as any).message
+          : "Failed to send OTP.";
+      Alert.alert("Error", msg);
+    } finally {
+      setSendingOtp(false);
     }
   };
 
@@ -80,175 +105,265 @@ export default function LiveAlert() {
 
   return (
     <SafeAreaView style={styles.safe}>
+      <FirebaseRecaptchaVerifierModal
+        ref={recaptchaVerifierRef}
+        firebaseConfig={firebaseConfig as any}
+      />
       <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled">
-        <View style={styles.hero}>
-          <View style={styles.heroInner}>
-            <ThemedText style={styles.heroTitle}>Live Alert</ThemedText>
-            <ThemedText style={styles.heroSubtitle}>Register to get live alerts</ThemedText>
-          </View>
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.titleBlock}>
+          <ThemedText style={styles.title}>Live Alert</ThemedText>
+          <ThemedText style={styles.subtitle}>
+            Register to get live alerts
+          </ThemedText>
         </View>
 
         <View style={styles.card}>
-          <View style={styles.cardTopRow}>
-            <View style={styles.cardTopText}>
-              <ThemedText style={styles.cardTitle}>Enable alerts</ThemedText>
-            </View>
-
+          <View style={styles.enableRow}>
+            <Text style={styles.cardTitle}>Enable alerts</Text>
             <Switch
               value={enabled}
               onValueChange={toggle}
-              thumbColor={enabled ? '#fff' : '#ddd'}
-              trackColor={{ false: '#E8EEE8', true: '#2f6a39' }}
+              thumbColor={enabled ? "#ffffff" : "#ffffff"}
+              trackColor={{ false: "#D1D5DB", true: "#A7D58A" }}
             />
           </View>
 
-          <ThemedText style={styles.label}>Phone number</ThemedText>
+          <Text style={styles.cardLabel}>Phone number</Text>
 
-          <View style={styles.inputRow}>
-            <ThemedView style={styles.countryBox}>
-              <ThemedText style={styles.countryText}>{COUNTRY_CODE}</ThemedText>
-            </ThemedView>
+          <View style={styles.phoneRow}>
+            <View style={styles.countryBox}>
+              <Text style={styles.countryText}>{COUNTRY_CODE}</Text>
+            </View>
 
             <TextInput
               keyboardType="number-pad"
               value={phone}
               onChangeText={setPhone}
               placeholder="7xxxxxxxx"
-              placeholderTextColor="#7A8A7A"
-              style={styles.input}
+              placeholderTextColor="#8A8A8A"
+              style={styles.phoneInput}
               maxLength={9}
             />
           </View>
 
-          <Pressable onPress={onConfirm} style={({ pressed }) => [styles.confirmButton, pressed && styles.confirmButtonPressed]}>
-            <ThemedText style={styles.confirmText}>Confirm</ThemedText>
-          </Pressable>
+          <TouchableOpacity
+            onPress={onConfirm}
+            style={styles.confirmButton}
+            activeOpacity={0.85}
+            disabled={sendingOtp}
+          >
+            <Text style={styles.confirmText}>
+              {sendingOtp ? "Sending..." : "Confirm"}
+            </Text>
+          </TouchableOpacity>
+        </View>
 
-          <View style={styles.attentionWrap} pointerEvents="none">
-            <LottieView
-              source={require('@/assets/animations/Attention.json')}
-              autoPlay
-              loop
-              style={styles.attentionAnim}
-            />
-          </View>
+        <View style={styles.illustrationCard}>
+          <MaterialIcons name="warning-amber" size={72} color="#E07070" />
         </View>
       </ScrollView>
+
+      <View style={styles.bottomNav}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => router.push("/about-us")}
+        >
+          <View style={styles.navIconCircle}>
+            <Image
+              source={require("@/assets/icons/about.png")}
+              style={styles.bottomNavIconImage}
+            />
+          </View>
+          <Text style={styles.navLabel}>About</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => router.push("/homepage")}
+        >
+          <View style={[styles.navIconCircle, styles.activeNavIcon]}>
+            <Image
+              source={require("@/assets/icons/homeicon.png")}
+              style={styles.bottomNavIconImage}
+            />
+          </View>
+          <Text style={[styles.navLabel, styles.activeNavLabel]}>Home</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => router.push("/User-Profile")}
+        >
+          <View style={styles.navIconCircle}>
+            <Image
+              source={require("@/assets/icons/profile.png")}
+              style={styles.profileNavIconImage}
+            />
+          </View>
+          <Text style={styles.navLabel}>Profile</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#F8FAF9' },
-  scrollView: { flex: 1 },
-  scrollContent: { paddingBottom: 28 },
-
-  hero: {
-    height: 170,
-    backgroundColor: '#F8FAF9',
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E8EEE8',
+  safe: { flex: 1, backgroundColor: "#F5F6F7" },
+  container: {
+    paddingHorizontal: 22,
+    paddingTop: 36,
+    paddingBottom: 190,
   },
-  heroInner: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingHorizontal: 20,
-    paddingBottom: 20,
+  titleBlock: {
+    marginBottom: 22,
   },
-  heroTitle: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#2D3E2D',
-    lineHeight: 32,
+  title: {
+    fontSize: 32,
+    lineHeight: 38,
+    fontWeight: "800",
+    color: "#263526",
+    paddingTop: 10,
+    paddingBottom: 5,
   },
-  heroSubtitle: {
+  subtitle: {
     marginTop: 6,
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#7A8A7A',
+    fontSize: 16,
+    color: "#7B857B",
+    fontWeight: "500",
   },
-
   card: {
-    marginTop: -8,
-    marginHorizontal: 20,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 20,
     padding: 18,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.06,
-    shadowRadius: 16,
-    elevation: 5,
-  },
-  cardTopRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 18,
-  },
-  cardTopText: { flex: 1, paddingRight: 12 },
-  cardTitle: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: '#2D3E2D',
-  },
-
-  label: { color: '#2D3E2D', marginBottom: 8, fontWeight: '700' },
-  inputRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 18 },
-  countryBox: {
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    borderRadius: 14,
-    marginRight: 10,
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#E8EEE8',
-  },
-  countryText: { color: '#2D3E2D', fontWeight: '800' },
-  input: {
-    flex: 1,
-    backgroundColor: Colors.light.signupInputBackground,
-    borderRadius: 16,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    color: '#2D3E2D',
-    borderWidth: 1,
-    borderColor: '#E8EEE8',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.08,
-    shadowRadius: 12,
+    shadowRadius: 18,
     elevation: 4,
   },
-  confirmButton: {
-    alignSelf: 'stretch',
-    backgroundColor: '#93cc72',
-    paddingVertical: 14,
+  enableRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 16,
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#2F3B2F",
+  },
+  cardLabel: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#2F3B2F",
+    marginBottom: 10,
+  },
+  phoneRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 18,
+  },
+  countryBox: {
+    width: 74,
+    height: 52,
     borderRadius: 16,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  countryText: { color: "#2F3B2F", fontWeight: "800", fontSize: 16 },
+  phoneInput: {
+    flex: 1,
+    height: 52,
+    backgroundColor: "#EDEDED",
+    borderRadius: 18,
+    paddingHorizontal: 16,
+    color: "#111111",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  confirmButton: {
+    backgroundColor: "#9CD57B",
+    borderRadius: 22,
+    paddingVertical: 16,
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOpacity: 0.12,
+    shadowOffset: { width: 0, height: 8 },
     shadowRadius: 14,
-    elevation: 5,
+    elevation: 3,
   },
-  confirmButtonPressed: {
-    backgroundColor: '#4c9c3e',
+  confirmText: { color: "#FFFFFF", fontWeight: "800", fontSize: 18 },
+  illustrationCard: {
+    marginTop: 24,
+    height: 220,
+    borderRadius: 24,
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.06,
+    shadowRadius: 18,
+    elevation: 3,
   },
-  confirmText: { color: '#fff', fontWeight: '800' },
-
-  attentionWrap: {
-    marginTop: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
+  bottomNav: {
+    position: "absolute",
+    bottom: -6,
+    left: 0,
+    right: 0,
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    paddingVertical: 12,
+    paddingBottom: 28,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 8,
   },
-  attentionAnim: {
-    width: 180,
-    height: 180,
+  navButton: {
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  navIconCircle: {
+    width: 56,
+    height: 56,
+    borderRadius: 16,
+    backgroundColor: "#FFFFFF",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 6,
+  },
+  activeNavIcon: {
+    backgroundColor: "#FFFFFF",
+  },
+  bottomNavIconImage: {
+    width: 28,
+    height: 28,
+    resizeMode: "contain",
+  },
+  profileNavIconImage: {
+    width: 34,
+    height: 34,
+    resizeMode: "contain",
+  },
+  navLabel: {
+    fontSize: 12,
+    color: "#7A8A7A",
+    fontWeight: "600",
+  },
+  activeNavLabel: {
+    color: "#4A6A4A",
   },
 });
