@@ -13,13 +13,13 @@ import {
   View,
 } from "react-native";
 
-import { MaterialIcons } from "@expo/vector-icons";
+import { auth, firebaseConfig } from "@/constants/firebase";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
 import { PhoneAuthProvider } from "firebase/auth";
 
 import { ThemedText } from "@/components/themed-text";
-import { auth, firebaseConfig } from "@/constants/firebase";
 
 const ENABLE_KEY = "liveAlertsEnabled";
 const PHONE_KEY = "liveAlertsPhone";
@@ -109,6 +109,15 @@ export default function LiveAlert() {
         ref={recaptchaVerifierRef}
         firebaseConfig={firebaseConfig as any}
       />
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+          activeOpacity={0.85}
+        >
+          <Ionicons name="chevron-back" size={28} color="#2F6A39" />
+        </TouchableOpacity>
+      </View>
       <ScrollView
         contentContainerStyle={styles.container}
         keyboardShouldPersistTaps="handled"
@@ -212,9 +221,28 @@ export default function LiveAlert() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#F5F6F7" },
+  header: {
+    paddingTop: 8,
+    paddingHorizontal: 18,
+    paddingBottom: 6,
+    backgroundColor: "transparent",
+  },
+  backButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 2,
+  },
   container: {
     paddingHorizontal: 22,
-    paddingTop: 36,
+    paddingTop: 24,
     paddingBottom: 190,
   },
   titleBlock: {
