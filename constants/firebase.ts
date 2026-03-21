@@ -15,6 +15,18 @@ export const firebaseConfig = {
   measurementId: "G-JNLJNVLBCJ",
 };
 
+// Some libraries (e.g. expo-firebase-recaptcha) still read the compat default app.
+// Keep compat and modular app initialization in sync.
+try {
+  const compatModule = require("firebase/compat/app");
+  const compatFirebase = (compatModule?.default ?? compatModule) as any;
+  if (compatFirebase?.apps?.length === 0) {
+    compatFirebase.initializeApp(firebaseConfig);
+  }
+} catch {
+  // Compat package may be unavailable in some environments.
+}
+
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 
 if (
