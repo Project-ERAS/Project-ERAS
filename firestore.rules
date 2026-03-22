@@ -36,6 +36,13 @@ service cloud.firestore {
       allow update, delete: if isAdmin() || (isSignedIn() && resource.data.createdBy == request.auth.uid);
     }
 
+    // Alerts written by the IoT bridge and read by the app for live notifications
+    match /alerts/{alertId} {
+      allow read: if true;
+      allow create: if isSignedIn() || isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
     match /otpSessions/{sessionId} {
       allow read, write: if isAdmin();
     }
