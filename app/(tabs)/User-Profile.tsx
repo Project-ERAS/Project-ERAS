@@ -360,7 +360,8 @@ export default function UserProfileScreen() {
             style={({ pressed }) => [
               styles.actionButton,
               {
-                backgroundColor: "#95d57d",
+                backgroundColor: "#94AF97",
+                borderColor: "#94AF97",
                 opacity: saving ? 0.7 : pressed ? 0.86 : 1,
               },
             ]}
@@ -381,7 +382,8 @@ export default function UserProfileScreen() {
             style={({ pressed }) => [
               styles.actionButton,
               {
-                backgroundColor: "#95d57d",
+                backgroundColor: "#D14343",
+                borderColor: "#D14343",
                 opacity: pressed ? 0.86 : 1,
               },
             ]}

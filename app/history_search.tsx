@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   enterButton: {
-    backgroundColor: "#95d57d",
+    backgroundColor: "#94AF97",
     borderRadius: 10,
     paddingVertical: 14,
     alignItems: "center",

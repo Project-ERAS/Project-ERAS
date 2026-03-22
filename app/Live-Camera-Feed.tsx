@@ -702,7 +702,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   enterButton: {
-    backgroundColor: "#95d57d",
+    backgroundColor: "#94AF97",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.12,
