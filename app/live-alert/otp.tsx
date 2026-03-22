@@ -22,6 +22,9 @@ import { auth } from "@/constants/firebase";
 export default function OtpScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
+  const mode = typeof params.mode === "string" ? params.mode : "firebase";
+  const expectedOtp =
+    typeof params.expectedOtp === "string" ? params.expectedOtp : "123456";
   const verificationId =
     typeof params.verificationId === "string" ? params.verificationId : "";
   const phoneNumber = typeof params.phone === "string" ? params.phone : "";
@@ -45,6 +48,18 @@ export default function OtpScreen() {
       Alert.alert("Invalid code", "Enter the 6-digit code sent to your phone.");
       return;
     }
+
+    if (mode === "fixed") {
+      if (joined !== expectedOtp) {
+        Alert.alert("Invalid code", "Please enter the correct OTP.");
+        return;
+      }
+
+      Alert.alert("Verified", "Phone number verified.");
+      router.replace("/live-alert");
+      return;
+    }
+
     if (!verificationId) {
       Alert.alert("Missing verification", "Please request a new OTP.");
       return;
