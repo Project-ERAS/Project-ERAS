@@ -256,7 +256,7 @@ export default function LiveCameraFeedScreen() {
                   />
                 ) : (
                   <Video
-                    ref={(ref) => {
+                    ref={(ref: any) => {
                       videoRef.current = ref;
                     }}
                     style={styles.player}
@@ -274,7 +274,7 @@ export default function LiveCameraFeedScreen() {
                       setStreamLoading(true);
                       setStreamBuffering(false);
                     }}
-                    onPlaybackStatusUpdate={(status) => {
+                    onPlaybackStatusUpdate={(status: any) => {
                       const s = status as any;
                       if (typeof s?.isBuffering === "boolean") {
                         setStreamBuffering(s.isBuffering);
