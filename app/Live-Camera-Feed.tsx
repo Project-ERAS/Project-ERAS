@@ -38,7 +38,7 @@ type LatestAlert = {
 
 type StreamMode = "native" | "webview" | "offline";
 
-const CAMERA_1_STREAM_URL = "http://172.20.12.2:4747/video";
+const CAMERA_1_STREAM_URL = "http://192.168.1.168:4747/video";
 
 let MapView: any = null;
 let Marker: any = null;
