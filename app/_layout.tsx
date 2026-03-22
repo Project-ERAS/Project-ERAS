@@ -1,5 +1,5 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
-import { Stack } from "expo-router";
+import { Stack, useRouter, useSegments } from "expo-router";
 import * as Haptics from "expo-haptics";
 import * as Speech from "expo-speech";
 import { StatusBar } from "expo-status-bar";
@@ -7,9 +7,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import "react-native-reanimated";
 
+import { onAuthStateChanged, type User } from "firebase/auth";
 import { collection, limit, onSnapshot, orderBy, query } from "firebase/firestore";
 
-import { db } from "@/constants/firebase";
+import { auth, db } from "@/constants/firebase";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 
 export const unstable_settings = {
@@ -24,6 +25,10 @@ type ElephantAlert = {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const router = useRouter();
+  const segments = useSegments();
+  const [authChecked, setAuthChecked] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [activeAlert, setActiveAlert] = useState<ElephantAlert | null>(null);
   const [showAlertModal, setShowAlertModal] = useState(false);
   const lastAlertIdRef = useRef<string | null>(null);
@@ -46,6 +51,35 @@ export default function RootLayout() {
         })
       : "";
   }, [activeAlert?.createdAt]);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+      setAuthChecked(true);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (!authChecked) return;
+
+    const route = segments[0] ?? "";
+    const inAuthFlow =
+      route === "signin" ||
+      route === "signup" ||
+      route === "verify-email" ||
+      route === "splash";
+
+    if (!currentUser && !inAuthFlow) {
+      router.replace("/signin");
+      return;
+    }
+
+    if (currentUser && (route === "signin" || route === "signup")) {
+      router.replace("/(tabs)/homepage");
+    }
+  }, [authChecked, currentUser, router, segments]);
 
   useEffect(() => {
     const alertsQuery = query(
