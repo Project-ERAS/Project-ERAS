@@ -20,6 +20,8 @@ cap = cv2.VideoCapture(stream_url)
 print("✅ ERAS IoT Bridge Active...")
 print("🔍 Monitoring feed for elephants...")
 
+alert_sent = False
+
 while True:
     ret, frame = cap.read()
     if not ret: 
@@ -49,7 +51,14 @@ while True:
                     'latitude': 6.9271,
                     'longitude': 80.7743,
                 })
-                cv2.waitKey(3000) # 3-second cooldown
+                alert_sent = True
+                break
+
+        if alert_sent:
+            break
+
+    if alert_sent:
+        break
 
     # Show the monitor window
     annotated_frame = results[0].plot()
@@ -57,6 +66,9 @@ while True:
     
     if cv2.waitKey(1) & 0xFF == ord('q'): 
         break
+
+if alert_sent:
+    print("✅ Alert sent. Stopping detection.")
 
 cap.release()
 cv2.destroyAllWindows()
