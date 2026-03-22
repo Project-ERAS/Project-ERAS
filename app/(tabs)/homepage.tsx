@@ -121,12 +121,6 @@ export default function HomeScreen() {
                 <View style={styles.logoContainer}>
                   <Text style={styles.logoText}>ERAS</Text>
                 </View>
-                <TouchableOpacity
-                  style={styles.authButton}
-                  onPress={() => router.push("/(tabs)/User-Profile")}
-                >
-                  <Text style={styles.authIcon}>👤</Text>
-                </TouchableOpacity>
               </View>
               <View style={styles.titleContainer}>
                 <Text style={styles.welcomeText}>
@@ -291,19 +285,6 @@ const styles = StyleSheet.create({
     fontWeight: "900",
     color: "#FFFFFF",
     letterSpacing: 2,
-  },
-  authButton: {
-    backgroundColor: "rgba(255, 255, 255, 0.15)",
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.3)",
-  },
-  authIcon: {
-    fontSize: 20,
   },
   titleContainer: {
     paddingHorizontal: 24,
