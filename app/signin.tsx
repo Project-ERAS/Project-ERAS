@@ -1,8 +1,16 @@
+import * as AppleAuthentication from "expo-apple-authentication";
+import * as Google from "expo-auth-session/providers/google";
+import * as Crypto from "expo-crypto";
 import { router } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
 import {
+  GoogleAuthProvider,
+  OAuthProvider,
   reload,
   sendPasswordResetEmail,
+  signInWithCredential,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
 } from "firebase/auth";
 import { collection, getDocs, query, where } from "firebase/firestore";
@@ -10,7 +18,6 @@ import { useMemo, useState } from "react";
 import {
   Alert,
   Image,
-  ImageBackground,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -26,12 +33,16 @@ import { auth, db } from "@/constants/firebase";
 import { validateEmail } from "@/constants/utils/validation";
 import { useThemeColor } from "@/hooks/use-theme-color";
 
+WebBrowser.maybeCompleteAuthSession();
+
 type FormState = {
   identifier: string;
   password: string;
 };
 
 export default function SigninScreen() {
+  const SOCIAL_AUTH_TIMEOUT_MS = 15000;
+
   const [form, setForm] = useState<FormState>({
     identifier: "",
     password: "",
@@ -40,24 +51,43 @@ export default function SigninScreen() {
   const [focusedField, setFocusedField] = useState<keyof FormState | null>(
     null,
   );
-  const [loading, setLoading] = useState(false);
+  const [emailLoading, setEmailLoading] = useState(false);
+  const [socialLoading, setSocialLoading] = useState(false);
 
   const webOutlineNone =
     Platform.OS === "web" ? ({ outlineStyle: "none" } as any) : null;
 
   const inputBackground = useThemeColor({}, "signupInputBackground");
-  const socialButtonBackground = useThemeColor(
-    {},
-    "signupSocialButtonBackground",
-  );
+  const socialButtonGrey = "#E5E7EB";
+  const socialButtonPressedGrey = "#D1D5DB";
   const primaryButton = useThemeColor({}, "signupPrimaryButton");
+  const primaryButtonPressed = "#0B5ED7";
   const buttonText = useThemeColor({}, "signupButtonText");
   const shadowColor = useThemeColor({}, "signupShadow");
   const mutedText = useThemeColor({}, "signupMutedText");
   const inputText = useThemeColor({}, "signupInputText");
   const dividerColor = useThemeColor({}, "signupDivider");
   const borderColor = useThemeColor({}, "signupBorder");
-  const backdropColor = useThemeColor({}, "signupBackdrop");
+
+  const googleWebClientId = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID;
+  const googleIosClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
+  const googleAndroidClientId =
+    process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID;
+  const googleClientIdForPlatform =
+    Platform.OS === "web"
+      ? googleWebClientId
+      : Platform.OS === "ios"
+        ? googleIosClientId
+        : googleAndroidClientId;
+  const hasGoogleClientId = Boolean(googleClientIdForPlatform);
+
+  const [googleRequest, , promptGoogleSignIn] = Google.useAuthRequest({
+    // Prevent runtime crash when env vars are missing; click handler blocks sign-in until configured.
+    webClientId: googleWebClientId ?? "missing-web-client-id",
+    iosClientId: googleIosClientId ?? "missing-ios-client-id",
+    androidClientId: googleAndroidClientId ?? "missing-android-client-id",
+    scopes: ["profile", "email"],
+  });
 
   function inputBorderFor(field: keyof FormState) {
     return focusedField === field ? primaryButton : borderColor;
@@ -144,7 +174,7 @@ export default function SigninScreen() {
   async function onSubmit() {
     setSubmitError(null);
     if (!canSubmit) return;
-    setLoading(true);
+    setEmailLoading(true);
 
     try {
       const password = form.password;
@@ -192,7 +222,7 @@ export default function SigninScreen() {
         setSubmitError(err?.message || "Failed to sign in");
       }
     } finally {
-      setLoading(false);
+      setEmailLoading(false);
     }
   }
 
@@ -232,21 +262,224 @@ export default function SigninScreen() {
     }
   }
 
+  async function onGoogleSignIn() {
+    setSubmitError(null);
+
+    if (Platform.OS === "web") {
+      setSocialLoading(true);
+      const unlockTimer = setTimeout(
+        () => setSocialLoading(false),
+        SOCIAL_AUTH_TIMEOUT_MS,
+      );
+      try {
+        const provider = new GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: "select_account" });
+        await signInWithPopup(auth, provider);
+        router.replace("/(tabs)/homepage");
+      } catch (err: any) {
+        const code = typeof err?.code === "string" ? err.code : null;
+        if (
+          code === "auth/popup-closed-by-user" ||
+          code === "auth/cancelled-popup-request"
+        ) {
+          return;
+        }
+        if (code === "auth/account-exists-with-different-credential") {
+          setSubmitError(
+            "This email is already linked to another sign-in method.",
+          );
+        } else if (code === "auth/network-request-failed") {
+          setSubmitError(
+            "Network request failed. Check your internet connection.",
+          );
+        } else {
+          setSubmitError(err?.message || "Failed to sign in with Google.");
+        }
+      } finally {
+        clearTimeout(unlockTimer);
+        setSocialLoading(false);
+      }
+      return;
+    }
+
+    if (!hasGoogleClientId) {
+      Alert.alert(
+        "Google sign-in is not configured yet.",
+        "Set EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID, EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID, and EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID in your environment.",
+      );
+      return;
+    }
+
+    if (!googleRequest) {
+      setSubmitError("Google sign-in is initializing. Please try again.");
+      return;
+    }
+
+    setSocialLoading(true);
+    const unlockTimer = setTimeout(
+      () => setSocialLoading(false),
+      SOCIAL_AUTH_TIMEOUT_MS,
+    );
+    try {
+      const result = await promptGoogleSignIn();
+      if (result.type !== "success") return;
+
+      const tokenFromAuth = (result as any)?.authentication?.idToken;
+      const tokenFromParams = (result as any)?.params?.id_token;
+      const idToken =
+        typeof tokenFromAuth === "string"
+          ? tokenFromAuth
+          : typeof tokenFromParams === "string"
+            ? tokenFromParams
+            : null;
+
+      if (!idToken) {
+        setSubmitError("Google sign-in failed. Missing ID token.");
+        return;
+      }
+
+      const credential = GoogleAuthProvider.credential(idToken);
+      await signInWithCredential(auth, credential);
+      router.replace("/(tabs)/homepage");
+    } catch (err: any) {
+      const code = typeof err?.code === "string" ? err.code : null;
+      if (code === "auth/account-exists-with-different-credential") {
+        setSubmitError(
+          "This email is already linked to another sign-in method.",
+        );
+      } else if (code === "auth/network-request-failed") {
+        setSubmitError("Network request failed. Check your internet connection.");
+      } else {
+        setSubmitError(err?.message || "Failed to sign in with Google.");
+      }
+    } finally {
+      clearTimeout(unlockTimer);
+      setSocialLoading(false);
+    }
+  }
+
+  async function onAppleSignIn() {
+    setSubmitError(null);
+
+    if (Platform.OS === "web") {
+      setSocialLoading(true);
+      const unlockTimer = setTimeout(
+        () => setSocialLoading(false),
+        SOCIAL_AUTH_TIMEOUT_MS,
+      );
+      try {
+        const provider = new OAuthProvider("apple.com");
+        provider.addScope("email");
+        provider.addScope("name");
+        provider.setCustomParameters({ locale: "en" });
+        await signInWithPopup(auth, provider);
+        router.replace("/(tabs)/homepage");
+      } catch (err: any) {
+        const code = typeof err?.code === "string" ? err.code : null;
+        if (code === "auth/popup-closed-by-user") {
+          return;
+        }
+        if (code === "auth/popup-blocked") {
+          Alert.alert(
+            "Popup blocked",
+            "Allow popups for this site and try Apple sign-in again.",
+          );
+          return;
+        }
+        if (code === "auth/operation-not-allowed") {
+          setSubmitError("Enable Apple provider in Firebase Authentication.");
+          return;
+        }
+        if (code === "auth/unauthorized-domain") {
+          setSubmitError(
+            "Current domain is not authorized in Firebase Auth settings.",
+          );
+          return;
+        }
+        if (code === "auth/account-exists-with-different-credential") {
+          setSubmitError(
+            "This email is already linked to another sign-in method.",
+          );
+        } else if (code === "auth/network-request-failed") {
+          setSubmitError(
+            "Network request failed. Check your internet connection.",
+          );
+        } else {
+          setSubmitError(err?.message || "Failed to sign in with Apple.");
+        }
+      } finally {
+        clearTimeout(unlockTimer);
+        setSocialLoading(false);
+      }
+      return;
+    }
+
+    if (Platform.OS !== "ios") {
+      Alert.alert("Apple sign-in is available only on iOS devices.");
+      return;
+    }
+
+    const isAvailable = await AppleAuthentication.isAvailableAsync();
+    if (!isAvailable) {
+      Alert.alert("Apple sign-in is not available on this device.");
+      return;
+    }
+
+    setSocialLoading(true);
+    const unlockTimer = setTimeout(
+      () => setSocialLoading(false),
+      SOCIAL_AUTH_TIMEOUT_MS,
+    );
+    try {
+      const rawNonce = `${Date.now()}-${Math.random()}`;
+      const hashedNonce = await Crypto.digestStringAsync(
+        Crypto.CryptoDigestAlgorithm.SHA256,
+        rawNonce,
+      );
+
+      const appleAuth = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+        nonce: hashedNonce,
+      });
+
+      if (!appleAuth.identityToken) {
+        setSubmitError("Apple sign-in failed. Missing identity token.");
+        return;
+      }
+
+      const provider = new OAuthProvider("apple.com");
+      const credential = provider.credential({
+        idToken: appleAuth.identityToken,
+        rawNonce,
+      });
+
+      await signInWithCredential(auth, credential);
+      router.replace("/(tabs)/homepage");
+    } catch (err: any) {
+      const code = typeof err?.code === "string" ? err.code : null;
+      if (code === "ERR_REQUEST_CANCELED") {
+        return;
+      }
+      if (code === "auth/account-exists-with-different-credential") {
+        setSubmitError(
+          "This email is already linked to another sign-in method.",
+        );
+      } else if (code === "auth/network-request-failed") {
+        setSubmitError("Network request failed. Check your internet connection.");
+      } else {
+        setSubmitError(err?.message || "Failed to sign in with Apple.");
+      }
+    } finally {
+      clearTimeout(unlockTimer);
+      setSocialLoading(false);
+    }
+  }
+
   return (
-    <ImageBackground
-      source={require("@/assets/icons/background.jpg")}
-      resizeMode="cover"
-      blurRadius={Platform.OS === "web" ? 0 : 0}
-      imageStyle={styles.backgroundImage}
-      style={styles.flex}
-    >
-      <View
-        pointerEvents="none"
-        style={[
-          StyleSheet.absoluteFillObject,
-          { backgroundColor: backdropColor },
-        ]}
-      />
+    <View style={styles.screen}>
       <SafeAreaView style={styles.flex}>
         <KeyboardAvoidingView
           style={styles.flex}
@@ -272,14 +505,17 @@ export default function SigninScreen() {
               <View style={styles.socialSection}>
                 <Pressable
                   accessibilityRole="button"
-                  onPress={() => console.log("Google sign in")}
+                  onPress={onGoogleSignIn}
+                  disabled={emailLoading || socialLoading}
                   style={({ pressed }) => [
                     styles.socialButton,
                     {
-                      backgroundColor: socialButtonBackground,
+                      backgroundColor: pressed
+                        ? socialButtonPressedGrey
+                        : socialButtonGrey,
                       borderColor,
                       shadowColor,
-                      opacity: pressed ? 0.9 : 1,
+                      opacity: 1,
                     },
                   ]}
                 >
@@ -295,14 +531,17 @@ export default function SigninScreen() {
 
                 <Pressable
                   accessibilityRole="button"
-                  onPress={() => console.log("Apple sign in")}
+                  onPress={onAppleSignIn}
+                  disabled={emailLoading || socialLoading}
                   style={({ pressed }) => [
                     styles.socialButton,
                     {
-                      backgroundColor: socialButtonBackground,
+                      backgroundColor: pressed
+                        ? socialButtonPressedGrey
+                        : socialButtonGrey,
                       borderColor,
                       shadowColor,
-                      opacity: pressed ? 0.9 : 1,
+                      opacity: 1,
                     },
                   ]}
                 >
@@ -408,20 +647,23 @@ export default function SigninScreen() {
               <Pressable
                 accessibilityRole="button"
                 onPress={onSubmit}
-                disabled={!canSubmit || loading}
+                disabled={!canSubmit || emailLoading}
                 style={({ pressed }) => [
                   styles.primaryButton,
                   {
-                    backgroundColor: primaryButton,
+                    backgroundColor:
+                      pressed && canSubmit && !emailLoading
+                        ? primaryButtonPressed
+                        : primaryButton,
                     shadowColor,
-                    opacity: !canSubmit || loading ? 0.55 : pressed ? 0.9 : 1,
+                    opacity: !canSubmit || emailLoading ? 0.55 : 1,
                   },
                 ]}
               >
                 <ThemedText
                   style={[styles.primaryButtonText, { color: buttonText }]}
                 >
-                  {loading ? "Signing in..." : "Sign in"}
+                  {emailLoading ? "Signing in..." : "Sign in"}
                 </ThemedText>
               </Pressable>
 
@@ -439,59 +681,70 @@ export default function SigninScreen() {
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  backgroundImage: {
-    opacity: 0.75,
+  screen: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
   },
   scrollContent: {
     flexGrow: 1,
     justifyContent: "center",
     paddingHorizontal: 30,
-    paddingVertical: 24,
+    paddingVertical: 28,
     alignItems: "center",
   },
   content: {
     width: "100%",
-    maxWidth: 720,
+    maxWidth: 560,
     alignSelf: "center",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 28,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    shadowColor: "#101828",
+    shadowOpacity: 0.08,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 3,
   },
   headerSection: {
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: 16,
   },
   logo: {
-    width: 260,
-    height: 200,
-    marginBottom: -10,
+    width: 230,
+    height: 170,
+    marginBottom: -4,
   },
   headerTitle: {
-    fontSize: 22,
-    fontWeight: "500",
+    fontSize: 24,
+    fontWeight: "600",
+    letterSpacing: 0.3,
   },
   socialSection: {
-    gap: 12,
-    marginTop: 18,
+    gap: 10,
+    marginTop: 12,
     alignItems: "center",
   },
   socialButton: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 25,
+    borderRadius: 16,
     width: "100%",
-    maxWidth: 320,
-    paddingVertical: 14,
+    maxWidth: 420,
+    paddingVertical: 13,
     paddingHorizontal: 14,
     borderWidth: 1,
-    shadowOpacity: 0.12,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 2,
+    shadowOpacity: 0.18,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 5 },
+    elevation: 5,
   },
   socialIcon: {
     width: 20,
@@ -506,7 +759,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginVertical: 20,
+    marginVertical: 16,
     width: "100%",
   },
   divider: {
@@ -517,9 +770,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   field: {
-    marginBottom: 18,
+    marginBottom: 14,
     width: "100%",
-    maxWidth: 600,
+    maxWidth: 460,
     alignSelf: "center",
   },
   label: {
@@ -539,23 +792,24 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderRadius: 25,
+    borderRadius: 14,
     width: "100%",
     paddingHorizontal: 16,
-    paddingVertical: 14,
+    paddingVertical: 13,
     fontSize: 15,
   },
   primaryButton: {
-    borderRadius: 30,
+    borderRadius: 14,
     width: "100%",
-    maxWidth: 360,
-    paddingVertical: 16,
+    maxWidth: 460,
+    paddingVertical: 15,
     alignItems: "center",
-    shadowOpacity: 0.18,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 6 },
-    elevation: 3,
+    shadowOpacity: 0.24,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 7 },
+    elevation: 8,
     alignSelf: "center",
+    marginTop: 4,
   },
   primaryButtonText: {
     fontSize: 16,
@@ -564,7 +818,7 @@ const styles = StyleSheet.create({
   bottomRow: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 12,
+    marginTop: 16,
     flexWrap: "wrap",
   },
   createLink: {
