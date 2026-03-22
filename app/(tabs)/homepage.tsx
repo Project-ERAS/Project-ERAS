@@ -123,7 +123,7 @@ export default function HomeScreen() {
                 </View>
                 <TouchableOpacity
                   style={styles.authButton}
-                  onPress={() => router.push("/signin")}
+                  onPress={() => router.push("/(tabs)/User-Profile")}
                 >
                   <Text style={styles.authIcon}>👤</Text>
                 </TouchableOpacity>
@@ -239,7 +239,7 @@ export default function HomeScreen() {
 
         <TouchableOpacity
           style={styles.navButton}
-          onPress={() => router.push("/User-Profile")}
+          onPress={() => router.push("/(tabs)/User-Profile")}
         >
           <View style={styles.navIconCircle}>
             <Image
