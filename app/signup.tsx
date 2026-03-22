@@ -47,11 +47,10 @@ export default function SignupScreen() {
     Platform.OS === "web" ? ({ outlineStyle: "none" } as any) : null;
 
   const inputBackground = useThemeColor({}, "signupInputBackground");
-  const socialButtonBackground = useThemeColor(
-    {},
-    "signupSocialButtonBackground",
-  );
+  const socialButtonGrey = "#E5E7EB";
+  const socialButtonPressedGrey = "#D1D5DB";
   const primaryButton = useThemeColor({}, "signupPrimaryButton");
+  const primaryButtonPressed = "#0B5ED7";
   const buttonText = useThemeColor({}, "signupButtonText");
   const shadowColor = useThemeColor({}, "signupShadow");
   const mutedText = useThemeColor({}, "signupMutedText");
@@ -188,7 +187,7 @@ export default function SignupScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.screen}>
       <SafeAreaView style={styles.flex}>
         <KeyboardAvoidingView
           style={styles.flex}
@@ -222,10 +221,12 @@ export default function SignupScreen() {
                   style={({ pressed }) => [
                     styles.socialButton,
                     {
-                      backgroundColor: socialButtonBackground,
+                      backgroundColor: pressed
+                        ? socialButtonPressedGrey
+                        : socialButtonGrey,
                       borderColor,
                       shadowColor,
-                      opacity: pressed ? 0.9 : 1,
+                      opacity: 1,
                     },
                   ]}
                 >
@@ -247,10 +248,12 @@ export default function SignupScreen() {
                   style={({ pressed }) => [
                     styles.socialButton,
                     {
-                      backgroundColor: socialButtonBackground,
+                      backgroundColor: pressed
+                        ? socialButtonPressedGrey
+                        : socialButtonGrey,
                       borderColor,
                       shadowColor,
-                      opacity: pressed ? 0.9 : 1,
+                      opacity: 1,
                     },
                   ]}
                 >
@@ -386,7 +389,11 @@ export default function SignupScreen() {
               </View>
 
               {submitError ? (
-                <ThemedText style={{ color: linkColor }}>
+                <ThemedText
+                  style={[styles.submitError, { color: linkColor }]}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
                   {submitError}
                 </ThemedText>
               ) : null}
@@ -404,9 +411,12 @@ export default function SignupScreen() {
                 style={({ pressed }) => [
                   styles.primaryButton,
                   {
-                    backgroundColor: primaryButton,
+                    backgroundColor:
+                      pressed && canSubmit && !loading
+                        ? primaryButtonPressed
+                        : primaryButton,
                     shadowColor,
-                    opacity: !canSubmit || loading ? 0.55 : pressed ? 0.9 : 1,
+                    opacity: !canSubmit || loading ? 0.55 : 1,
                   },
                 ]}
               >
@@ -437,7 +447,7 @@ export default function SignupScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  container: {
+  screen: {
     flex: 1,
     backgroundColor: "#FFFFFF",
   },
@@ -445,46 +455,56 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: "center",
     paddingHorizontal: 30,
-    paddingVertical: 24,
+    paddingVertical: 28,
     alignItems: "center",
   },
   content: {
     width: "100%",
-    maxWidth: 720,
+    maxWidth: 560,
     alignSelf: "center",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 28,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    shadowColor: "#101828",
+    shadowOpacity: 0.08,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 3,
   },
   headerSection: {
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: 16,
   },
   logo: {
-    width: 260,
-    height: 200,
-    marginBottom: -10,
+    width: 230,
+    height: 170,
+    marginBottom: -4,
   },
   headerTitle: {
-    fontSize: 22,
-    fontWeight: "500",
+    fontSize: 24,
+    fontWeight: "600",
+    letterSpacing: 0.3,
   },
   socialSection: {
-    gap: 12,
-    marginTop: 18,
+    gap: 10,
+    marginTop: 12,
     alignItems: "center",
   },
   socialButton: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 25,
+    borderRadius: 16,
     width: "100%",
-    maxWidth: 320,
-    paddingVertical: 14,
+    maxWidth: 420,
+    paddingVertical: 13,
     paddingHorizontal: 14,
     borderWidth: 1,
-    shadowOpacity: 0.12,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 2,
+    shadowOpacity: 0.18,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 5 },
+    elevation: 5,
   },
   socialIcon: {
     width: 20,
@@ -499,7 +519,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginVertical: 20,
+    marginVertical: 16,
     width: "100%",
   },
   divider: {
@@ -510,9 +530,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   field: {
-    marginBottom: 18,
+    marginBottom: 14,
     width: "100%",
-    maxWidth: 600,
+    maxWidth: 460,
     alignSelf: "center",
   },
   label: {
@@ -521,10 +541,10 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderRadius: 25,
+    borderRadius: 14,
     width: "100%",
     paddingHorizontal: 16,
-    paddingVertical: 14,
+    paddingVertical: 13,
     fontSize: 15,
   },
   passwordHintContainer: {
@@ -541,16 +561,17 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   primaryButton: {
-    borderRadius: 30,
+    borderRadius: 14,
     width: "100%",
-    maxWidth: 360,
-    paddingVertical: 16,
+    maxWidth: 460,
+    paddingVertical: 15,
     alignItems: "center",
-    shadowOpacity: 0.18,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 6 },
-    elevation: 3,
+    shadowOpacity: 0.24,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 7 },
+    elevation: 8,
     alignSelf: "center",
+    marginTop: 4,
   },
   primaryButtonText: {
     fontSize: 16,
@@ -559,9 +580,13 @@ const styles = StyleSheet.create({
   signInRow: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 12,
+    marginTop: 16,
+    flexWrap: "wrap",
   },
   signInLink: {
     fontWeight: "600",
+  },
+  submitError: {
+    color: "#FF3B30",
   },
 });
