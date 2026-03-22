@@ -1,4 +1,4 @@
-import { MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { ResizeMode, Video } from "expo-av";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -207,7 +207,7 @@ export default function LiveCameraFeedScreen() {
             style={styles.backButton}
             activeOpacity={0.85}
           >
-            <MaterialIcons name="arrow-back" size={24} color="#2f6a39" />
+            <Ionicons name="chevron-back" size={28} color="#2F3B2F" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Live camera feed</Text>
           <View style={styles.headerSpacer} />
@@ -532,8 +532,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
+    shadowOpacity: 0.06,
+    shadowRadius: 10,
     elevation: 2,
   },
   headerTitle: {
