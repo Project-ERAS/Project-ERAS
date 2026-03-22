@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
-import LottieView from "lottie-react-native";
 import { onAuthStateChanged } from "firebase/auth";
+import LottieView from "lottie-react-native";
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
