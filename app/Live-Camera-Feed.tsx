@@ -1,28 +1,24 @@
 import { MaterialIcons } from "@expo/vector-icons";
+import { ResizeMode, Video } from "expo-av";
 import { useRouter } from "expo-router";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
-    collection,
-    limit,
-    onSnapshot,
-    orderBy,
-    query,
-} from "firebase/firestore";
-import { useEffect, useMemo, useState } from "react";
-import {
-    FlatList,
-    Image,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  FlatList,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { WebView } from "react-native-webview";
 
-import { db } from "@/constants/firebase";
+import { EmergencyState, subscribeEmergencyState } from "@/constants/firebase";
 
 type CameraLocation = {
   id: number;
@@ -39,6 +35,10 @@ type LatestAlert = {
   latitude: number | null;
   longitude: number | null;
 };
+
+type StreamMode = "native" | "webview" | "offline";
+
+const CAMERA_1_STREAM_URL = "http://172.20.12.2:4747/video";
 
 let MapView: any = null;
 let Marker: any = null;
@@ -99,6 +99,20 @@ export default function LiveCameraFeedScreen() {
   const [markers, setMarkers] = useState(CAMERA_LOCATIONS);
   const [hasSearched, setHasSearched] = useState(false);
   const [latestAlert, setLatestAlert] = useState<LatestAlert | null>(null);
+  const [emergency, setEmergency] = useState<EmergencyState>({
+    active: false,
+    alert: null,
+  });
+  const [flashOn, setFlashOn] = useState(false);
+  const [streamMode, setStreamMode] = useState<StreamMode>("native");
+  const [streamLoading, setStreamLoading] = useState(true);
+  const [streamBuffering, setStreamBuffering] = useState(false);
+  const videoRef = useRef<Video | null>(null);
+  const isCamera1Emergency = useMemo(() => {
+    if (!emergency.active) return false;
+    const cam = emergency.alert?.cameraId ?? 1;
+    return cam === 1;
+  }, [emergency.active, emergency.alert?.cameraId]);
 
   const latestAlertTime = useMemo(() => {
     if (!latestAlert?.createdAt) return "";
@@ -120,55 +134,31 @@ export default function LiveCameraFeedScreen() {
   }, [latestAlert?.createdAt]);
 
   useEffect(() => {
-    const alertsQuery = query(
-      collection(db, "alerts"),
-      orderBy("createdAt", "desc"),
-      limit(1),
-    );
-
-    return onSnapshot(
-      alertsQuery,
-      (snapshot) => {
-        const docSnap = snapshot.docs[0];
-        if (!docSnap) {
-          setLatestAlert(null);
-          return;
-        }
-
-        const data = docSnap.data() as any;
-        const nextLocation =
-          typeof data?.location === "string" && data.location.trim()
-            ? data.location.trim()
-            : typeof data?.locationName === "string" && data.locationName.trim()
-              ? data.locationName.trim()
-              : "Unknown location";
-
-        const latitude =
-          typeof data?.latitude === "number"
-            ? data.latitude
-            : typeof data?.lat === "number"
-              ? data.lat
-              : null;
-        const longitude =
-          typeof data?.longitude === "number"
-            ? data.longitude
-            : typeof data?.lng === "number"
-              ? data.lng
-              : null;
-
-        setLatestAlert({
-          id: docSnap.id,
-          location: nextLocation,
-          createdAt: data?.createdAt ?? null,
-          latitude,
-          longitude,
-        });
-      },
-      () => {
+    return subscribeEmergencyState((state) => {
+      setEmergency(state);
+      const alert = state.alert;
+      if (!alert) {
         setLatestAlert(null);
-      },
-    );
+        return;
+      }
+      setLatestAlert({
+        id: alert.id,
+        location: alert.location,
+        createdAt: alert.createdAt,
+        latitude: alert.latitude,
+        longitude: alert.longitude,
+      });
+    });
   }, []);
+
+  useEffect(() => {
+    if (!emergency.active) {
+      setFlashOn(false);
+      return;
+    }
+    const timer = setInterval(() => setFlashOn((v) => !v), 350);
+    return () => clearInterval(timer);
+  }, [emergency.active]);
 
   const handleEnter = () => {
     setHasSearched(true);
@@ -230,6 +220,94 @@ export default function LiveCameraFeedScreen() {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.content}>
+            <View style={styles.camera1Card}>
+              <View style={styles.camera1HeaderRow}>
+                <MaterialIcons name="videocam" size={22} color="#2f6a39" />
+                <Text style={styles.camera1Title}>Camera 1 Live Feed</Text>
+                <View style={styles.camera1Badge}>
+                  <Text style={styles.camera1BadgeText}>Sensor 01</Text>
+                </View>
+              </View>
+
+              <View style={styles.playerWrap}>
+                {streamMode === "offline" ? (
+                  <View style={styles.offlineWrap}>
+                    <MaterialIcons
+                      name="portable-wifi-off"
+                      size={34}
+                      color="#B42318"
+                    />
+                    <Text style={styles.offlineTitle}>Sensor 01 Offline</Text>
+                    <Text style={styles.offlineHint}>
+                      {CAMERA_1_STREAM_URL}
+                    </Text>
+                  </View>
+                ) : streamMode === "webview" ? (
+                  <WebView
+                    source={{ uri: CAMERA_1_STREAM_URL }}
+                    style={styles.player}
+                    onLoadEnd={() => setStreamLoading(false)}
+                    onError={() => {
+                      setStreamLoading(false);
+                      setStreamMode("offline");
+                    }}
+                    allowsInlineMediaPlayback
+                    mediaPlaybackRequiresUserAction={false}
+                  />
+                ) : (
+                  <Video
+                    ref={(ref) => {
+                      videoRef.current = ref;
+                    }}
+                    style={styles.player}
+                    source={{ uri: CAMERA_1_STREAM_URL }}
+                    resizeMode={ResizeMode.CONTAIN}
+                    shouldPlay
+                    isMuted
+                    onLoadStart={() => {
+                      setStreamLoading(true);
+                      setStreamBuffering(false);
+                    }}
+                    onReadyForDisplay={() => setStreamLoading(false)}
+                    onError={() => {
+                      setStreamMode("webview");
+                      setStreamLoading(true);
+                      setStreamBuffering(false);
+                    }}
+                    onPlaybackStatusUpdate={(status) => {
+                      const s = status as any;
+                      if (typeof s?.isBuffering === "boolean") {
+                        setStreamBuffering(s.isBuffering);
+                      }
+                    }}
+                  />
+                )}
+
+                {streamLoading || streamBuffering ? (
+                  <View style={styles.loadingOverlay}>
+                    <ActivityIndicator size="large" color="#FFFFFF" />
+                    <Text style={styles.loadingText}>
+                      {streamLoading ? "Connecting..." : "Buffering..."}
+                    </Text>
+                  </View>
+                ) : null}
+
+                {isCamera1Emergency ? (
+                  <View
+                    pointerEvents="none"
+                    style={[
+                      styles.emergencyOverlay,
+                      { opacity: flashOn ? 0.85 : 0.45 },
+                    ]}
+                  >
+                    <Text style={styles.emergencyText}>
+                      ⚠️ ELEPHANT DETECTED ON CAMERA 1
+                    </Text>
+                  </View>
+                ) : null}
+              </View>
+            </View>
+
             <View style={styles.inputCard}>
               <Text style={styles.label}>Enter location</Text>
               <TextInput
@@ -479,6 +557,110 @@ const styles = StyleSheet.create({
   },
   content: {
     gap: 16,
+  },
+  camera1Card: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 24,
+    padding: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.08,
+    shadowRadius: 18,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: "#DDE3DD",
+  },
+  camera1HeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginBottom: 12,
+  },
+  camera1Title: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: "900",
+    color: "#111827",
+  },
+  camera1Badge: {
+    backgroundColor: "#F2F9F2",
+    borderWidth: 1,
+    borderColor: "#A7D58A",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 999,
+  },
+  camera1BadgeText: {
+    fontSize: 12,
+    fontWeight: "800",
+    color: "#2f6a39",
+  },
+  playerWrap: {
+    width: "100%",
+    height: 230,
+    backgroundColor: "#0B1220",
+    borderRadius: 16,
+    overflow: "hidden",
+  },
+  player: {
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#0B1220",
+  },
+  loadingOverlay: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    backgroundColor: "rgba(0,0,0,0.45)",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    paddingHorizontal: 20,
+  },
+  loadingText: {
+    color: "#FFFFFF",
+    fontSize: 12,
+    fontWeight: "800",
+    textAlign: "center",
+  },
+  offlineWrap: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 16,
+    gap: 10,
+  },
+  offlineTitle: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "900",
+    textAlign: "center",
+  },
+  offlineHint: {
+    color: "rgba(255,255,255,0.75)",
+    fontSize: 11,
+    fontWeight: "700",
+    textAlign: "center",
+  },
+  emergencyOverlay: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    backgroundColor: "#D63B3B",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 16,
+  },
+  emergencyText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "900",
+    textAlign: "center",
+    lineHeight: 22,
   },
   label: {
     fontSize: 16,

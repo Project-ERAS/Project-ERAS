@@ -105,3 +105,38 @@ if (shouldUseEmulators && !emulatorsConnected) {
   connectStorageEmulator(storage, host, storagePort);
   emulatorsConnected = true;
 }
+
+export type EmergencyAlert = {
+  id: string;
+  location: string;
+  createdAt: any;
+  latitude: number | null;
+  longitude: number | null;
+  cameraId: number | null;
+  status: string | null;
+};
+
+export type EmergencyState = {
+  active: boolean;
+  alert: EmergencyAlert | null;
+};
+
+let emergencyState: EmergencyState = { active: false, alert: null };
+const emergencyListeners = new Set<(state: EmergencyState) => void>();
+
+export function getEmergencyState() {
+  return emergencyState;
+}
+
+export function setEmergencyState(next: EmergencyState) {
+  emergencyState = next;
+  emergencyListeners.forEach((listener) => listener(emergencyState));
+}
+
+export function subscribeEmergencyState(listener: (state: EmergencyState) => void) {
+  emergencyListeners.add(listener);
+  listener(emergencyState);
+  return () => {
+    emergencyListeners.delete(listener);
+  };
+}
