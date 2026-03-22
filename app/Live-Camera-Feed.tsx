@@ -41,11 +41,12 @@ type StreamMode = "native" | "webview" | "offline";
 
 const CAMERA_1_STREAM_URL =
   process.env.EXPO_PUBLIC_CAMERA_1_STREAM_URL ??
-  "http://192.168.1.203:8090/stream";
+  "http://192.168.1.168:4747/video";
 
 const CAMERA_1_IS_MJPEG =
   CAMERA_1_STREAM_URL.includes("mjpeg") ||
-  CAMERA_1_STREAM_URL.endsWith("/stream");
+  CAMERA_1_STREAM_URL.endsWith("/stream") ||
+  CAMERA_1_STREAM_URL.endsWith("/video");
 
 let MapView: any = null;
 let Marker: any = null;
@@ -117,6 +118,9 @@ export default function LiveCameraFeedScreen() {
   const [streamLoading, setStreamLoading] = useState(true);
   const [streamBuffering, setStreamBuffering] = useState(false);
   const videoRef = useRef<Video | null>(null);
+  const webviewLoadTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
   const isCamera1Emergency = useMemo(() => {
     if (!emergency.active) return false;
     const cam = emergency.alert?.cameraId ?? 1;
@@ -288,6 +292,20 @@ export default function LiveCameraFeedScreen() {
                   <WebView
                     source={{ uri: CAMERA_1_STREAM_URL }}
                     style={styles.player}
+                    onLoadStart={() => {
+                      setStreamLoading(true);
+                      if (webviewLoadTimeoutRef.current) {
+                        clearTimeout(webviewLoadTimeoutRef.current);
+                      }
+                      webviewLoadTimeoutRef.current = setTimeout(() => {
+                        setStreamLoading(false);
+                      }, 2500);
+                    }}
+                    onLoadProgress={({ nativeEvent }) => {
+                      if (nativeEvent.progress > 0.15) {
+                        setStreamLoading(false);
+                      }
+                    }}
                     onLoadEnd={() => setStreamLoading(false)}
                     onError={() => {
                       setStreamLoading(false);
