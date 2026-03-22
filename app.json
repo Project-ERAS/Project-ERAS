@@ -32,6 +32,7 @@
     "assetBundlePatterns": ["assets/ERAS FINAL Camera/**"],
     "plugins": [
       "expo-router",
+      "expo-apple-authentication",
       [
         "expo-splash-screen",
         {
