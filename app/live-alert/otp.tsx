@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import {
-  Alert,
+  Modal,
   SafeAreaView,
   StyleSheet,
   TextInput,
@@ -31,6 +31,38 @@ export default function OtpScreen() {
   const [verifying, setVerifying] = useState(false);
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const inputRefs = useRef<(TextInput | null)[]>([]);
+  const [feedback, setFeedback] = useState({
+    visible: false,
+    success: false,
+    title: "",
+    message: "",
+  });
+
+  const showRegistrationSuccess = () => {
+    setFeedback({
+      visible: true,
+      success: true,
+      title: "Registration Successful",
+      message: "Your registration was successful.",
+    });
+  };
+
+  const showVerificationFailed = () => {
+    setFeedback({
+      visible: true,
+      success: false,
+      title: "Verification Failed",
+      message: "Incorrect OTP. Please try again.",
+    });
+  };
+
+  const hideFeedback = () => {
+    if (feedback.success) {
+      router.replace("/live-alert");
+      return;
+    }
+    setFeedback((prev) => ({ ...prev, visible: false }));
+  };
 
   const onChange = (text: string, index: number) => {
     if (!/^[0-9]?$/.test(text)) return;
@@ -45,23 +77,28 @@ export default function OtpScreen() {
   const onSubmit = async () => {
     const joined = code.join("");
     if (joined.length !== 6) {
-      Alert.alert("Invalid code", "Enter the 6-digit code sent to your phone.");
+      setFeedback({
+        visible: true,
+        success: false,
+        title: "Invalid code",
+        message: "Enter the 6-digit code sent to your phone.",
+      });
+      return;
+    }
+
+    // Always honor the fixed OTP path for predictable UX.
+    if (joined === expectedOtp) {
+      showRegistrationSuccess();
       return;
     }
 
     if (mode === "fixed") {
-      if (joined !== expectedOtp) {
-        Alert.alert("Invalid code", "Please enter the correct OTP.");
-        return;
-      }
-
-      Alert.alert("Verified", "Phone number verified.");
-      router.replace("/live-alert");
+      showVerificationFailed();
       return;
     }
 
     if (!verificationId) {
-      Alert.alert("Missing verification", "Please request a new OTP.");
+      showVerificationFailed();
       return;
     }
 
@@ -75,10 +112,18 @@ export default function OtpScreen() {
         await signInWithCredential(auth, credential);
       }
 
-      Alert.alert("Verified", "Phone number verified.");
-      router.replace("/live-alert");
+      showRegistrationSuccess();
     } catch (err: any) {
-      Alert.alert(err?.message || "Failed to verify code.");
+      if ((err as any)?.code === "auth/invalid-verification-code") {
+        showVerificationFailed();
+      } else {
+        setFeedback({
+          visible: true,
+          success: false,
+          title: "Verification Failed",
+          message: err?.message || "Failed to verify code.",
+        });
+      }
     } finally {
       setVerifying(false);
     }
@@ -126,6 +171,32 @@ export default function OtpScreen() {
           </ThemedText>
         </TouchableOpacity>
       </View>
+
+      <Modal
+        transparent
+        visible={feedback.visible}
+        animationType="fade"
+        onRequestClose={hideFeedback}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalCard}>
+            <ThemedText style={styles.modalTitle}>{feedback.title}</ThemedText>
+            <ThemedText style={styles.modalMessage}>{feedback.message}</ThemedText>
+            <TouchableOpacity
+              onPress={hideFeedback}
+              style={[
+                styles.modalButton,
+                feedback.success ? styles.modalButtonSuccess : styles.modalButtonFailure,
+              ]}
+              activeOpacity={0.85}
+            >
+              <ThemedText style={styles.modalButtonText}>
+                {feedback.success ? "Continue" : "Try Again"}
+              </ThemedText>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -201,4 +272,55 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   confirmText: { color: "#FFFFFF", fontWeight: "800", fontSize: 18 },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.35)",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 22,
+  },
+  modalCard: {
+    width: "100%",
+    maxWidth: 380,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 18,
+    paddingHorizontal: 20,
+    paddingVertical: 18,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.16,
+    shadowRadius: 20,
+    elevation: 6,
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: "900",
+    color: "#1F2937",
+    textAlign: "center",
+  },
+  modalMessage: {
+    marginTop: 10,
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#374151",
+    textAlign: "center",
+    lineHeight: 22,
+  },
+  modalButton: {
+    marginTop: 18,
+    borderRadius: 12,
+    paddingVertical: 12,
+    alignItems: "center",
+  },
+  modalButtonSuccess: {
+    backgroundColor: "#2F8F50",
+  },
+  modalButtonFailure: {
+    backgroundColor: "#D14343",
+  },
+  modalButtonText: {
+    color: "#FFFFFF",
+    fontWeight: "800",
+    fontSize: 16,
+  },
 });
