@@ -18,7 +18,8 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
 
-import { EmergencyState, subscribeEmergencyState } from "@/constants/firebase";
+import { EmergencyState, db } from "@/constants/firebase";
+import { collection, limit, onSnapshot, orderBy, query } from "firebase/firestore";
 
 type CameraLocation = {
   id: number;
@@ -38,7 +39,13 @@ type LatestAlert = {
 
 type StreamMode = "native" | "webview" | "offline";
 
-const CAMERA_1_STREAM_URL = "http://192.168.1.168:4747/video";
+const CAMERA_1_STREAM_URL =
+  process.env.EXPO_PUBLIC_CAMERA_1_STREAM_URL ??
+  "http://192.168.1.203:8090/stream";
+
+const CAMERA_1_IS_MJPEG =
+  CAMERA_1_STREAM_URL.includes("mjpeg") ||
+  CAMERA_1_STREAM_URL.endsWith("/stream");
 
 let MapView: any = null;
 let Marker: any = null;
@@ -104,7 +111,9 @@ export default function LiveCameraFeedScreen() {
     alert: null,
   });
   const [flashOn, setFlashOn] = useState(false);
-  const [streamMode, setStreamMode] = useState<StreamMode>("native");
+  const [streamMode, setStreamMode] = useState<StreamMode>(
+    CAMERA_1_IS_MJPEG ? "webview" : "native",
+  );
   const [streamLoading, setStreamLoading] = useState(true);
   const [streamBuffering, setStreamBuffering] = useState(false);
   const videoRef = useRef<Video | null>(null);
@@ -134,21 +143,54 @@ export default function LiveCameraFeedScreen() {
   }, [latestAlert?.createdAt]);
 
   useEffect(() => {
-    return subscribeEmergencyState((state) => {
-      setEmergency(state);
-      const alert = state.alert;
-      if (!alert) {
+    const alertsQuery = query(
+      collection(db, "alerts"),
+      orderBy("createdAt", "desc"),
+      limit(1),
+    );
+
+    return onSnapshot(
+      alertsQuery,
+      (snapshot) => {
+        const docSnap = snapshot.docs[0];
+        if (!docSnap) {
+          setEmergency({ active: false, alert: null });
+          setLatestAlert(null);
+          return;
+        }
+
+        const data = docSnap.data() as any;
+        const location =
+          typeof data?.location === "string" && data.location.trim()
+            ? data.location.trim()
+            : typeof data?.locationName === "string" && data.locationName.trim()
+              ? data.locationName.trim()
+              : "Unknown location";
+
+        const alert = {
+          id: docSnap.id,
+          location,
+          createdAt: data?.createdAt ?? null,
+          latitude: typeof data?.latitude === "number" ? data.latitude : null,
+          longitude: typeof data?.longitude === "number" ? data.longitude : null,
+          cameraId: typeof data?.cameraId === "number" ? data.cameraId : null,
+          status: typeof data?.status === "string" ? data.status : null,
+        };
+
+        setEmergency({ active: alert.status === "active", alert });
+        setLatestAlert({
+          id: alert.id,
+          location: alert.location,
+          createdAt: alert.createdAt,
+          latitude: alert.latitude,
+          longitude: alert.longitude,
+        });
+      },
+      () => {
+        setEmergency({ active: false, alert: null });
         setLatestAlert(null);
-        return;
-      }
-      setLatestAlert({
-        id: alert.id,
-        location: alert.location,
-        createdAt: alert.createdAt,
-        latitude: alert.latitude,
-        longitude: alert.longitude,
-      });
-    });
+      },
+    );
   }, []);
 
   useEffect(() => {
