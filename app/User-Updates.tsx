@@ -416,7 +416,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   mediaButton: {
-    backgroundColor: "#95d57d",
+    backgroundColor: "#94AF97",
     borderRadius: 12,
     paddingVertical: 10,
     paddingHorizontal: 12,
@@ -446,10 +446,15 @@ const styles = StyleSheet.create({
     paddingBottom: 220,
   },
   updateCard: {
-    backgroundColor: "#95d57d",
+    backgroundColor: "#FFFFFF",
     borderRadius: 20,
     marginVertical: 8,
     padding: 15,
+    shadowColor: "#111827",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 4,
   },
   updateHeaderRow: {
     flexDirection: "row",
@@ -496,7 +501,7 @@ const styles = StyleSheet.create({
   },
   postButton: {
     flex: 1,
-    backgroundColor: "#95d57d",
+    backgroundColor: "#94AF97",
     borderRadius: 14,
     paddingVertical: 14,
     alignItems: "center",
