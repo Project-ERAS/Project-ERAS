@@ -14,7 +14,7 @@ db = firestore.client()
 model = YOLO('best.pt').to('mps') 
 
 # 3. CAMERA SETUP (Update this IP if DroidCam changes)
-stream_url = "http://172.20.10.2:4747/video" 
+stream_url = "http://172.20.10.3:4747/video" 
 cap = cv2.VideoCapture(stream_url)
 
 print("✅ ERAS IoT Bridge Active...")
