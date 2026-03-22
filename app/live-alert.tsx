@@ -13,17 +13,17 @@ import {
   View,
 } from "react-native";
 
-import { auth, firebaseConfig } from "@/constants/firebase";
+import { firebaseConfig } from "@/constants/firebase";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
-import { PhoneAuthProvider } from "firebase/auth";
 
 import { ThemedText } from "@/components/themed-text";
 
 const ENABLE_KEY = "liveAlertsEnabled";
 const PHONE_KEY = "liveAlertsPhone";
 const COUNTRY_CODE = "+94";
+const FIXED_OTP = "123456";
 
 export default function LiveAlert() {
   const [enabled, setEnabled] = useState<boolean>(false);
@@ -80,21 +80,26 @@ export default function LiveAlert() {
       await AsyncStorage.setItem(PHONE_KEY, digits);
 
       setSendingOtp(true);
-      const provider = new PhoneAuthProvider(auth);
-      const verificationId = await provider.verifyPhoneNumber(
-        phoneNumber,
-        recaptchaVerifierRef.current as any,
-      );
+      if (!recaptchaVerifierRef.current) {
+        Alert.alert("Error", "reCAPTCHA verifier is not ready. Please try again.");
+        return;
+      }
+
+      await recaptchaVerifierRef.current.verify();
 
       router.push({
         pathname: "/live-alert/otp",
-        params: { verificationId, phone: phoneNumber },
+        params: {
+          phone: phoneNumber,
+          mode: "fixed",
+          expectedOtp: FIXED_OTP,
+        },
       } as any);
     } catch (e) {
       const msg =
         typeof (e as any)?.message === "string"
           ? (e as any).message
-          : "Failed to send OTP.";
+          : "reCAPTCHA verification failed.";
       Alert.alert("Error", msg);
     } finally {
       setSendingOtp(false);
@@ -317,7 +322,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   confirmButton: {
-    backgroundColor: "#9CD57B",
+    backgroundColor: "#94AF97",
     borderRadius: 22,
     paddingVertical: 16,
     alignItems: "center",
