@@ -3,7 +3,7 @@ from ultralytics import YOLO
 
 model = YOLO('best.pt').to('mps')
 
-stream_url = "http://10.31.9.132:4747/video"
+stream_url = "http://172.20.12.2:4747/video"
 print(f"Connecting to: {stream_url}")
 
 cap = cv2.VideoCapture(stream_url)
