@@ -2,25 +2,25 @@ import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import {
-    addDoc,
-    collection,
-    onSnapshot,
-    orderBy,
-    query,
-    serverTimestamp,
+  addDoc,
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useEffect, useState } from "react";
 import {
-    Alert,
-    FlatList,
-    Image,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  FlatList,
+  Image,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -89,20 +89,7 @@ export default function UserUpdatesScreen() {
     });
   }
 
-  async function handlePickImage() {
-    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permission.granted) return;
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: false,
-      quality: 1,
-    });
-
-    if (result.canceled) return;
-    const uri = result.assets[0]?.uri ?? null;
-    if (!uri) return;
-
+  async function uploadUpdateImageFromUri(uri: string) {
     const user = auth.currentUser;
     if (!user?.uid) {
       router.replace("/signin");
@@ -123,6 +110,46 @@ export default function UserUpdatesScreen() {
     } finally {
       setUploading(false);
     }
+  }
+
+  async function handlePickImageFromGallery() {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permission.granted) {
+      Alert.alert("Permission required", "Allow gallery access to add an image.");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      quality: 1,
+    });
+
+    if (result.canceled) return;
+    const uri = result.assets[0]?.uri ?? null;
+    if (!uri) return;
+
+    await uploadUpdateImageFromUri(uri);
+  }
+
+  async function handleTakePhoto() {
+    const permission = await ImagePicker.requestCameraPermissionsAsync();
+    if (!permission.granted) {
+      Alert.alert("Permission required", "Allow camera access to take a photo.");
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      quality: 1,
+    });
+
+    if (result.canceled) return;
+    const uri = result.assets[0]?.uri ?? null;
+    if (!uri) return;
+
+    await uploadUpdateImageFromUri(uri);
   }
 
   async function handlePostUpdate() {
@@ -200,14 +227,26 @@ export default function UserUpdatesScreen() {
 
               <View style={styles.actionsBar}>
                 <TouchableOpacity
-                  style={styles.uploadButton}
+                  style={styles.mediaButton}
                   activeOpacity={0.85}
-                  onPress={handlePickImage}
+                  onPress={handleTakePhoto}
                   disabled={uploading || posting}
                 >
                   <Ionicons name="camera" size={18} color="#FFFFFF" />
-                  <Text style={styles.uploadButtonText}>
-                    {uploading ? "Uploading..." : "Image"}
+                  <Text style={styles.mediaButtonText}>
+                    {uploading ? "Uploading..." : "Camera"}
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.mediaButton}
+                  activeOpacity={0.85}
+                  onPress={handlePickImageFromGallery}
+                  disabled={uploading || posting}
+                >
+                  <Ionicons name="image" size={18} color="#FFFFFF" />
+                  <Text style={styles.mediaButtonText}>
+                    {uploading ? "Uploading..." : "Gallery"}
                   </Text>
                 </TouchableOpacity>
 
@@ -376,7 +415,7 @@ const styles = StyleSheet.create({
     shadowRadius: 18,
     elevation: 2,
   },
-  uploadButton: {
+  mediaButton: {
     backgroundColor: "#95d57d",
     borderRadius: 12,
     paddingVertical: 10,
@@ -390,7 +429,7 @@ const styles = StyleSheet.create({
     shadowRadius: 16,
     elevation: 3,
   },
-  uploadButtonText: {
+  mediaButtonText: {
     color: "#fff",
     fontSize: 13,
     fontWeight: "800",
