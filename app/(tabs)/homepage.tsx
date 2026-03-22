@@ -184,7 +184,7 @@ export default function HomeScreen() {
                           style={[
                             styles.navIconImage,
                             action.title === "User Updates"
-                              ? { width: 28, height: 28 }
+                              ? { width: 34, height: 34 }
                               : null,
                             action.iconTintColor
                               ? { tintColor: action.iconTintColor }
