@@ -45,11 +45,10 @@ export default function SigninScreen() {
     Platform.OS === "web" ? ({ outlineStyle: "none" } as any) : null;
 
   const inputBackground = useThemeColor({}, "signupInputBackground");
-  const socialButtonBackground = useThemeColor(
-    {},
-    "signupSocialButtonBackground",
-  );
+  const socialButtonGrey = "#E5E7EB";
+  const socialButtonPressedGrey = "#D1D5DB";
   const primaryButton = useThemeColor({}, "signupPrimaryButton");
+  const primaryButtonPressed = "#0B5ED7";
   const buttonText = useThemeColor({}, "signupButtonText");
   const shadowColor = useThemeColor({}, "signupShadow");
   const mutedText = useThemeColor({}, "signupMutedText");
@@ -261,10 +260,12 @@ export default function SigninScreen() {
                   style={({ pressed }) => [
                     styles.socialButton,
                     {
-                      backgroundColor: socialButtonBackground,
+                      backgroundColor: pressed
+                        ? socialButtonPressedGrey
+                        : socialButtonGrey,
                       borderColor,
                       shadowColor,
-                      opacity: pressed ? 0.9 : 1,
+                      opacity: 1,
                     },
                   ]}
                 >
@@ -284,10 +285,12 @@ export default function SigninScreen() {
                   style={({ pressed }) => [
                     styles.socialButton,
                     {
-                      backgroundColor: socialButtonBackground,
+                      backgroundColor: pressed
+                        ? socialButtonPressedGrey
+                        : socialButtonGrey,
                       borderColor,
                       shadowColor,
-                      opacity: pressed ? 0.9 : 1,
+                      opacity: 1,
                     },
                   ]}
                 >
@@ -397,9 +400,12 @@ export default function SigninScreen() {
                 style={({ pressed }) => [
                   styles.primaryButton,
                   {
-                    backgroundColor: primaryButton,
+                    backgroundColor:
+                      pressed && canSubmit && !loading
+                        ? primaryButtonPressed
+                        : primaryButton,
                     shadowColor,
-                    opacity: !canSubmit || loading ? 0.55 : pressed ? 0.9 : 1,
+                    opacity: !canSubmit || loading ? 0.55 : 1,
                   },
                 ]}
               >
@@ -484,10 +490,10 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     paddingHorizontal: 14,
     borderWidth: 1,
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 3 },
-    elevation: 2,
+    shadowOpacity: 0.18,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 5 },
+    elevation: 5,
   },
   socialIcon: {
     width: 20,
@@ -547,10 +553,10 @@ const styles = StyleSheet.create({
     maxWidth: 460,
     paddingVertical: 15,
     alignItems: "center",
-    shadowOpacity: 0.12,
-    shadowRadius: 9,
-    shadowOffset: { width: 0, height: 5 },
-    elevation: 3,
+    shadowOpacity: 0.24,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 7 },
+    elevation: 8,
     alignSelf: "center",
     marginTop: 4,
   },
