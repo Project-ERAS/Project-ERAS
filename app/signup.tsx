@@ -10,7 +10,6 @@ import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { useMemo, useState } from "react";
 import {
   Image,
-  ImageBackground,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -60,7 +59,6 @@ export default function SignupScreen() {
   const linkColor = useThemeColor({}, "signupLink");
   const dividerColor = useThemeColor({}, "signupDivider");
   const borderColor = useThemeColor({}, "signupBorder");
-  const backdropColor = useThemeColor({}, "signupBackdrop");
 
   function inputBorderFor(field: keyof FormState) {
     return focusedField === field ? primaryButton : borderColor;
@@ -190,20 +188,7 @@ export default function SignupScreen() {
   }
 
   return (
-    <ImageBackground
-      source={require("@/assets/icons/background.jpg")}
-      resizeMode="cover"
-      blurRadius={Platform.OS === "web" ? 0 : 0}
-      imageStyle={styles.backgroundImage}
-      style={styles.flex}
-    >
-      <View
-        pointerEvents="none"
-        style={[
-          StyleSheet.absoluteFillObject,
-          { backgroundColor: backdropColor },
-        ]}
-      />
+    <View style={styles.container}>
       <SafeAreaView style={styles.flex}>
         <KeyboardAvoidingView
           style={styles.flex}
@@ -465,14 +450,15 @@ export default function SignupScreen() {
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  backgroundImage: {
-    opacity: 0.75,
+  container: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
   },
   scrollContent: {
     flexGrow: 1,
