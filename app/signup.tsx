@@ -417,25 +417,6 @@ export default function SignupScreen() {
                 </ThemedText>
               </Pressable>
 
-              <Pressable
-                accessibilityRole="button"
-                onPress={() => router.push("/(tabs)/homepage")}
-                style={({ pressed }) => [
-                  styles.socialButton,
-                  {
-                    backgroundColor: socialButtonBackground,
-                    borderColor,
-                    shadowColor,
-                    opacity: pressed ? 0.9 : 1,
-                    marginTop: 14,
-                  },
-                ]}
-              >
-                <ThemedText style={[styles.socialText, { color: mutedText }]}>
-                  Test: Go to Home
-                </ThemedText>
-              </Pressable>
-
               <View style={styles.signInRow}>
                 <ThemedText style={{ color: mutedText }}>
                   Already have an account?{" "}
