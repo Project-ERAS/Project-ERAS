@@ -10,7 +10,6 @@ import { useMemo, useState } from "react";
 import {
   Alert,
   Image,
-  ImageBackground,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -57,7 +56,6 @@ export default function SigninScreen() {
   const inputText = useThemeColor({}, "signupInputText");
   const dividerColor = useThemeColor({}, "signupDivider");
   const borderColor = useThemeColor({}, "signupBorder");
-  const backdropColor = useThemeColor({}, "signupBackdrop");
 
   function inputBorderFor(field: keyof FormState) {
     return focusedField === field ? primaryButton : borderColor;
@@ -233,20 +231,7 @@ export default function SigninScreen() {
   }
 
   return (
-    <ImageBackground
-      source={require("@/assets/icons/background.jpg")}
-      resizeMode="cover"
-      blurRadius={Platform.OS === "web" ? 0 : 0}
-      imageStyle={styles.backgroundImage}
-      style={styles.flex}
-    >
-      <View
-        pointerEvents="none"
-        style={[
-          StyleSheet.absoluteFillObject,
-          { backgroundColor: backdropColor },
-        ]}
-      />
+    <View style={styles.screen}>
       <SafeAreaView style={styles.flex}>
         <KeyboardAvoidingView
           style={styles.flex}
@@ -439,58 +424,69 @@ export default function SigninScreen() {
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  backgroundImage: {
-    opacity: 0.75,
+  screen: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
   },
   scrollContent: {
     flexGrow: 1,
     justifyContent: "center",
     paddingHorizontal: 30,
-    paddingVertical: 24,
+    paddingVertical: 28,
     alignItems: "center",
   },
   content: {
     width: "100%",
-    maxWidth: 720,
+    maxWidth: 560,
     alignSelf: "center",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 28,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    shadowColor: "#101828",
+    shadowOpacity: 0.08,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 3,
   },
   headerSection: {
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: 16,
   },
   logo: {
-    width: 260,
-    height: 200,
-    marginBottom: -10,
+    width: 230,
+    height: 170,
+    marginBottom: -4,
   },
   headerTitle: {
-    fontSize: 22,
-    fontWeight: "500",
+    fontSize: 24,
+    fontWeight: "600",
+    letterSpacing: 0.3,
   },
   socialSection: {
-    gap: 12,
-    marginTop: 18,
+    gap: 10,
+    marginTop: 12,
     alignItems: "center",
   },
   socialButton: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 25,
+    borderRadius: 16,
     width: "100%",
-    maxWidth: 320,
-    paddingVertical: 14,
+    maxWidth: 420,
+    paddingVertical: 13,
     paddingHorizontal: 14,
     borderWidth: 1,
-    shadowOpacity: 0.12,
+    shadowOpacity: 0.08,
     shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 3 },
     elevation: 2,
   },
   socialIcon: {
@@ -506,7 +502,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginVertical: 20,
+    marginVertical: 16,
     width: "100%",
   },
   divider: {
@@ -517,9 +513,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   field: {
-    marginBottom: 18,
+    marginBottom: 14,
     width: "100%",
-    maxWidth: 600,
+    maxWidth: 460,
     alignSelf: "center",
   },
   label: {
@@ -539,23 +535,24 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderRadius: 25,
+    borderRadius: 14,
     width: "100%",
     paddingHorizontal: 16,
-    paddingVertical: 14,
+    paddingVertical: 13,
     fontSize: 15,
   },
   primaryButton: {
-    borderRadius: 30,
+    borderRadius: 14,
     width: "100%",
-    maxWidth: 360,
-    paddingVertical: 16,
+    maxWidth: 460,
+    paddingVertical: 15,
     alignItems: "center",
-    shadowOpacity: 0.18,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.12,
+    shadowRadius: 9,
+    shadowOffset: { width: 0, height: 5 },
     elevation: 3,
     alignSelf: "center",
+    marginTop: 4,
   },
   primaryButtonText: {
     fontSize: 16,
@@ -564,7 +561,7 @@ const styles = StyleSheet.create({
   bottomRow: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 12,
+    marginTop: 16,
     flexWrap: "wrap",
   },
   createLink: {
