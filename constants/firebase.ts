@@ -1,3 +1,11 @@
+import { getReactNativePersistence } from "@firebase/auth/dist/rn/index.js";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getApps, initializeApp } from "firebase/app";
+import { getAuth, initializeAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { Platform } from "react-native";
+
+const firebaseConfig = {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getApps, initializeApp } from "firebase/app";
 import { connectAuthEmulator, getAuth, initializeAuth } from "firebase/auth";
@@ -14,6 +22,8 @@ export const firebaseConfig = {
   appId: "1:318087849877:web:49a4b74765c976081d789c",
   measurementId: "G-JNLJNVLBCJ",
 };
+
+const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 
 // Some libraries (e.g. expo-firebase-recaptcha) still read the compat default app.
 // Keep compat and modular app initialization in sync.
@@ -46,6 +56,7 @@ export const auth =
     ? getAuth(app)
     : (() => {
         try {
+          const persistence = getReactNativePersistence(AsyncStorage);
           const rnAuth = require("@firebase/auth/dist/rn/index.js") as any;
           const persistence = rnAuth?.getReactNativePersistence
             ? rnAuth.getReactNativePersistence(AsyncStorage)
@@ -57,6 +68,7 @@ export const auth =
           return getAuth(app);
         }
       })();
+export const db = getFirestore(app);
 
 export const db = getFirestore(app);
 export const storage = getStorage(app);
@@ -102,6 +114,8 @@ if (shouldUseEmulators && !emulatorsConnected) {
     disableWarnings: true,
   });
   connectFirestoreEmulator(db, host, firestorePort);
+  emulatorsConnected = true;
+}
   connectStorageEmulator(storage, host, storagePort);
   emulatorsConnected = true;
 }
