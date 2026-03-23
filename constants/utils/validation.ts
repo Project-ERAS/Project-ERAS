@@ -31,6 +31,7 @@ export function validateEmail(rawEmail: string): EmailValidationResult {
 
   return { ok: true };
 }
+
 export function validatePassword(password: string): PasswordValidationResult {
   const checks: PasswordChecks = {
     minLength: password.length >= 8,

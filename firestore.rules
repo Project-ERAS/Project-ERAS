@@ -1,0 +1,50 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.admin == true;
+    }
+
+    function isSelf(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    match /users/{uid} {
+      allow create: if isSelf(uid);
+      allow read: if isSelf(uid) || isAdmin();
+      allow update, delete: if isSelf(uid) || isAdmin();
+    }
+
+    match /cameras/{cameraId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /incidents/{incidentId} {
+      allow create: if isSignedIn();
+      allow read: if isAdmin() || (isSignedIn() && resource.data.createdBy == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /updates/{updateId} {
+      allow read: if true;
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin() || (isSignedIn() && resource.data.createdBy == request.auth.uid);
+    }
+
+    // Alerts written by the IoT bridge and read by the app for live notifications
+    match /alerts/{alertId} {
+      allow read: if true;
+      allow create: if isSignedIn() || isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    match /otpSessions/{sessionId} {
+      allow read, write: if isAdmin();
+    }
+  }
+}
