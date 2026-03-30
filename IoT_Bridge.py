@@ -35,7 +35,7 @@ def patch_json(url, payload=None):
 model = YOLO("best.pt").to("mps")
 
 # 2. Camera setup (update this IP if DroidCam changes)
-stream_url = "http://192.168.1.168:4747/video"
+stream_url = "http://10.31.23.176:4747/video"
 cap = cv2.VideoCapture(stream_url)
 
 backend_base_url = os.environ.get("ERAS_BACKEND_URL", "http://localhost:3000").rstrip("/")
